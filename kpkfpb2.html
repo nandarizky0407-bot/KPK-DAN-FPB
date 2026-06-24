@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misi KPK & FPB - Booyah Class v2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Azeret+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --ff-dark: #0f1115;
+            --ff-gray: #1c2026;
+            --ff-light-gray: #2d3540;
+            --ff-orange: #ff6b00;
+            --ff-yellow: #ffb700;
+            --ff-blue: #00a2ff;
+            --ff-red: #ff3333;
+            --ff-green: #00e676;
+            --text: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: #050608; 
+            display: grid; 
+            place-items: center; 
+            min-height: 100vh; 
+            font-family: 'Rajdhani', sans-serif; 
+            color: var(--text);
+            user-select: none;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: var(--ff-dark);
+            border: 4px solid var(--ff-light-gray);
+            border-radius: 12px;
+            position: relative;
+            display: none;
+            padding: 25px 45px;
+            flex-direction: column;
+            justify-content: flex-start;
+            box-shadow: 0 0 50px rgba(255, 107, 0, 0.15);
+            background-image: linear-gradient(rgba(15, 17, 21, 0.95), rgba(15, 17, 21, 0.95)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1280&q=80');
+            background-size: cover;
+        }
+
+        .slide-container.active { display: flex; }
+
+        h1 { font-family: 'Orbitron'; font-weight: 900; font-size: 55px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 20px rgba(255,107,0,0.6); color: var(--ff-yellow); }
+        h2 { font-family: 'Orbitron'; font-weight: 700; font-size: 28px; color: var(--ff-orange); text-transform: uppercase; border-left: 6px solid var(--ff-yellow); padding-left: 15px; margin-bottom: 15px; letter-spacing: 1px; }
+        h3 { font-family: 'Orbitron'; font-size: 20px; color: #cbd5e1; margin-bottom: 8px; text-transform: uppercase; }
+        p, li { font-size: 19px; line-height: 1.4; color: #e2e8f0; }
+
+        .content-area { flex-grow: 1; width: 100%; overflow-y: auto; padding-right: 5px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        
+        .ff-card { background: var(--ff-gray); border: 2px solid var(--ff-light-gray); padding: 15px; border-radius: 8px; position: relative; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+        .ff-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--ff-orange); }
+
+        .btn-ff {
+            background: linear-gradient(135deg, var(--ff-orange), var(--ff-yellow)); color: #000; border: none; padding: 8px 20px;
+            border-radius: 4px; cursor: pointer; font-family: 'Orbitron'; font-weight: 700; transform: skewX(-10deg);
+            transition: all 0.15s ease-in-out; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .btn-ff:hover { transform: skewX(-10deg) scale(1.03); box-shadow: 0 0 15px var(--ff-yellow); }
+        .btn-ff-secondary { background: var(--ff-light-gray); color: white; border: 1px solid #4a5568; }
+        .btn-ff-secondary:hover { background: #3f4a5a; }
+
+        input {
+            background: #090a0f; border: 2px solid var(--ff-light-gray); border-radius: 4px; color: #fff; padding: 6px 10px; font-family: 'Azeret Mono'; font-size: 16px; text-align: center; outline: none;
+        }
+        input:focus { border-color: var(--ff-orange); box-shadow: 0 0 10px rgba(255,107,0,0.3); }
+        
+        .correct { border-color: var(--ff-green) !important; background-color: rgba(0, 230, 118, 0.1) !important; color: var(--ff-green) !important; font-weight: bold; }
+        .wrong { border-color: var(--ff-red) !important; background-color: rgba(255, 51, 51, 0.1) !important; color: var(--ff-red) !important; }
+
+        .matrix-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 10px; }
+        .matrix-card { background: var(--ff-light-gray); border: 1px solid #4a5568; border-radius: 4px; height: 42px; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.1s; }
+
+        .nav-controls { position: fixed; bottom: 15px; right: 45px; display: flex; gap: 10px; z-index: 1000; }
+        .nav-btn { background: var(--ff-gray); color: white; border: 2px solid var(--ff-light-gray); width: 45px; height: 45px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transform: skewX(-10deg); }
+        .nav-btn:hover { background: var(--ff-orange); color: black; border-color: var(--ff-yellow); }
+        .slide-num { position: absolute; bottom: 15px; left: 45px; font-size: 15px; font-weight: bold; color: #718096; font-family: 'Orbitron'; }
+
+        .badge-ff { font-family: 'Orbitron'; font-size: 18px; font-weight: bold; background: #2d1414; border: 1px solid var(--ff-red); color: var(--ff-red); padding: 4px 12px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; }
+        .badge-ff.blue { background: #14223d; border-color: var(--ff-blue); color: var(--ff-blue); }
+        
+        .box-explanation { display: none; margin-top: 10px; padding: 12px; background: #262015; border-left: 4px solid var(--ff-yellow); border-radius: 4px; font-size: 16px; }
+
+        .airdrop-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; }
+        .airdrop-card { height: 75px; background: linear-gradient(135deg, #7f1d1d, #451a03); border: 2px solid var(--ff-orange); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 20px; font-weight: bold; cursor: pointer; }
+        .airdrop-card.opened { background: #1e293b; border-color: #475569; color: #64748b; cursor: not-allowed; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 16px; }
+        th, td { border: 1px solid var(--ff-light-gray); padding: 6px; text-align: center; }
+        th { background: #11141a; color: var(--ff-yellow); font-family: 'Orbitron'; font-size: 14px; }
+        
+        .table-factor { width: 140px; margin: 0 auto; background: #090a0f; }
+        .table-factor td { padding: 4px; border: 1px solid var(--ff-orange); }
+        .table-factor input { width: 50px; padding: 3px; font-size: 14px; border: none; background: transparent; }
+
+        .list-horizontal { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .tag-token { background: var(--ff-light-gray); border: 1px solid #4a5568; padding: 3px 10px; border-radius: 4px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .tag-token.selected { background: var(--ff-orange); color: black; border-color: var(--ff-yellow); }
+
+        .warning-text { color: var(--ff-red); font-weight: bold; font-family: 'Orbitron'; font-size: 16px; margin-left: 15px; display: none; text-shadow: 0 0 10px rgba(255,51,51,0.5); }
+    </style>
+</head>
+<body>
+
+    <!-- SLIDE 1: COVER -->
+    <div class="slide-container active" id="slide1">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+            <div style="background: rgba(255,107,0,0.1); border: 1px solid var(--ff-orange); color: var(--ff-orange); padding: 6px 20px; border-radius: 4px; font-weight: bold; font-family: 'Orbitron'; margin-bottom: 20px; font-size: 18px;">MISSION OPERATION: MATHEMATICS</div>
+            <h1>KELIPATAN & FAKTOR<br><span style="color:#fff; font-size: 45px;">SERTA</span><br><span style="color:var(--ff-yellow)">KPK & FPB</span></h1>
+            <p style="font-size:24px; margin-top:25px; color:#cbd5e1; letter-spacing: 1px;">SIAPKAN SENJATAMU, RAIH BOOYAH DI KELAS MATEMATIKA!</p>
+        </div>
+        <div class="slide-num">Slide 1 / 23</div>
+    </div>
+
+    <!-- SLIDE 2: REVIEW MATERI -->
+    <div class="slide-container" id="slide2">
+        <h2>Review Supplies: Faktor & Kelipatan</h2>
+        <div class="content-area">
+            <div class="grid-2" style="margin-top: 10px;">
+                <div class="ff-card">
+                    <h3>1. Kelipatan Bilangan</h3>
+                    <p>Kelipatan adalah hasil perkalian bilangan tersebut dengan bilangan asli (1, 2, 3, ...).</p>
+                    <p style="margin-top: 10px; font-weight: bold; color: var(--ff-yellow);">Cara Tabel Kelipatan 4:</p>
+                    <table style="margin-top: 5px;">
+                        <tr><th>×1</th><th>×2</th><th>×3</th><th>×4</th><th>×5</th></tr>
+                        <tr style="font-family:'Azeret Mono'; font-weight: bold;"><td>4</td><td>8</td><td>12</td><td>16</td><td>20</td></tr>
+                    </table>
+                </div>
+                <div class="ff-card">
+                    <h3>2. Faktor Bilangan</h3>
+                    <p>Faktor adalah semua bilangan yang dapat membagi habis bilangan tersebut tanpa sisa.</p>
+                    <p style="margin-top: 10px; font-weight: bold; color: var(--ff-yellow);">Cara Tabel Faktor 12:</p>
+                    <table class="table-factor" style="width: 200px;">
+                        <tr><th colspan="2" style="color: var(--ff-yellow);">12</th></tr>
+                        <tr><td>1</td><td>12</td></tr>
+                        <tr><td>2</td><td>6</td></tr>
+                        <tr><td>3</td><td>4</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 2 / 23</div>
+    </div>
+
+    <!-- SLIDE 3: PEMANASAN 1 (DENGAN LOCK & SUARA WARNING) -->
+    <div class="slide-container" id="slide3">
+        <h2>Pemanasan Zona 1: Amankan Kelipatan!</h2>
+        <div class="content-area">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <p style="font-size: 20px;">Ketuk semua kartu yang merupakan <b>Kelipatan</b> dari target!</p>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <span class="warning-text" id="s3_warning">BELUM SEMUANYA TERPILIH!</span>
+                    <div class="badge-ff blue" id="s3_target_badge">TARGET: 4</div>
+                    <button class="btn-ff" onclick="nextWarmupSet(3)">Ganti Bilangan <i class="fa-solid fa-rotate"></i></button>
+                </div>
+            </div>
+            <div class="matrix-grid" id="s3_matrix"></div>
+        </div>
+        <div class="slide-num">Slide 3 / 23</div>
+    </div>
+
+    <!-- SLIDE 4: PEMANASAN 2 (DENGAN LOCK & SUARA WARNING) -->
+    <div class="slide-container" id="slide4">
+        <h2>Pemanasan Zona 2: Looting Faktor!</h2>
+        <div class="content-area">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <p style="font-size: 20px;">Ketuk semua kartu yang merupakan <b>Faktor</b> dari target!</p>
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    <span class="warning-text" id="s4_warning">BELUM SEMUANYA TERPILIH!</span>
+                    <div class="badge-ff" id="s4_target_badge">TARGET: 12</div>
+                    <button class="btn-ff" onclick="nextWarmupSet(4)">Ganti Bilangan <i class="fa-solid fa-rotate"></i></button>
+                </div>
+            </div>
+            <div class="matrix-grid" id="s4_matrix"></div>
+        </div>
+        <div class="slide-num">Slide 4 / 23</div>
+    </div>
+
+    <!-- SLIDE 5: TUJUAN -->
+    <div class="slide-container" id="slide5">
+        <h2>Briefing Misi: Tujuan Pembelajaran</h2>
+        <div class="content-area" style="display: flex; flex-direction: column; justify-content: center;">
+            <div class="ff-card" style="max-width: 800px; margin: 0 auto; padding: 30px;">
+                <h3 style="color: var(--ff-yellow); font-size: 24px; margin-bottom: 15px;"><i class="fa-solid fa-bullseye"></i> TARGET OPERASI KALI INI:</h3>
+                <ul style="display: grid; gap: 15px; list-style-type: none;">
+                    <li><i class="fa-solid fa-crosshairs" style="color: var(--ff-orange);"></i> Siswa mampu menentukan kelipatan persekutuan dan faktor persekutuan dari 2 bilangan.</li>
+                    <li><i class="fa-solid fa-crosshairs" style="color: var(--ff-orange);"></i> Siswa mampu menentukan KPK dan FPB dari 2 bilangan.</li>
+                    <li><i class="fa-solid fa-crosshairs" style="color: var(--ff-orange);"></i> Siswa mampu memecahkan kode permasalahan kehidupan sehari-hari terkait KPK dan FPB.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-num">Slide 5 / 23</div>
+    </div>
+
+    <!-- SLIDE 6: KELIPATAN PERSEKUTUAN -->
+    <div class="slide-container" id="slide6">
+        <h2>Materi: Kelipatan Persekutuan</h2>
+        <div class="content-area">
+            <div class="ff-card" style="margin-bottom: 15px;">
+                <h3>Definisi</h3>
+                <p><b>Kelipatan Persekutuan</b> adalah bilangan-bilangan kelipatan yang <b>SAMA</b> dari dua bilangan atau lebih. Ibarat menemukan item lootingan yang sama di dua tempat berbeda!</p>
+            </div>
+            <div class="ff-card">
+                <h3>Contoh Kasus: Kelipatan Persekutuan dari 3 dan 4</h3>
+                <p style="margin-top: 8px;">Kelipatan 3 = 3, 6, 9, <b style="color: var(--ff-yellow);">12</b>, 15, 18, 21, <b style="color: var(--ff-yellow);">24</b>, 27, 30, 33, <b style="color: var(--ff-yellow);">36</b>...</p>
+                <p>Kelipatan 4 = 4, 8, <b style="color: var(--ff-yellow);">12</b>, 16, 20, <b style="color: var(--ff-yellow);">24</b>, 28, 32, <b style="color: var(--ff-yellow);">36</b>, 40...</p>
+                <div style="margin-top: 10px; border-top: 1px dashed #4a5568; padding-top: 10px;">
+                    <p>Maka, Kelipatan Persekutuan dari 3 dan 4 adalah: <span class="badge-ff blue" style="font-size: 16px; padding: 2px 10px;">12, 24, 36, ...</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 6 / 23</div>
+    </div>
+
+    <!-- SLIDE 7: LATIHAN KELIPATAN PERSEKUTUAN -->
+    <div class="slide-container" id="slide7">
+        <h2>Battle Ground: Kelipatan Persekutuan</h2>
+        <div class="content-area">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <p style="font-size: 18px;" id="s7_title_soal">Mencari Kelipatan Persekutuan</p>
+                <button class="btn-ff" onclick="nextSet7()"><i class="fa-solid fa-rotate"></i> Ganti Soal</button>
+            </div>
+            <div class="grid-2">
+                <div class="ff-card">
+                    <h3 id="s7_lbl1">Bilangan A: 2</h3>
+                    <input id="s7_input1" placeholder="Pisahkan dengan koma (cth: 2,4,6...)" style="width: 100%;">
+                </div>
+                <div class="ff-card">
+                    <h3 id="s7_lbl2">Bilangan B: 5</h3>
+                    <input id="s7_input2" placeholder="Pisahkan dengan koma (cth: 5,10,15...)" style="width: 100%;">
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+                <button class="btn-ff" onclick="checkLists7()">Cek Daftar Kelipatan</button>
+            </div>
+            <div class="ff-card" id="s7_interactive_zone" style="margin-top: 10px; display: none;">
+                <h3>Pilih Semua Kelipatan Persekutuannya:</h3>
+                <div class="list-horizontal" id="s7_token_box"></div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 7 / 23</div>
+    </div>
+
+    <!-- SLIDE 8: KPK DEFINISI -->
+    <div class="slide-container" id="slide8">
+        <h2>Materi: Kelipatan Persekutuan Terkecil (KPK)</h2>
+        <div class="content-area">
+            <div class="grid-2">
+                <div class="ff-card">
+                    <h3>Apa itu KPK?</h3>
+                    <p style="font-size: 20px; line-height: 1.5;"><b>KPK</b> singkatan dari Kelipatan Persekutuan Terkecil. Intinya, carilah nilai kelipatan persekutuan yang **Paling Kecil / Pertama Kali Muncul Sama**!</p>
+                    <p style="margin-top: 15px; color: var(--ff-yellow);">Analogi Game: Detik ke berapa dua skill karakter berbeda cooldown akan aktif bersamaan lagi?</p>
+                </div>
+                <div class="ff-card">
+                    <h3>Contoh Mencari KPK (3 dan 5)</h3>
+                    <ol style="margin-top: 10px; display: grid; gap: 5px; padding-left: 15px;">
+                        <li>Daftar kelipatan 3: 3, 6, 9, 12, <b style="color: var(--ff-green);">15</b>, 18...</li>
+                        <li>Daftar kelipatan 5: 5, 10, <b style="color: var(--ff-green);">15</b>, 20...</li>
+                        <li>Kelipatan terkecil yang sama adalah 15.</li>
+                    </ol>
+                    <div style="margin-top: 15px; text-align: center;">
+                        <span class="badge-ff" style="font-size: 22px;">KPK = 15</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 8 / 23</div>
+    </div>
+
+    <!-- SLIDE 9: LATIHAN MENCARI KPK -->
+    <div class="slide-container" id="slide9">
+        <h2>Misi Taktis: Tembak KPK!</h2>
+        <div class="content-area">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <p id="s9_nums_title" style="font-size: 20px; color: var(--ff-yellow); font-weight: bold;">Mencari Nilai KPK</p>
+                <button class="btn-ff btn-ff-secondary" onclick="nextSet9()"><i class="fa-solid fa-forward"></i> Ganti Soal</button>
+            </div>
+            <div class="ff-card" style="margin-bottom: 10px;">
+                <div class="grid-2">
+                    <div>
+                        <label style="display:block; margin-bottom:5px;" id="s9_lbl_list1">Kelipatan Bilangan Pertama:</label>
+                        <input id="s9_input_list1" placeholder="Isi deret kelipatannya..." style="width:100%;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:5px;" id="s9_lbl_list2">Kelipatan Bilangan Kedua:</label>
+                        <input id="s9_input_list2" placeholder="Isi deret kelipatannya..." style="width:100%;">
+                    </div>
+                </div>
+                <div style="margin-top: 10px; text-align: right;">
+                    <button class="btn-ff btn-ff-secondary" onclick="checkLists9()">Cek Deret</button>
+                </div>
+            </div>
+            <div class="ff-card">
+                <h3>Nilai KPK Akhir:</h3>
+                <div style="display: flex; gap: 15px; align-items: center; margin-top: 5px;">
+                    <input id="s9_final_ans" placeholder="KPK" style="width: 120px; font-size: 22px;">
+                    <button class="btn-ff" onclick="checkFinalS9()">Verify Jawaban</button>
+                    <button class="btn-ff btn-ff-secondary" onclick="toggleExpl(9)">Pembahasan</button>
+                </div>
+                <div id="s9_expl" class="box-explanation"></div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 9 / 23</div>
+    </div>
+
+    <!-- SLIDE 10: SOAL CERITA KPK -->
+    <div class="slide-container" id="slide10">
+        <h2>Materi Analisis: Soal Cerita KPK</h2>
+        <div class="content-area">
+            <div class="grid-2">
+                <div class="ff-card">
+                    <h3><i class="fa-solid fa-key"></i> Radar Kunci Soal Cerita KPK</h3>
+                    <p>Ciri khas utama soal KPK adalah mencari momen atau waktu kejadian yang berulang secara periodik:</p>
+                    <ul style="margin-top: 10px; display: grid; gap: 8px; list-style: none;">
+                        <li><i class="fa-solid fa-clock" style="color:var(--ff-yellow)"></i> "...setiap ... hari sekali..."</li>
+                        <li><i class="fa-solid fa-rotate" style="color:var(--ff-yellow)"></i> "...bersama-sama lagi..."</li>
+                        <li><i class="fa-solid fa-calendar-days" style="color:var(--ff-yellow)"></i> "...pada tanggal/waktu yang sama..."</li>
+                    </ul>
+                </div>
+                <div class="ff-card">
+                    <h3>Contoh & Penyelesaian</h3>
+                    <p style="font-size: 16px; font-style: italic; background:#11141a; padding: 10px; border-radius: 4px;">"Lampu A menyala setiap 8 detik. Lampu B setiap 12 detik. Kapan kedua lampu menyala bersamaan?"</p>
+                    <p style="margin-top: 5px;"><b>Penyelesaian:</b> Cari KPK dari 8 dan 12.</p>
+                    <p>Kelipatan 8 = 8, 16, <b style="color:var(--ff-green)">24</b>, 32...</p>
+                    <p>Kelipatan 12 = 12, <b style="color:var(--ff-green)">24</b>, 36...</p>
+                    <p style="color:var(--ff-green); font-weight: bold; margin-top: 5px;">KPK = 24. Jadi, menyala bersama pada detik ke-24!</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 10 / 23</div>
+    </div>
+
+    <!-- SLIDE 11: LATIHAN SOAL CERITA KPK -->
+    <div class="slide-container" id="slide11">
+        <h2>Misi Intel: Memecahkan Enigma KPK</h2>
+        <div class="content-area">
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 id="s11_title">Soal Cerita KPK</h3>
+                <button class="btn-ff btn-ff-secondary" onclick="nextSet11()"><i class="fa-solid fa-forward"></i> Ganti Soal</button>
+            </div>
+            <div class="ff-card" style="padding: 20px;">
+                <p id="s11_story" style="font-size: 20px; margin-bottom: 15px; min-height: 60px;">Loading...</p>
+                <div style="display:flex; gap: 15px; align-items: center;">
+                    <input id="s11_ans" placeholder="Jawaban Angka" style="width: 180px; font-size: 20px;">
+                    <button class="btn-ff" onclick="checkS11()">Submit Jawaban</button>
+                    <button class="btn-ff btn-ff-secondary" onclick="toggleExpl(11)">Pembahasan</button>
+                </div>
+                <div id="s11_expl" class="box-explanation"></div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 11 / 23</div>
+    </div>
+
+    <!-- SLIDE 12: FAKTOR PERSEKUTUAN -->
+    <div class="slide-container" id="slide12">
+        <h2>Materi: Faktor Persekutuan</h2>
+        <div class="content-area">
+            <div class="ff-card" style="margin-bottom: 15px;">
+                <h3>Definisi</h3>
+                <p><b>Faktor Persekutuan</b> adalah bilangan-bilangan pembagi yang <b>SAMA</b> dari dua bilangan atau lebih. Ibarat menentukan kapasitas wadah kotak loot agar dapat membagi rata beberapa isi item tanpa sisa!</p>
+            </div>
+            <div class="ff-card">
+                <h3>Contoh Kasus: Faktor Persekutuan dari 12 dan 18</h3>
+                <p style="margin-top: 8px;">Faktor 12 = <b style="color: var(--ff-yellow);">1</b>, <b style="color: var(--ff-yellow);">2</b>, <b style="color: var(--ff-yellow);">3</b>, 4, <b style="color: var(--ff-yellow);">6</b>, 12</p>
+                <p>Faktor 18 = <b style="color: var(--ff-yellow);">1</b>, <b style="color: var(--ff-yellow);">2</b>, <b style="color: var(--ff-yellow);">3</b>, <b style="color: var(--ff-yellow);">6</b>, 9, 18</p>
+                <div style="margin-top: 10px; border-top: 1px dashed #4a5568; padding-top: 10px;">
+                    <p>Maka, Faktor Persekutuan dari 12 and 18 adalah: <span class="badge-ff" style="font-size: 16px; padding: 2px 10px;">1, 2, 3, 6</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 12 / 23</div>
+    </div>
+
+    <!-- SLIDE 13: LATIHAN FAKTOR PERSEKUTUAN (TABEL FAKTOR) -->
+    <div class="slide-container" id="slide13">
+        <h2>Battle Ground: Faktor Persekutuan</h2>
+        <div class="content-area">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <p style="font-size: 18px;" id="s13_title_soal">Lengkapi Pasangan Perkalian Tabel Faktor Berikut!</p>
+                <button class="btn-ff" onclick="nextSet13()"><i class="fa-solid fa-rotate"></i> Ganti Soal</button>
+            </div>
+            <div class="grid-2">
+                <div class="ff-card" style="text-align: center;">
+                    <h3 id="s13_lbl1" style="color:var(--ff-orange)">Bilangan 12</h3>
+                    <table class="table-factor" id="s13_table1"></table>
+                </div>
+                <div class="ff-card" style="text-align: center;">
+                    <h3 id="s13_lbl2" style="color:var(--ff-orange)">Bilangan 16</h3>
+                    <table class="table-factor" id="s13_table2"></table>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+                <button class="btn-ff" onclick="checkLists13()">Cek Tabel Faktor</button>
+            </div>
+            <div class="ff-card" id="s13_interactive_zone" style="margin-top: 10px; display: none;">
+                <h3>Pilih Semua Faktor Persekutuannya:</h3>
+                <div class="list-horizontal" id="s13_token_box"></div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 13 / 23</div>
+    </div>
+
+    <!-- SLIDE 14: FPB DEFINISI -->
+    <div class="slide-container" id="slide14">
+        <h2>Materi: Faktor Persekutuan Terbesar (FPB)</h2>
+        <div class="content-area">
+            <div class="grid-2">
+                <div class="ff-card">
+                    <h3>Apa itu FPB?</h3>
+                    <p style="font-size: 20px; line-height: 1.5;"><b>FPB</b> singkatan dari Faktor Persekutuan Terbesar. Setelah mengumpulkan faktor persekutuan yang bernilai sama, carilah angka yang **Paling Besar / Maksimal**!</p>
+                    <p style="margin-top: 15px; color: var(--ff-yellow);">Analogi Game: Berapa jumlah maksimal squad/tim yang bisa dibagi sama rata dari sisa persediaan loot box?</p>
+                </div>
+                <div class="ff-card">
+                    <h3>Contoh Mencari FPB (20 dan 30)</h3>
+                    <ol style="margin-top: 10px; display: grid; gap: 5px; padding-left: 15px;">
+                        <li>Faktor 20: 1, 2, 4, 5, <b style="color: var(--ff-green);">10</b>, 20</li>
+                        <li>Faktor 30: 1, 2, 3, 5, 6, <b style="color: var(--ff-green);">10</b>, 15, 30</li>
+                        <li>Faktor persekutuan terbesar nilainya adalah 10.</li>
+                    </ol>
+                    <div style="margin-top: 15px; text-align: center;">
+                        <span class="badge-ff" style="font-size: 22px;">FPB = 10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 14 / 23</div>
+    </div>
+
+    <!-- SLIDE 15: LATIHAN MENCARI FPB -->
+    <div class="slide-container" id="slide15">
+        <h2>Misi Taktis: Amankan Kunci FPB!</h2>
+        <div class="content-area">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <p id="s15_nums_title" style="font-size: 20px; color: var(--ff-orange); font-weight: bold;">Lengkapi Pasangan Faktor!</p>
+                <button class="btn-ff btn-ff-secondary" onclick="nextSet15()"><i class="fa-solid fa-forward"></i> Ganti Soal</button>
+            </div>
+            <div class="grid-2" style="margin-bottom: 10px;">
+                <div class="ff-card" style="padding:10px; text-align:center;">
+                    <h4 id="s15_lbl_t1" style="font-size:15px; margin-bottom:3px;">Faktor A</h4>
+                    <table class="table-factor" id="s15_table1"></table>
+                </div>
+                <div class="ff-card" style="padding:10px; text-align:center;">
+                    <h4 id="s15_lbl_t2" style="font-size:15px; margin-bottom:3px;">Faktor B</h4>
+                    <table class="table-factor" id="s15_table2"></table>
+                </div>
+            </div>
+            <div class="ff-card" style="padding: 12px;">
+                <h3>Nilai FPB Akhir:</h3>
+                <div style="display: flex; gap: 15px; align-items: center; margin-top: 5px;">
+                    <input id="s15_final_ans" placeholder="FPB" style="width: 120px; font-size: 20px;">
+                    <button class="btn-ff" onclick="checkFinalS15()">Verify FPB</button>
+                    <button class="btn-ff btn-ff-secondary" onclick="toggleExpl(15)">Pembahasan</button>
+                </div>
+                <div id="s15_expl" class="box-explanation"></div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 15 / 23</div>
+    </div>
+
+    <!-- SLIDE 16: SOAL CERITA FPB -->
+    <div class="slide-container" id="slide16">
+        <h2>Materi Analysis: Soal Cerita FPB</h2>
+        <div class="content-area">
+            <div class="grid-2">
+                <div class="ff-card">
+                    <h3><i class="fa-solid fa-key"></i> Radar Kunci Soal Cerita FPB</h3>
+                    <p>Soal cerita bertema FPB dicirikan dengan adanya pembagian kelompok benda berbeda menjadi bagian yang sama rata:</p>
+                    <ul style="margin-top: 10px; display: grid; gap: 8px; list-style: none;">
+                        <li><i class="fa-solid fa-boxes-stacked" style="color:var(--ff-orange)"></i> "...paling banyak / sebanyak-banyaknya..."</li>
+                        <li><i class="fa-solid fa-equals" style="color:var(--ff-orange)"></i> "...sama banyak / jumlah yang sama..."</li>
+                        <li><i class="fa-solid fa-basket-shopping" style="color:var(--ff-orange)"></i> "...dimasukkan ke wadah/plastik..."</li>
+                    </ul>
+                </div>
+                <div class="ff-card">
+                    <h3>Contoh & Penyelesaian</h3>
+                    <p style="font-size: 16px; font-style: italic; background:#11141a; padding: 10px; border-radius: 4px;">"Ibu memiliki 15 jeruk dan 20 mangga. Dibagikan ke plastik sama banyak. Berapa kantong plastik maksimal?"</p>
+                    <p style="margin-top: 5px;"><b>Penyelesaian:</b> Cari FPB dari 15 dan 20.</p>
+                    <p>Faktor 15 = 1, 3, <b style="color:var(--ff-green)">5</b>, 15</p>
+                    <p>Faktor 20 = 1, 2, 4, <b style="color:var(--ff-green)">5</b>, 10, 20</p>
+                    <p style="color:var(--ff-green); font-weight: bold; margin-top: 5px;">FPB = 5. Jadi, plastik terbanyak adalah 5 kantong!</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 16 / 23</div>
+    </div>
+
+    <!-- SLIDE 17: LATIHAN SOAL CERITA FPB -->
+    <div class="slide-container" id="slide17">
+        <h2>Misi Intel: Memecahkan Enigma FPB</h2>
+        <div class="content-area">
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 id="s17_title">Soal Cerita FPB</h3>
+                <button class="btn-ff btn-ff-secondary" onclick="nextSet17()"><i class="fa-solid fa-forward"></i> Ganti Soal</button>
+            </div>
+            <div class="ff-card" style="padding: 20px;">
+                <p id="s17_story" style="font-size: 20px; margin-bottom: 15px; min-height: 60px;">Loading...</p>
+                <div style="display:flex; gap: 15px; align-items: center;">
+                    <input id="s17_ans" placeholder="Jawaban Angka" style="width: 180px; font-size: 20px;">
+                    <button class="btn-ff" onclick="checkS17()">Submit Jawaban</button>
+                    <button class="btn-ff btn-ff-secondary" onclick="toggleExpl(17)">Pembahasan</button>
+                </div>
+                <div id="s17_expl" class="box-explanation"></div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 17 / 23</div>
+    </div>
+
+    <!-- SLIDE 18: BATTLE CHALLENGE -->
+    <div class="slide-container" id="slide18">
+        <h2>Squad Battle Arena: Fast Execution</h2>
+        <div class="content-area" style="overflow: hidden;">
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; align-items: center;">
+                <button class="btn-ff btn-ff-secondary" style="padding:5px 12px; font-size:13px;" onclick="toggleFFMusic()"><i class="fa-solid fa-music"></i> FF Theme</button>
+                <input type="range" id="vol_ctrl" min="0" max="1" step="0.1" value="0.5" style="width:70px;" onchange="adjustVolume(this.value)">
+                <button class="btn-ff" style="background:var(--ff-green); padding:5px 12px; font-size:13px;" onclick="startBattle18()"><i class="fa-solid fa-play"></i> START</button>
+                <button class="btn-ff btn-ff-secondary" style="background:#4a1212; border-color:var(--ff-red); padding:5px 12px; font-size:13px;" onclick="stopBattle18()"><i class="fa-solid fa-stop"></i> STOP</button>
+            </div>
+            <div class="grid-2">
+                <div class="ff-card" style="border-top: 4px solid var(--ff-blue); padding: 10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
+                        <input id="s18_name1" value="PLAYER 1" style="width: 55%; font-weight: bold; border-color: var(--ff-blue); font-size:14px; padding:4px;">
+                        <div id="s18_timer1" class="badge-ff blue" style="font-size:14px; padding:2px 8px;">0.0s</div>
+                    </div>
+                    <p style="font-size:16px; margin-bottom:4px; font-family:'Orbitron';">Target: <span id="s18_pair1" style="color:var(--ff-blue); font-weight:bold;">(6, 8)</span></p>
+                    <div style="display:flex; gap:8px; margin-bottom: 5px;">
+                        <input id="s18_kpk1" placeholder="KPK" style="width:50%; font-size:14px; padding:4px;">
+                        <input id="s18_fpb1" placeholder="FPB" style="width:50%; font-size:14px; padding:4px;">
+                    </div>
+                    <div style="display:flex; justify-content: space-between; align-items:center;">
+                        <button class="btn-ff" style="padding:4px 10px; font-size:12px;" onclick="checkBattleAns18(1)">Verify</button>
+                        <span id="s18_prog1" style="font-family:'Orbitron'; font-size:12px; color:#cbd5e1;">Misi: 0/10</span>
+                    </div>
+                </div>
+                <div class="ff-card" style="border-top: 4px solid var(--ff-red); padding: 10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
+                        <input id="s18_name2" value="PLAYER 2" style="width: 55%; font-weight: bold; border-color: var(--ff-red); font-size:14px; padding:4px;">
+                        <div id="s18_timer2" class="badge-ff" style="font-size:14px; padding:2px 8px;">0.0s</div>
+                    </div>
+                    <p style="font-size:16px; margin-bottom:4px; font-family:'Orbitron';">Target: <span id="s18_pair2" style="color:var(--ff-red); font-weight:bold;">(4, 10)</span></p>
+                    <div style="display:flex; gap:8px; margin-bottom: 5px;">
+                        <input id="s18_kpk2" placeholder="KPK" style="width:50%; font-size:14px; padding:4px;">
+                        <input id="s18_fpb2" placeholder="FPB" style="width:50%; font-size:14px; padding:4px;">
+                    </div>
+                    <div style="display:flex; justify-content: space-between; align-items:center;">
+                        <button class="btn-ff" style="padding:4px 10px; font-size:12px;" onclick="checkBattleAns18(2)">Verify</button>
+                        <span id="s18_prog2" style="font-family:'Orbitron'; font-size:12px; color:#cbd5e1;">Misi: 0/10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 18 / 23</div>
+    </div>
+
+    <!-- SLIDE 19: STATISTIK BATTLE -->
+    <div class="slide-container" id="slide19">
+        <h2>Statistik Pertempuran & Pemenang</h2>
+        <div class="content-area">
+            <div class="grid-2">
+                <div class="ff-card" style="max-height: 380px; overflow-y: auto;">
+                    <h3>Data Lapangan Per Nomor</h3>
+                    <table style="font-size: 13px; width: 100%;">
+                        <thead>
+                            <tr><th>No</th><th style="color:var(--ff-blue);" id="tbl_n1">Player 1</th><th style="color:var(--ff-red);" id="tbl_n2">Player 2</th></tr>
+                        </thead>
+                        <tbody id="battle_tbody">
+                            <tr><td colspan="3">Menunggu data pertarungan selesai...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="ff-card" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <h3 style="color: var(--ff-yellow);">ELITE CHAMPION BOOYAH</h3>
+                    <h1 id="b_champion" style="font-size: 38px; margin: 10px 0; color:var(--ff-green)">---</h1>
+                    <p id="b_stats_desc" style="font-size:15px; margin-bottom: 10px; color:#a0aec0;"></p>
+                    <button class="btn-ff btn-ff-secondary" onclick="calcBattleResult()"><i class="fa-solid fa-calculator"></i> Rekap Nilai</button>
+                    <button class="btn-ff" style="margin-top:8px;" onclick="speakChampion()"><i class="fa-solid fa-volume-high"></i> Pengumuman Suara</button>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 19 / 23</div>
+    </div>
+
+    <!-- SLIDE 20: CHALLENGE SOAL CERITA -->
+    <div class="slide-container" id="slide20">
+        <h2>Airdrop Tantangan: Kode Rahasia Cerita</h2>
+        <div class="content-area">
+            <div class="grid-2">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div id="s20_timer" class="badge-ff"><i class="fa-solid fa-hourglass-half"></i> 02:00</div>
+                        <p style="color: var(--ff-yellow); font-weight: bold; font-size:15px;">Zona Waktu: 2 Menit/Kartu</p>
+                    </div>
+                    <div class="airdrop-grid" id="s20_cards"></div>
+                    <div class="ff-card" style="margin-top: 10px; min-height: 80px; padding: 10px;">
+                        <h4 style="color: var(--ff-orange); font-family: 'Orbitron'; font-size:14px;">Misi Aktif:</h4>
+                        <p id="s20_text" style="font-size: 15px; margin-top: 3px;">Klik Airdrop Box di atas...</p>
+                    </div>
+                    <div style="margin-top: 8px; display: flex; gap: 10px;">
+                        <input id="s20_ans" placeholder="Jawaban" style="width: 140px; padding:5px;">
+                        <button class="btn-ff" style="padding:5px 15px;" onclick="checkS20Ans()">Eksekusi</button>
+                    </div>
+                </div>
+                <div class="ff-card">
+                    <h3>Papan Skor Pasukan (Digital)</h3>
+                    <div class="grid-2" style="margin-top: 10px;">
+                        <div style="text-align: center; background:#11141a; padding:10px; border-radius:4px;">
+                            <input id="s20_p1_name" value="REGU ALPHA" style="width:90%; font-size:13px; font-weight:bold; margin-bottom:5px;">
+                            <div id="s20_tally1" style="font-family:'Orbitron'; font-size:45px; color:var(--ff-blue); font-weight:bold;">0</div>
+                            <button class="btn-ff btn-ff-secondary" style="padding:4px 10px; font-size:12px; margin-top:5px;" onclick="addScore20(1)">+1 Poin</button>
+                        </div>
+                        <div style="text-align: center; background:#11141a; padding:10px; border-radius:4px;">
+                            <input id="s20_p2_name" value="REGU BETA" style="width:90%; font-size:13px; font-weight:bold; margin-bottom:5px;">
+                            <div id="s20_tally2" style="font-family:'Orbitron'; font-size:45px; color:var(--ff-red); font-weight:bold;">0</div>
+                            <button class="btn-ff btn-ff-secondary" style="padding:4px 10px; font-size:12px; margin-top:5px;" onclick="addScore20(2)">+1 Poin</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px; border-top:1px dashed #4a5568; padding-top:8px; text-align:center;">
+                        <h4>MVP CHAMPION:</h4>
+                        <div id="s20_mvp" style="font-family:'Orbitron'; font-size:20px; color:var(--ff-green); font-weight:bold;">---</div>
+                        <button class="btn-ff btn-ff-secondary" style="font-size:11px; padding:3px 8px; margin-top:3px;" onclick="announceS20Winner()">Selamat Kepada MVP</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 20 / 23</div>
+    </div>
+
+    <!-- SLIDE 21: REFLEKSI -->
+    <div class="slide-container" id="slide21">
+        <h2>Safe Zone: Kesimpulan & Refleksi</h2>
+        <div class="content-area">
+            <div class="grid-2" style="margin-top: 10px;">
+                <div class="ff-card">
+                    <h3>Peta Strategi Ringkas</h3>
+                    <ul style="display: grid; gap: 10px; list-style: none; font-size: 17px;">
+                        <li><i class="fa-solid fa-check-double" style="color: var(--ff-yellow);"></i> <b>Kelipatan</b> diperoleh dengan mengalikan; <b>Faktor</b> diperoleh dengan membagi habis.</li>
+                        <li><i class="fa-solid fa-check-double" style="color: var(--ff-yellow);"></i> <b>KPK</b> = Kelipatan persekutuan terkecil yang sama (Masalah alarm/waktu bersamaan).</li>
+                        <li><i class="fa-solid fa-check-double" style="color: var(--ff-yellow);"></i> <b>FPB</b> = Faktor persekutuan terbesar yang sama (Masalah pembagian adil).</li>
+                    </ul>
+                </div>
+                <div class="ff-card">
+                    <h3>Refleksi Tempur Pasukan</h3>
+                    <p style="font-size:15px; margin-bottom: 8px;">Materi taktis mana (KPK/FPB) yang menurutmu paling menantang hari ini?</p>
+                    <textarea style="width:100%; height:110px; background:#090a0f; border:2px solid var(--ff-light-gray); border-radius:4px; color:#fff; padding:10px; font-family:inherit; resize:none;" placeholder="Tuliskan evaluasimu di sini..."></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 21 / 23</div>
+    </div>
+
+    <!-- SLIDE 22: NEXT LESSON -->
+    <div class="slide-container" id="slide22">
+        <h2>Misi Mendatang: ASSIGNMENT!</h2>
+        <div class="content-area">
+            <div class="ff-card" style="border:2px dashed var(--ff-yellow); padding: 15px;">
+                <p style="font-size: 18px; color: var(--ff-yellow); font-weight: bold; text-align: center; text-transform: uppercase;"><i class="fa-solid fa-gift"></i> MISSION ASSIGNMENT: SIAPKAN DIRIMU UNTUK EVENT BESAR BERHADIAH! <i class="fa-solid fa-gift"></i></p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; font-size:14px;">
+                    <ol style="padding-left:15px; display:grid; gap:2px;">
+                        <li><b>Bilangan Cacah (nilai tempat, nama bilangan, lambang bilangan, dekomposisi bilangan, membandingkan bilangan, mengurutkan bilangan)</b></li>
+                        <li><b>Operasi Hitung (penjumlahan, pengurangan, perkalian, pembagian, dan campuran)</b></li>
+                        <li><b>Bangun Datar  (nama bangun datar, ciri-ciri bangun datar, keliling bangun datar, menguraikan bangun datar)</b></li>
+                        <li><b>Bangun Ruang (nama bangun ruang, banyaknya rusuk, sisi, dan titik sudut bangun ruang)</b></li>
+                        <li><b>Pecahan (menentukan bentuk pecahan, menentukan banyak setengah benda)</b></li>
+                    </ol>
+                    <ol start="6" style="padding-left:15px; display:grid; gap:2px;">
+                        <li><b>Pengukuran Panjang (alat ukur panjang, konversi satuan panjang)</b></li>
+                        <li><b>Pengukuran Berat (alat ukur berat, konversi satuan berat)</b></li>
+                        <li><b>Pengukuran Waktu (membaca jam, konversi satuan waktu)</b></li>
+                        <li><b>Diagram Data (turus, diagram garis, dan batang)</b></li>
+                        <li><b>Teori KPK & FPB</b></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="slide-num">Slide 22 / 23</div>
+    </div>
+
+    <!-- SLIDE 23: THANK YOU -->
+    <div class="slide-container" id="slide23">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+            <h1 style="font-size: 70px; color: var(--ff-yellow); font-family:'Orbitron';">BOOYAH!</h1>
+            <p style="font-size:26px; color:white; font-weight: bold; margin-top: 10px;">MISI SELESAI UNTUK HARI INI!</p>
+            <p style="font-size:17px; color:#a0aec0; margin-top:5px;">Kerja bagus, Rekan Squad. Tetaplah berlatih!</p>
+            <div style="margin-top: 20px; color: var(--ff-orange); font-size: 60px;"><i class="fa-solid fa-trophy"></i></div>
+        </div>
+        <div class="slide-num">Slide 23 / 23</div>
+    </div>
+
+    <!-- UTILITY NAV -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="nav-btn" onclick="nextSlide()"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <audio id="ff_theme_bgm" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop></audio>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 23;
+
+        function showSlide(n) {
+            document.querySelectorAll('.slide-container').forEach(s => s.classList.remove('active'));
+            document.getElementById('slide' + n).classList.add('active');
+            currentSlide = n;
+        }
+        function nextSlide() { if(currentSlide < totalSlides) showSlide(currentSlide + 1); }
+        function prevSlide() { if(currentSlide > 1) showSlide(currentSlide - 1); }
+
+        function speakText(txt) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                let u = new SpeechSynthesisUtterance(txt);
+                u.lang = 'id-ID';
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        function generateFactorTableHTML(num) {
+            let pairs = [];
+            for(let i=1; i<=num; i++) {
+                if(num % i === 0) {
+                    let j = num / i;
+                    if(i <= j) pairs.push({f1: i, f2: j});
+                }
+            }
+            let html = `<tr><th colspan="2" style="background:#ff6b00; color:black;">${num}</th></tr>`;
+            pairs.forEach((p, idx) => {
+                html += `<tr>
+                    <td><input type="number" data-ans="${p.f1}" class="f_input_${num}"></td>
+                    <td><input type="number" data-ans="${p.f2}" class="f_input_${num}"></td>
+                </tr>`;
+            });
+            return html;
+        }
+
+        // BANK DATA PERSEDIAAN ZONA 1 & 2 (SLIDE 3 DAN 4)
+        const poolS3 = [
+            {t: 4, ans: [4,8,12,16,20,24,28,32,36,40,44,48]},
+            {t: 3, ans: [3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48]},
+            {t: 5, ans: [5,10,15,20,25,30,35,40,45,50]},
+            {t: 6, ans: [6,12,18,24,30,36,42,48]},
+            {t: 7, ans: [7,14,21,28,35,42,49]}
+        ];
+        let idxS3 = 0;
+        let s3SelectedCorrect = 0;
+
+        const poolS4 = [
+            {t: 12, ans: [1,2,3,4,6,12]},
+            {t: 16, ans: [1,2,4,8,16]},
+            {t: 20, ans: [1,2,4,5,10,20]},
+            {t: 24, ans: [1,2,3,4,6,8,12,24]},
+            {t: 30, ans: [1,2,3,5,6,10,15,30]}
+        ];
+        let idxS4 = 0;
+        let s4SelectedCorrect = 0;
+
+        function nextWarmupSet(slideNum) {
+            if(slideNum === 3) {
+                let totalCorrectNeeded = poolS3[idxS3].ans.length;
+                if(s3SelectedCorrect < totalCorrectNeeded) {
+                    speakText("belum semuanya");
+                    showWarningText(3);
+                    return;
+                }
+                hideWarningText(3);
+                idxS3 = (idxS3 + 1) % poolS3.length;
+                document.getElementById('s3_target_badge').innerText = `TARGET: ${poolS3[idxS3].t}`;
+                renderWarmup(3, poolS3[idxS3]);
+            } else if(slideNum === 4) {
+                let totalCorrectNeeded = poolS4[idxS4].ans.length;
+                if(s4SelectedCorrect < totalCorrectNeeded) {
+                    speakText("belum semuanya");
+                    showWarningText(4);
+                    return;
+                }
+                hideWarningText(4);
+                idxS4 = (idxS4 + 1) % poolS4.length;
+                document.getElementById('s4_target_badge').innerText = `TARGET: ${poolS4[idxS4].t}`;
+                renderWarmup(4, poolS4[idxS4]);
+            }
+        }
+
+        function showWarningText(slideNum) {
+            let el = document.getElementById(`s${slideNum}_warning`);
+            el.style.display = "inline-block";
+            setTimeout(() => { el.style.display = "none"; }, 2500);
+        }
+        
+        function hideWarningText(slideNum) {
+            document.getElementById(`s${slideNum}_warning`).style.display = "none";
+        }
+
+        function renderWarmup(slideNum, dataPaket) {
+            if(slideNum === 3) s3SelectedCorrect = 0;
+            if(slideNum === 4) s4SelectedCorrect = 0;
+
+            const grid = document.getElementById(`s${slideNum}_matrix`); 
+            grid.innerHTML = '';
+            for(let i=1; i<=50; i++) {
+                let div = document.createElement('div'); 
+                div.className = 'matrix-card'; 
+                div.innerText = i;
+                div.onclick = () => { 
+                    if(div.classList.contains('correct') || div.classList.contains('wrong')) return;
+                    if(dataPaket.ans.includes(i)) { 
+                        div.className='matrix-card correct'; 
+                        speakText("ya, benar"); 
+                        if(slideNum === 3) s3SelectedCorrect++;
+                        if(slideNum === 4) s4SelectedCorrect++;
+                    } else { 
+                        div.className='matrix-card wrong'; 
+                        speakText("salah"); 
+                    } 
+                };
+                grid.appendChild(div);
+            }
+        }
+
+        // ==================== CODES & SOAL TAMBAHAN BARU DI SINI ====================
+        // SLIDE 7 POOL (DITAMBAH SOAL 4 & 5)
+        const poolS7 = [
+            {a: 2, b: 5, listA: [2,4,6,8,10,12,14,16,18,20], listB: [5,10,15,20,25,30,35,40,45,50], common: [10, 20]},
+            {a: 3, b: 4, listA: [3,6,9,12,15,18,21,24,27,30], listB: [4,8,12,16,20,24,28,32,36,40], common: [12, 24]},
+            {a: 2, b: 3, listA: [2,4,6,8,10,12,14,16,18,20], listB: [3,6,9,12,15,18,21,24,27,30], common: [6, 12, 18]},
+            {a: 4, b: 5, listA: [4,8,12,16,20,24,28,32,36,40], listB: [5,10,15,20,25,30,35,40,45,50], common: [20, 40]},
+            {a: 3, b: 5, listA: [3,6,9,12,15,18,21,24,27,30], listB: [5,10,15,20,25,30,35,40,45,50], common: [15, 30]},
+            {a: 2, b: 7, listA: [2,4,6,8,10,12,14,16,18,20], listB: [7,14,21,28,35,42,49,56,63,70], common: [14]}
+        ];
+
+        // SLIDE 9 POOL (DITAMBAH SOAL BARU)
+        const poolS9 = [
+            {a: 4, b: 6, key: 12, expl: "KPK dari 4 dan 6 adalah 12."}, 
+            {a: 6, b: 8, key: 24, expl: "KPK dari 6 dan 8 adalah 24."},
+            {a: 5, b: 10, key: 10, expl: "KPK dari 5 dan 10 adalah 10."}, 
+            {a: 3, b: 5, key: 15, expl: "KPK dari 3 dan 5 adalah 15."},
+            {a: 8, b: 12, key: 24, expl: "KPK dari 8 dan 12 adalah 24."},
+            {a: 9, b: 12, key: 36, expl: "KPK dari 9 dan 12 adalah 36."},
+            {a: 10, b: 15, key: 30, expl: "KPK dari 10 dan 15 adalah 30."}
+        ];
+
+        // SLIDE 11 POOL (TAMBAHAN SOAL CERITA KPK)
+        const poolS11 = [
+            {q: "Zaki berlatih menembak setiap 6 hari sekali dan Jojo setiap 8 hari sekali. Kapan mereka berlatih bersama kembali?", k: 24, ex: "KPK dari 6 dan 8 adalah 24 hari."},
+            {q: "Drone A mengirim sinyal setiap 4 menit, Drone B setiap 10 menit. Menit ke berapa sinyal terkirim bersamaan?", k: 20, ex: "KPK dari 4 dan 10 adalah 20 menit."},
+            {q: "Lampu merah berkedip setiap 8 detik sekali, sedangkan lampu hijau setiap 12 detik sekali. Pada detik ke berapakah kedua lampu akan berkedip bersamaan?", k: 24, ex: "KPK dari 8 dan 12 adalah 24 detik."},
+            {q: "Roni membersihkan laci mejanya setiap 6 hari sekali, sedangkan Susi setiap 9 hari sekali. Berapa hari lagi mereka akan membersihkan bersama?", k: 18, ex: "KPK dari 6 dan 9 adalah 18 hari."}
+        ];
+
+        // SLIDE 13 POOL (TAMBAHAN FAKTOR PERSEKUTUAN)
+        const poolS13 = [
+            {a: 12, b: 16, common: [1,2,4]}, 
+            {a: 15, b: 20, common: [1,5]},
+            {a: 18, b: 24, common: [1,2,3,6]},
+            {a: 20, b: 30, common: [1,2,5,10]}
+        ];
+
+        // SLIDE 15 POOL (TAMBAHAN FPB ANGKA)
+        const poolS15 = [
+            {a: 24, b: 36, key: 12, expl: "FPB dari 24 dan 36 adalah 12."}, 
+            {a: 20, b: 50, key: 10, expl: "FPB dari 20 dan 50 adalah 10."},
+            {a: 18, b: 27, key: 9, expl: "FPB dari 18 dan 27 adalah 9."},
+            {a: 16, b: 40, key: 8, expl: "FPB dari 16 dan 40 adalah 8."}
+        ];
+
+        // SLIDE 17 POOL (TAMBAHAN SOAL CERITA FPB)
+        const poolS17 = [
+            {q: "Tutor memiliki 24 medali emas dan 32 medali perak. Dibagi ke kotak hadiah sama banyak. Berapa kotak maksimal?", k: 8, ex: "FPB dari 24 dan 32 adalah 8 kotak."},
+            {q: "Ada 30 paket medis dan 45 amunisi dibagi rata ke ransel squad. Berapa jumlah ransel maksimal?", k: 15, ex: "FPB dari 30 dan 45 adalah 15 ransel."},
+            {q: "Ibu memiliki 24 susu kotak dan 36 biskuit. Ingin dibagikan ke kantong plastik sama rata. Berapa paling banyak kantong plastik yang bisa dibuat?", k: 12, ex: "FPB dari 24 dan 36 adalah 12 kantong plastik."},
+            {q: "Siswa ingin menghias meja guru menggunakan 15 mawar merah dan 20 mawar putih ke dalam beberapa vas sama rata. Berapa vas terbanyak?", k: 5, ex: "FPB dari 15 dan 20 adalah 5 vas."}
+        ];
+        // ============================================================================
+
+        let idxS7 = 0; function nextSet7() {
+            idxS7 = (idxS7 + 1) % poolS7.length;
+            document.getElementById('s7_title_soal').innerText = `Soal #${idxS7+1}: Daftarkan kelipatan dari bilangan berikut hingga ke-10!`;
+            document.getElementById('s7_lbl1').innerText = `Bilangan A: ${poolS7[idxS7].a}`;
+            document.getElementById('s7_lbl2').innerText = `Bilangan B: ${poolS7[idxS7].b}`;
+            document.getElementById('s7_input1').value = ''; document.getElementById('s7_input2').value = '';
+            document.getElementById('s7_input1').className = ''; document.getElementById('s7_input2').className = '';
+            document.getElementById('s7_interactive_zone').style.display = 'none';
+        }
+        function checkLists7() {
+            const data = poolS7[idxS7];
+            const userA = document.getElementById('s7_input1').value.split(',').map(Number);
+            const userB = document.getElementById('s7_input2').value.split(',').map(Number);
+            if(userA.length >= 10 && userB.length >= 10 && data.listA.every((v,i)=>userA[i]===v) && data.listB.every((v,i)=>userB[i]===v)) {
+                document.getElementById('s7_input1').className = 'correct'; document.getElementById('s7_input2').className = 'correct'; speakText("nice");
+                document.getElementById('s7_interactive_zone').style.display = 'block';
+                const box = document.getElementById('s7_token_box'); box.innerHTML = '';
+                let comb = Array.from(new Set([...data.listA, ...data.listB])).sort((x,y)=>x-y);
+                comb.forEach(n => {
+                    let btn = document.createElement('div'); btn.className = 'tag-token'; btn.innerText = n;
+                    btn.onclick = () => { if(data.common.includes(n)) { btn.classList.add('selected'); speakText("nice"); } else { speakText("bukan aku"); } };
+                    box.appendChild(btn);
+                });
+            } else { document.getElementById('s7_input1').className = 'wrong'; document.getElementById('s7_input2').className = 'wrong'; speakText("cek kembali"); }
+        }
+
+        let idxS9 = 0; function nextSet9() {
+            idxS9 = (idxS9 + 1) % poolS9.length;
+            document.getElementById('s9_nums_title').innerText = `Soal #${idxS9+1}: Cari KPK dari ${poolS9[idxS9].a} dan ${poolS9[idxS9].b}`;
+            document.getElementById('s9_lbl_list1').innerText = `Kelipatan ${poolS9[idxS9].a}:`;
+            document.getElementById('s9_lbl_list2').innerText = `Kelipatan ${poolS9[idxS9].b}:`;
+            document.getElementById('s9_input_list1').value = ''; document.getElementById('s9_input_list2').value = '';
+            document.getElementById('s9_final_ans').value = ''; document.getElementById('s9_final_ans').className = '';
+            document.getElementById('s9_expl').style.display = 'none';
+        }
+        function checkLists9() { speakText("nice"); }
+        function checkFinalS9() {
+            let u = parseInt(document.getElementById('s9_final_ans').value);
+            if(u === poolS9[idxS9].key) { document.getElementById('s9_final_ans').className = 'correct'; speakText("Booyah"); }
+            else { document.getElementById('s9_final_ans').className = 'wrong'; speakText("cek kembali"); }
+        }
+
+        let idxS11 = 0; function nextSet11() {
+            idxS11 = (idxS11 + 1) % poolS11.length;
+            document.getElementById('s11_title').innerText = `Soal Cerita KPK #${idxS11+1}`;
+            document.getElementById('s11_story').innerText = poolS11[idxS11].q;
+            document.getElementById('s11_ans').value = ''; document.getElementById('s11_ans').className = '';
+            document.getElementById('s11_expl').style.display = 'none';
+        }
+        function checkS11() {
+            let u = parseInt(document.getElementById('s11_ans').value);
+            if(u === poolS11[idxS11].k) { document.getElementById('s11_ans').className = 'correct'; speakText("nice"); }
+            else { document.getElementById('s11_ans').className = 'wrong'; }
+        }
+
+        let idxS13 = 0; function nextSet13() {
+            idxS13 = (idxS13 + 1) % poolS13.length;
+            document.getElementById('s13_title_soal').innerText = `Soal #${idxS13+1}: Lengkapi Pasangan Perkalian Tabel Faktor Berikut!`;
+            document.getElementById('s13_lbl1').innerText = `Bilangan ${poolS13[idxS13].a}`;
+            document.getElementById('s13_lbl2').innerText = `Bilangan ${poolS13[idxS13].b}`;
+            document.getElementById('s13_table1').innerHTML = generateFactorTableHTML(poolS13[idxS13].a);
+            document.getElementById('s13_table2').innerHTML = generateFactorTableHTML(poolS13[idxS13].b);
+            document.getElementById('s13_interactive_zone').style.display = 'none';
+        }
+        function checkLists13() {
+            let itemA = document.querySelectorAll(`.f_input_${poolS13[idxS13].a}`);
+            let itemB = document.querySelectorAll(`.f_input_${poolS13[idxS13].b}`);
+            let ok = true;
+            [...itemA, ...itemB].forEach(i => {
+                if(parseInt(i.value) === parseInt(i.getAttribute('data-ans'))) { i.className = 'correct'; }
+                else { i.className = 'wrong'; ok = false; }
+            });
+            if(ok) {
+                speakText("nice"); document.getElementById('s13_interactive_zone').style.display = 'block';
+                const box = document.getElementById('s13_token_box'); box.innerHTML = '';
+                let fUnik = [1,2,3,4,5,6,7,8,9,10,12,14,15,16,18,20,24,30].filter(v => v <= Math.max(poolS13[idxS13].a, poolS13[idxS13].b));
+                fUnik.forEach(n => {
+                    let btn = document.createElement('div'); btn.className = 'tag-token'; btn.innerText = n;
+                    btn.onclick = () => { if(poolS13[idxS13].common.includes(n)) { btn.classList.add('selected'); speakText("nice"); } else { speakText("bukan aku"); } };
+                    box.appendChild(btn);
+                });
+            } else { speakText("cek kembali"); }
+        }
+
+        let idxS15 = 0; function nextSet15() {
+            idxS15 = (idxS15 + 1) % poolS15.length;
+            document.getElementById('s15_nums_title').innerText = `Soal #${idxS15+1}: Carilah FPB dari ${poolS15[idxS15].a} dan ${poolS15[idxS15].b}`;
+            document.getElementById('s15_lbl_t1').innerText = `Faktor ${poolS15[idxS15].a}`;
+            document.getElementById('s15_lbl_t2').innerText = `Faktor ${poolS15[idxS15].b}`;
+            document.getElementById('s15_table1').innerHTML = generateFactorTableHTML(poolS15[idxS15].a);
+            document.getElementById('s15_table2').innerHTML = generateFactorTableHTML(poolS15[idxS15].b);
+            document.getElementById('s15_final_ans').value = ''; document.getElementById('s15_final_ans').className = '';
+            document.getElementById('s15_expl').style.display = 'none';
+        }
+        function checkFinalS15() {
+            let u = parseInt(document.getElementById('s15_final_ans').value);
+            if(u === poolS15[idxS15].key) { document.getElementById('s15_final_ans').className = 'correct'; speakText("Booyah"); }
+            else { document.getElementById('s15_final_ans').className = 'wrong'; speakText("cek kembali"); }
+        }
+
+        let idxS17 = 0; function nextSet17() {
+            idxS17 = (idxS17 + 1) % poolS17.length;
+            document.getElementById('s17_title').innerText = `Soal Cerita FPB #${idxS17+1}`;
+            document.getElementById('s17_story').innerText = poolS17[idxS17].q;
+            document.getElementById('s17_ans').value = ''; document.getElementById('s17_ans').className = '';
+            document.getElementById('s17_expl').style.display = 'none';
+        }
+        function checkS17() {
+            let u = parseInt(document.getElementById('s17_ans').value);
+            if(u === poolS17[idxS17].k) { document.getElementById('s17_ans').className = 'correct'; speakText("nice"); }
+            else { document.getElementById('s17_ans').className = 'wrong'; }
+        }
+
+        function toggleExpl(slideNum) {
+            const e = document.getElementById(`s${slideNum}_expl`);
+            if(slideNum===9) e.innerText = poolS9[idxS9].expl;
+            if(slideNum===11) e.innerText = poolS11[idxS11].ex;
+            if(slideNum===15) e.innerText = poolS15[idxS15].expl;
+            if(slideNum===17) e.innerText = poolS17[idxS17].ex;
+            e.style.display = (e.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // BATTLE MODE MANAGEMENT
+        let pairsP1 = [{a:6,b:8,k:24,f:2},{a:4,b:5,k:20,f:1},{a:9,b:12,k:36,f:3},{a:10,b:15,k:30,f:5},{a:8,b:12,k:24,f:4},{a:6,b:9,k:18,f:3},{a:4,b:6,k:12,f:2},{a:12,b:15,k:60,f:3},{a:10,b:20,k:20,f:10},{a:15,b:25,k:75,f:5}];
+        let pairsP2 = [{a:4,b:10,k:20,f:2},{a:3,b:5,k:15,f:1},{a:6,b:10,k:30,f:2},{a:12,b:18,k:36,f:6},{a:8,b:20,k:40,f:4},{a:9,b:15,k:45,f:3},{a:6,b:15,k:30,f:3},{a:8,b:14,k:56,f:2},{a:12,b:16,k:48,f:4},{a:20,b:30,k:60,f:10}];
+        let ptr1 = 0, ptr2 = 0, t1 = 0, t2 = 0, timerId1, timerId2, running1 = false, running2 = false, logsBattle = [];
+
+        function startBattle18() {
+            let s1 = Date.now() - (t1*1000); if(!running1 && ptr1 < 10) { timerId1 = setInterval(() => { t1=(Date.now()-s1)/1000; document.getElementById('s18_timer1').innerText = t1.toFixed(1)+'s'; }, 100); running1 = true; }
+            let s2 = Date.now() - (t2*1000); if(!running2 && ptr2 < 10) { timerId2 = setInterval(() => { t2=(Date.now()-s2)/1000; document.getElementById('s18_timer2').innerText = t2.toFixed(1)+'s'; }, 100); running2 = true; }
+        }
+        function stopBattle18() { clearInterval(timerId1); clearInterval(timerId2); running1 = false; running2 = false; }
+        
+        function checkBattleAns18(pNum) {
+            if(pNum === 1) {
+                let c = pairsP1[ptr1];
+                if(parseInt(document.getElementById('s18_kpk1').value)===c.k && parseInt(document.getElementById('s18_fpb1').value)===c.f) {
+                    logsBattle.push({no: ptr1+1, p:1, t: t1}); ptr1++; document.getElementById('s18_prog1').innerText = `Misi: ${ptr1}/10`;
+                    document.getElementById('s18_kpk1').value=''; document.getElementById('s18_fpb1').value='';
+                    if(ptr1 < 10) document.getElementById('s18_pair1').innerText = `(${pairsP1[ptr1].a}, ${pairsP1[ptr1].b})`;
+                    else { clearInterval(timerId1); running1=false; document.getElementById('s18_pair1').innerText = "CLEARED!"; }
+                }
+            } else {
+                let c = pairsP2[ptr2];
+                if(parseInt(document.getElementById('s18_kpk2').value)===c.k && parseInt(document.getElementById('s18_fpb2').value)===c.f) {
+                    logsBattle.push({no: ptr2+1, p:2, t: t2}); ptr2++; document.getElementById('s18_prog2').innerText = `Misi: ${ptr2}/10`;
+                    document.getElementById('s18_kpk2').value=''; document.getElementById('s18_fpb2').value='';
+                    if(ptr2 < 10) document.getElementById('s18_pair2').innerText = `(${pairsP2[ptr2].a}, ${pairsP2[ptr2].b})`;
+                    else { clearInterval(timerId2); running2=false; document.getElementById('s18_pair2').innerText = "CLEARED!"; }
+                }
+            }
+        }
+
+        function toggleFFMusic() {
+            let m = document.getElementById('ff_theme_bgm');
+            if(m.paused) { m.play().catch(e=>console.log("Audio")); } else { m.pause(); }
+        }
+        function adjustVolume(v) { document.getElementById('ff_theme_bgm').volume = v; }
+
+        function calcBattleResult() {
+            const n1 = document.getElementById('s18_name1').value; const n2 = document.getElementById('s18_name2').value;
+            document.getElementById('tbl_n1').innerText = n1; document.getElementById('tbl_n2').innerText = n2;
+            let tbody = document.getElementById('battle_tbody'); tbody.innerHTML = '';
+            for(let i=1; i<=10; i++) {
+                let r1 = logsBattle.find(l => l.no === i && l.p === 1); let r2 = logsBattle.find(l => l.no === i && l.p === 2);
+                tbody.innerHTML += `<tr><td>#${i}</td><td>${r1 ? r1.t.toFixed(1)+'s' : '---'}</td><td>${r2 ? r2.t.toFixed(1)+'s' : '---'}</td></tr>`;
+            }
+            let w = ptr1 > ptr2 ? n1 : (ptr2 > ptr1 ? n2 : "DRAW");
+            document.getElementById('b_champion').innerText = w.toUpperCase();
+        }
+        function speakChampion() {
+            let ch = document.getElementById('b_champion').innerText;
+            if(ch !== "---") speakText(`Selamat ${ch}, kamu adalah pemenang battle kali ini!`);
+        }
+
+        // AIRDROP DIGITAL SCORE
+        let score1 = 0, score2 = 0, idxS20Active = null, timer20;
+        function buildS20Cards() {
+            let box = document.getElementById('s20_cards'); box.innerHTML = '';
+            for(let i=0; i<10; i++) {
+                box.innerHTML += `<div class="airdrop-card" id="drop_${i}" onclick="openS20(${i})"><i class="fa-solid fa-box"></i> ${i+1}</div>`;
+            }
+        }
+        function openS20(idx) {
+            let el = document.getElementById(`drop_${idx}`); if(el.classList.contains('opened')) return;
+            el.classList.add('opened'); 
+            
+            // Menggabungkan bank soal cerita KPK & FPB untuk tantangan Airdrop Box
+            let combinedStories = [...poolS11, ...poolS17];
+            idxS20Active = idx % combinedStories.length;
+            
+            document.getElementById('s20_text').innerText = combinedStories[idxS20Active].q;
+            document.getElementById('s20_ans').value = ''; document.getElementById('s20_ans').className = '';
+            clearInterval(timer20); let left = 120;
+            timer20 = setInterval(() => {
+                left--; let m = Math.floor(left/60).toString().padStart(2,'0'); let s = (left%60).toString().padStart(2,'0');
+                document.getElementById('s20_timer').innerHTML = `<i class='fa-solid fa-hourglass-half'></i> ${m}:${s}`;
+                if(left <= 0) clearInterval(timer20);
+            }, 1000);
+        }
+        function checkS20Ans() {
+            if(idxS20Active===null) return;
+            let combinedStories = [...poolS11, ...poolS17];
+            let u = parseInt(document.getElementById('s20_ans').value);
+            if(u === combinedStories[idxS20Active].k) { document.getElementById('s20_ans').className = 'correct'; clearInterval(timer20); speakText("nice"); }
+            else { document.getElementById('s20_ans').className = 'wrong'; }
+        }
+        function addScore20(p) {
+            if(p===1) { score1++; document.getElementById('s20_tally1').innerText = score1; }
+            else { score2++; document.getElementById('s20_tally2').innerText = score2; }
+            let n1 = document.getElementById('s20_p1_name').value; let n2 = document.getElementById('s20_p2_name').value;
+            document.getElementById('s20_mvp').innerText = score1 > score2 ? n1 : (score2 > score1 ? n2 : "IMBANG");
+        }
+        function announceS20Winner() {
+            let mvp = document.getElementById('s20_mvp').innerText;
+            if(mvp !== "---" && mvp !== "IMBANG") speakText(`selamat ${mvp}, kamu adalah pemenangnya!`);
+        }
+
+        window.onload = () => {
+            renderWarmup(3, poolS3[0]); 
+            renderWarmup(4, poolS4[0]);
+            nextSet7(); nextSet9(); nextSet11(); nextSet13(); nextSet15(); nextSet17();
+            buildS20Cards();
+        }
+    </script>
+</body>
+</html>
