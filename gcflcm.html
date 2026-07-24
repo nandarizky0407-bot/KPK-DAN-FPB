@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCF & LCM Adventure — Grade 5 Maths</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5ede0;
+  --bg-deep: #ebe0cc;
+  --ink: #1a3a3a;
+  --ink-soft: #3a5a5a;
+  --paper: #fffbf2;
+  --paper-dark: #f0e6d2;
+  --accent: #e87a3e;
+  --accent-dark: #c95e1e;
+  --gold: #d4a437;
+  --green: #4a8a6f;
+  --green-light: #6fb89a;
+  --red: #c1432e;
+  --red-light: #e87866;
+  --purple: #7a5a9e;
+  --shadow: rgba(26, 58, 58, 0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; overflow-x: hidden; }
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: 
+    radial-gradient(circle at 15% 25%, rgba(232, 122, 62, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(74, 138, 111, 0.10) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(212, 164, 55, 0.06) 0%, transparent 60%);
+}
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.4;
+  background-image: linear-gradient(rgba(26,58,58,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(26,58,58,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.font-display { font-family: 'Fraunces', serif; }
+.slide { display: none; min-height: calc(100vh - 70px); position: relative; z-index: 1; padding: 2rem 1.5rem 4rem; }
+.slide.active { display: block; animation: slideIn 0.6s cubic-bezier(0.4,0,0.2,1); }
+@keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(20px,-30px) rotate(8deg); } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes bounceIn { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+.float-symbol { position: absolute; font-family: 'Fraunces', serif; font-weight: 800; color: var(--ink); opacity: 0.06; pointer-events: none; animation: float 18s infinite ease-in-out; }
+.nav-bar { position: sticky; top: 0; z-index: 50; background: rgba(245,237,224,0.92); backdrop-filter: blur(10px); border-bottom: 2px solid var(--ink); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.btn-primary { background: var(--ink); color: var(--paper); border: 2px solid var(--ink); border-radius: 12px; padding: 0.75rem 1.5rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 4px 4px 0 var(--accent); display: inline-flex; align-items: center; gap: 0.5rem; }
+.btn-primary:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--accent); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: 4px 4px 0 var(--ink-soft); }
+.btn-secondary { background: var(--paper); color: var(--ink); border: 2px solid var(--ink); border-radius: 12px; padding: 0.65rem 1.3rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 3px 3px 0 var(--ink); display: inline-flex; align-items: center; gap: 0.4rem; }
+.btn-secondary:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+.btn-accent { background: var(--accent); color: var(--paper); border: 2px solid var(--ink); border-radius: 12px; padding: 0.7rem 1.4rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 3px 3px 0 var(--ink); display: inline-flex; align-items: center; gap: 0.4rem; }
+.btn-accent:hover:not(:disabled) { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+.btn-accent:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-multiply { background: var(--paper-dark); color: var(--accent-dark); border: 2px solid var(--ink); border-radius: 10px; padding: 0.5rem 1rem; font-weight: 800; font-size: 1.2rem; cursor: pointer; transition: all 0.2s; box-shadow: 3px 3px 0 var(--ink); flex-shrink: 0; }
+.btn-multiply:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+.card-paper { background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; box-shadow: 6px 6px 0 var(--ink); }
+.card-soft { background: var(--paper); border: 1.5px solid var(--ink-soft); border-radius: 14px; padding: 1.25rem; }
+.formula-box { background: linear-gradient(135deg, #fff8e7, #ffe9c5); border: 2px solid var(--gold); border-radius: 12px; padding: 1rem 1.25rem; }
+.formula-box.dark { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.input-clean { background: var(--paper); border: 2px solid var(--ink); border-radius: 10px; padding: 0.6rem 0.9rem; font-weight: 600; font-family: inherit; transition: all 0.2s; box-shadow: 3px 3px 0 var(--ink); }
+.input-clean:focus { outline: none; transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--accent); }
+.input-clean.correct { background: #d8f3dc; border-color: var(--green); box-shadow: 3px 3px 0 var(--green); }
+.input-clean.incorrect { background: #ffe0e0; border-color: var(--red); box-shadow: 3px 3px 0 var(--red); animation: pulse 0.4s; }
+.input-circle { width: 56px; height: 56px; border-radius: 50%; text-align: center; font-weight: 800; font-size: 1.1rem; font-family: 'Fraunces', serif; border: 2.5px solid var(--ink); background: var(--paper); box-shadow: 3px 3px 0 var(--ink); transition: all 0.2s; }
+.input-circle:focus { outline: none; transform: scale(1.05); box-shadow: 4px 4px 0 var(--accent); }
+.input-circle.correct { background: #d8f3dc; border-color: var(--green); box-shadow: 3px 3px 0 var(--green); }
+.input-circle.incorrect { background: #ffe0e0; border-color: var(--red); box-shadow: 3px 3px 0 var(--red); }
+.input-circle.locked { background: var(--ink); color: var(--paper); }
+.input-circle.given { background: var(--gold); color: var(--ink); }
+.node-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; font-family: 'Fraunces', serif; border: 2.5px solid var(--ink); background: var(--paper); box-shadow: 3px 3px 0 var(--ink); }
+.node-circle.prime { background: var(--green-light); color: var(--ink); border-color: var(--green); }
+.node-circle.given { background: var(--gold); color: var(--ink); }
+.tree-line { position: absolute; background: var(--ink); z-index: 0; }
+.option-btn { background: var(--paper); border: 2px solid var(--ink); border-radius: 12px; padding: 0.9rem 1.1rem; font-weight: 600; text-align: left; cursor: pointer; transition: all 0.2s; width: 100%; display: flex; align-items: center; gap: 0.75rem; }
+.option-btn:hover:not(:disabled) { background: var(--paper-dark); transform: translateX(4px); }
+.option-btn.selected { background: #fff3c4; border-color: var(--accent-dark); }
+.option-btn.correct { background: #d8f3dc; border-color: var(--green); }
+.option-btn.incorrect { background: #ffe0e0; border-color: var(--red); }
+.option-btn:disabled { cursor: not-allowed; }
+.opt-letter { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: var(--ink); color: var(--paper); font-weight: 800; font-size: 0.85rem; flex-shrink: 0; }
+.option-btn.correct .opt-letter { background: var(--green); color: white; }
+.option-btn.incorrect .opt-letter { background: var(--red); color: white; }
+.tf-btn { background: var(--paper); border: 2px solid var(--ink); border-radius: 12px; padding: 1rem 1.5rem; font-weight: 700; cursor: pointer; transition: all 0.2s; flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 3px 3px 0 var(--ink); }
+.tf-btn:hover:not(:disabled) { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--ink); }
+.tf-btn.selected { background: #fff3c4; border-color: var(--accent-dark); }
+.tf-btn.correct { background: #d8f3dc; border-color: var(--green); }
+.tf-btn.incorrect { background: #ffe0e0; border-color: var(--red); }
+.tf-btn:disabled { cursor: not-allowed; }
+.classify-btn { padding: 0.8rem 2rem; border: 2px solid var(--ink); border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 3px 3px 0 var(--ink); font-size: 1rem; }
+.classify-btn.gcf { background: #ffe9c5; color: var(--accent-dark); }
+.classify-btn.lcm { background: #d8f3dc; color: var(--green); }
+.classify-btn:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--ink); }
+.classify-btn.selected { transform: scale(1.05); }
+.classify-btn.selected.gcf { background: var(--accent); color: var(--paper); }
+.classify-btn.selected.lcm { background: var(--green); color: var(--paper); }
+.classify-btn.correct { background: var(--green-light) !important; color: var(--paper) !important; border-color: var(--green); }
+.classify-btn.incorrect { background: var(--red-light) !important; color: var(--paper) !important; border-color: var(--red); }
+.progress-bar { height: 10px; background: var(--bg-deep); border-radius: 999px; overflow: hidden; border: 1.5px solid var(--ink); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); transition: width 0.5s; }
+.q-nav-btn { aspect-ratio: 1; min-width: 30px; border: 1.5px solid var(--ink); background: var(--paper); border-radius: 6px; font-weight: 700; font-size: 0.65rem; cursor: pointer; transition: all 0.2s; }
+.q-nav-btn:hover { transform: scale(1.1); }
+.q-nav-btn.current { background: var(--ink); color: var(--paper); transform: scale(1.1); }
+.q-nav-btn.correct { background: var(--green); color: white; border-color: var(--green); }
+.q-nav-btn.incorrect { background: var(--red); color: white; border-color: var(--red); }
+.q-nav-btn.answered { background: #fff3c4; }
+.toast { position: fixed; top: 20px; right: 20px; background: var(--ink); color: var(--paper); padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 6px 6px 0 var(--accent); z-index: 1000; transform: translateX(120%); transition: transform 0.4s; font-weight: 600; max-width: 320px; }
+.toast.show { transform: translateX(0); }
+.badge { padding: 0.25rem 0.6rem; border-radius: 999px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.badge-easy { background: #d8f3dc; color: #1b4332; border: 1.5px solid var(--green); }
+.badge-medium { background: #ffec99; color: #7f4f24; border: 1.5px solid var(--gold); }
+.badge-hard { background: #ffe0e0; color: #7a1f1f; border: 1.5px solid var(--red); }
+.factor-table { border-collapse: separate; border-spacing: 0; width: 100%; }
+.factor-table th, .factor-table td { border: 2px solid var(--ink); padding: 0.5rem; text-align: center; font-weight: 700; }
+.factor-table th { background: var(--paper-dark); font-family: 'Fraunces', serif; }
+.factor-table input { width: 100%; text-align: center; border: none; background: transparent; font-weight: 700; font-family: inherit; font-size: 1rem; }
+.factor-table input:focus { outline: 2px solid var(--accent); background: #fff8e7; border-radius: 4px; }
+.factor-table td.common { background: #fff3c4; }
+.multiple-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; border-radius: 8px; border: 2px solid var(--ink); background: var(--paper); font-weight: 700; font-family: 'Fraunces', serif; box-shadow: 2px 2px 0 var(--ink); cursor: pointer; transition: all 0.2s; padding: 0 0.5rem; }
+.multiple-chip:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--ink); }
+.multiple-chip.common { background: var(--gold); color: var(--ink); }
+.multiple-chip.lcm { background: var(--accent); color: var(--paper); }
+.explanation-box { background: linear-gradient(135deg, #fff8e7, #ffe9c5); border: 2px solid var(--gold); border-radius: 12px; padding: 1.25rem; animation: slideUp 0.4s; }
+.result-circle { width: 180px; height: 180px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
+.result-circle::before { content: ''; position: absolute; inset: 18px; background: var(--paper); border-radius: 50%; }
+.result-text { position: relative; z-index: 1; text-align: center; }
+.mult-factor-input { width: 56px; height: 56px; border-radius: 12px; text-align: center; font-weight: 800; font-size: 1.2rem; font-family: 'Fraunces', serif; border: 2.5px solid var(--ink); background: var(--paper); box-shadow: 3px 3px 0 var(--ink); transition: all 0.2s; }
+.mult-factor-input:focus { outline: none; transform: scale(1.05); box-shadow: 4px 4px 0 var(--accent); }
+.mult-factor-input.correct { background: #d8f3dc; border-color: var(--green); box-shadow: 3px 3px 0 var(--green); }
+.mult-factor-input.incorrect { background: #ffe0e0; border-color: var(--red); box-shadow: 3px 3px 0 var(--red); }
+.mult-separator { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 800; color: var(--accent); user-select: none; }
+@media (max-width: 768px) { .nav-bar { flex-wrap: wrap; } .slide { padding: 1rem; } }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--ink-soft); border-radius: 5px; }
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+
+<nav class="nav-bar">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-lg bg-[var(--ink)] text-[var(--paper)] flex items-center justify-center font-display font-bold text-lg">÷×</div>
+    <div>
+      <div class="font-display font-bold text-sm leading-tight">GCF & LCM Adventure</div>
+      <div class="text-xs text-[var(--ink-soft)]">Grade 5 • Cambridge Maths</div>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <span id="slideCounter" class="text-sm font-semibold text-[var(--ink-soft)]">1 / 9</span>
+    <button class="btn-secondary" onclick="prevSlide()" id="prevBtn"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="btn-primary" onclick="nextSlide()" id="nextBtn">Next <i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+</nav>
+
+<!-- SLIDE 1: COVER -->
+<section id="slide-0" class="slide active">
+  <div class="max-w-6xl mx-auto min-h-[80vh] flex flex-col justify-center relative py-8">
+    <div class="float-symbol" style="top: 8%; left: 6%; font-size: 9rem;">×</div>
+    <div class="float-symbol" style="top: 18%; right: 8%; font-size: 7rem; animation-delay: -5s;">÷</div>
+    <div class="float-symbol" style="bottom: 15%; left: 15%; font-size: 6rem; animation-delay: -10s;">=</div>
+    <div class="float-symbol" style="bottom: 25%; right: 12%; font-size: 8rem; animation-delay: -3s;">√</div>
+    
+    <div class="grid lg:grid-cols-[1.2fr_1fr] gap-10 items-center relative z-10">
+      <div>
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--paper)] border-2 border-[var(--ink)] mb-6 shadow-[3px_3px_0_var(--ink)]">
+          <i class="fa-solid fa-calculator text-[var(--accent)]"></i>
+          <span class="text-sm font-bold">Number Theory • Factors & Multiples</span>
+        </div>
+        <h1 class="font-display text-6xl md:text-7xl font-black leading-[0.9] mb-5">
+          GCF & LCM<br>
+          <span class="text-[var(--accent)] italic">Adventure</span>
+        </h1>
+        <p class="text-lg text-[var(--ink-soft)] mb-8 max-w-md leading-relaxed">
+          Greatest Common Factor and Least Common Multiple — two powerful tools that help us solve real-life problems with numbers.
+        </p>
+        <div class="flex flex-wrap gap-3 text-sm font-semibold">
+          <span class="px-3 py-1.5 rounded-full bg-[var(--paper)] border border-[var(--ink)]"><i class="fa-solid fa-tree text-[var(--green)] mr-1.5"></i>Factor Trees</span>
+          <span class="px-3 py-1.5 rounded-full bg-[var(--paper)] border border-[var(--ink)]"><i class="fa-solid fa-list-ol text-[var(--gold)] mr-1.5"></i>150+ Questions</span>
+          <span class="px-3 py-1.5 rounded-full bg-[var(--paper)] border border-[var(--ink)]"><i class="fa-solid fa-language text-[var(--accent)] mr-1.5"></i>Bilingual</span>
+        </div>
+      </div>
+      
+      <div class="card-paper p-8">
+        <label class="block text-sm font-bold uppercase tracking-wider mb-3 text-[var(--ink-soft)]">
+          <i class="fa-solid fa-user mr-2"></i>Student Name
+        </label>
+        <input type="text" id="studentName" class="input-clean w-full text-lg" placeholder="Type your name here..." maxlength="40">
+        <div class="mt-6">
+          <button id="startBtn" class="btn-primary w-full justify-center" disabled onclick="startAdventure()">
+            Start Adventure <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+        <div class="mt-6 pt-6 border-t-2 border-dashed border-[var(--bg-deep)] grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div class="font-display text-3xl font-bold text-[var(--accent)]">9</div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-[var(--ink-soft)]">Slides</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl font-bold text-[var(--green)]">150+</div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-[var(--ink-soft)]">Questions</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl font-bold text-[var(--gold)]">5</div>
+            <div class="text-xs font-semibold uppercase tracking-wider text-[var(--ink-soft)]">Methods</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 2: OBJECTIVES -->
+<section id="slide-1" class="slide">
+  <div class="max-w-5xl mx-auto py-8">
+    <div class="mb-8">
+      <div class="text-sm font-bold uppercase tracking-wider text-[var(--accent)] mb-2">Chapter 1</div>
+      <h2 class="font-display text-5xl font-bold mb-3">Learning Objectives</h2>
+      <p class="text-lg text-[var(--ink-soft)]">By the end of this lesson, you will be able to:</p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-5">
+      <div class="card-paper p-6">
+        <div class="w-12 h-12 rounded-xl bg-[#ffe9c5] flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-1 text-[var(--accent-dark)]"></i></div>
+        <h3 class="font-display text-xl font-bold mb-2">Understand GCF & LCM</h3>
+        <p class="text-sm text-[var(--ink-soft)] leading-relaxed">Explain what Greatest Common Factor and Least Common Multiple mean, and identify them in real-life contexts.</p>
+      </div>
+      <div class="card-paper p-6">
+        <div class="w-12 h-12 rounded-xl bg-[#d8f3dc] flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-2 text-[var(--green)]"></i></div>
+        <h3 class="font-display text-xl font-bold mb-2">Find Common Multiples & Factors</h3>
+        <p class="text-sm text-[var(--ink-soft)] leading-relaxed">List multiples and factor pairs, then identify common ones to determine LCM and GCF.</p>
+      </div>
+      <div class="card-paper p-6">
+        <div class="w-12 h-12 rounded-xl bg-[#fff3c4] flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-3 text-[#7f4f24]"></i></div>
+        <h3 class="font-display text-xl font-bold mb-2">Use Prime Factorisation</h3>
+        <p class="text-sm text-[var(--ink-soft)] leading-relaxed">Build factor trees, write prime factorisation in exponent form, and use it to find GCF and LCM.</p>
+      </div>
+      <div class="card-paper p-6">
+        <div class="w-12 h-12 rounded-xl bg-[#ffd6d6] flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-4 text-[var(--red)]"></i></div>
+        <h3 class="font-display text-xl font-bold mb-2">Solve Real Problems</h3>
+        <p class="text-sm text-[var(--ink-soft)] leading-relaxed">Decide whether a word problem needs GCF or LCM, then solve it confidently.</p>
+      </div>
+    </div>
+    
+    <div class="mt-8 card-paper p-6 flex items-start gap-4">
+      <div class="text-3xl"><i class="fa-solid fa-lightbulb text-[var(--gold)]"></i></div>
+      <div>
+        <h4 class="font-display text-lg font-bold mb-1">Quick Recap</h4>
+        <p class="text-sm text-[var(--ink-soft)]"><strong>Factors</strong> are numbers we multiply together to get another number. <strong>Multiples</strong> are what we get when we multiply a number by integers. Today we'll use both to solve problems!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: MATERIAL -->
+<section id="slide-2" class="slide">
+  <div class="max-w-6xl mx-auto py-8">
+    <div class="mb-8">
+      <div class="text-sm font-bold uppercase tracking-wider text-[var(--accent)] mb-2">Chapter 2</div>
+      <h2 class="font-display text-5xl font-bold mb-3">What are GCF & LCM?</h2>
+    </div>
+    
+    <div class="grid lg:grid-cols-2 gap-6 mb-6">
+      <div class="card-paper p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-14 h-14 rounded-xl bg-[#ffe9c5] flex items-center justify-center text-2xl"><i class="fa-solid fa-scissors text-[var(--accent-dark)]"></i></div>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--accent-dark)]">GCF — Greatest Common Factor</div>
+            <div class="font-display text-2xl font-bold">FPB — Faktor Persekutuan Terbesar</div>
+          </div>
+        </div>
+        <p class="text-sm text-[var(--ink-soft)] mb-3">The <strong>largest number that divides two or more numbers exactly</strong> (with no remainder).</p>
+        <div class="formula-box text-sm">
+          <div class="font-bold mb-1">Example: GCF of 12 and 18</div>
+          <div>Factors of 12: 1, 2, 3, <strong style="color:var(--accent-dark)">6</strong>, 12</div>
+          <div>Factors of 18: 1, 2, 3, <strong style="color:var(--accent-dark)">6</strong>, 9, 18</div>
+          <div class="mt-1 font-bold">Common factors: 1, 2, 3, 6 → GCF = 6</div>
+        </div>
+      </div>
+      
+      <div class="card-paper p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-14 h-14 rounded-xl bg-[#d8f3dc] flex items-center justify-center text-2xl"><i class="fa-solid fa-infinity text-[var(--green)]"></i></div>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--green)]">LCM — Least Common Multiple</div>
+            <div class="font-display text-2xl font-bold">KPK — Kelipatan Persekutuan Terkecil</div>
+          </div>
+        </div>
+        <p class="text-sm text-[var(--ink-soft)] mb-3">The <strong>smallest number that is a multiple of two or more numbers</strong>.</p>
+        <div class="formula-box text-sm">
+          <div class="font-bold mb-1">Example: LCM of 4 and 6</div>
+          <div>Multiples of 4: 4, 8, <strong style="color:var(--green)">12</strong>, 16, 20...</div>
+          <div>Multiples of 6: 6, <strong style="color:var(--green)">12</strong>, 18, 24...</div>
+          <div class="mt-1 font-bold">Common multiples: 12, 24, 36... → LCM = 12</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-5 mb-6">
+      <div class="card-soft">
+        <h4 class="font-display text-lg font-bold mb-2"><i class="fa-solid fa-circle-nodes text-[var(--accent)] mr-2"></i>Common Factor</h4>
+        <p class="text-sm text-[var(--ink-soft)]">A number that is a factor of <strong>two or more</strong> numbers. Example: 3 is a common factor of 12 and 18 because 12 ÷ 3 = 4 and 18 ÷ 3 = 6 (both divide exactly).</p>
+      </div>
+      <div class="card-soft">
+        <h4 class="font-display text-lg font-bold mb-2"><i class="fa-solid fa-arrows-rotate text-[var(--green)] mr-2"></i>Common Multiple</h4>
+        <p class="text-sm text-[var(--ink-soft)]">A number that is a multiple of <strong>two or more</strong> numbers. Example: 12 is a common multiple of 4 and 6 because 4 × 3 = 12 and 6 × 2 = 12.</p>
+      </div>
+    </div>
+    
+    <div class="card-paper p-6">
+      <h3 class="font-display text-xl font-bold mb-4"><i class="fa-solid fa-earth-asia text-[var(--accent)] mr-2"></i>Real-Life Uses</h3>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-[var(--accent-dark)] mb-2">When to use GCF</div>
+          <ul class="space-y-1.5 text-sm text-[var(--ink-soft)]">
+            <li class="flex gap-2"><i class="fa-solid fa-gift text-[var(--accent)] mt-1 text-xs"></i>Splitting items into equal groups or gift bags</li>
+            <li class="flex gap-2"><i class="fa-solid fa-table-cells text-[var(--accent)] mt-1 text-xs"></i>Finding the largest tile to cover a floor</li>
+            <li class="flex gap-2"><i class="fa-solid fa-people-group text-[var(--accent)] mt-1 text-xs"></i>Dividing classes into equal teams</li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-[var(--green)] mb-2">When to use LCM</div>
+          <ul class="space-y-1.5 text-sm text-[var(--ink-soft)]">
+            <li class="flex gap-2"><i class="fa-solid fa-bus text-[var(--green)] mt-1 text-xs"></i>Two buses arriving at different intervals</li>
+            <li class="flex gap-2"><i class="fa-solid fa-bell text-[var(--green)] mt-1 text-xs"></i>Bells ringing at different times</li>
+            <li class="flex gap-2"><i class="fa-solid fa-box text-[var(--green)] mt-1 text-xs"></i>Finding the smallest package size</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: LCM & GCF PRACTICE -->
+<section id="slide-3" class="slide">
+  <div class="max-w-6xl mx-auto py-6">
+    <div class="mb-6">
+      <div class="text-sm font-bold uppercase tracking-wider text-[var(--accent)] mb-2">Chapter 3</div>
+      <h2 class="font-display text-4xl font-bold mb-3">Finding LCM & GCF</h2>
+      <p class="text-sm text-[var(--ink-soft)] max-w-3xl">Practice listing multiples and factor pairs to find common multiples, common factors, LCM and GCF.</p>
+    </div>
+    
+    <div class="flex gap-3 mb-5">
+      <button class="btn-primary" id="tabLCM" onclick="switchPractice('lcm')">LCM Practice</button>
+      <button class="btn-secondary" id="tabGCF" onclick="switchPractice('gcf')">GCF Practice</button>
+    </div>
+    
+    <div id="practiceArea"></div>
+  </div>
+</section>
+
+<!-- SLIDE 5: PRIME FACTORISATION -->
+<section id="slide-4" class="slide">
+  <div class="max-w-6xl mx-auto py-6">
+    <div class="mb-6">
+      <div class="text-sm font-bold uppercase tracking-wider text-[var(--accent)] mb-2">Chapter 4</div>
+      <h2 class="font-display text-4xl font-bold mb-3">Prime Factors & Factor Trees</h2>
+      <p class="text-sm text-[var(--ink-soft)] max-w-3xl">A <strong>prime number</strong> has only two factors: 1 and itself. Every composite number can be broken down into prime factors using a factor tree.</p>
+    </div>
+    
+    <div class="card-paper p-5 mb-5">
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <h4 class="font-display text-lg font-bold mb-2"><i class="fa-solid fa-tree text-[var(--green)] mr-2"></i>How to Build a Factor Tree</h4>
+          <ol class="space-y-1.5 text-sm text-[var(--ink-soft)] list-decimal list-inside">
+            <li>Write the number at the top.</li>
+            <li>Find two factors of the number.</li>
+            <li>Branch them out below.</li>
+            <li>For each composite factor, branch again.</li>
+            <li>Stop when all leaves are prime.</li>
+            <li>Circle the prime numbers — they are your answer!</li>
+          </ol>
+        </div>
+        <div>
+          <h4 class="font-display text-lg font-bold mb-2"><i class="fa-solid fa-pen-to-square text-[var(--accent)] mr-2"></i>Writing the Answer</h4>
+          <div class="formula-box text-sm space-y-1">
+            <div>For <strong>24</strong>: 2 × 2 × 2 × 3</div>
+            <div>Multiplication form: <strong>2 × 2 × 2 × 3</strong></div>
+            <div>Exponent form: <strong>2³ × 3</strong></div>
+            <div class="text-xs mt-1 text-[var(--ink-soft)]">Type exponents using ^ (e.g. 2^3 becomes 2³). Use the × button for multiplication.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="primePracticeArea"></div>
+  </div>
+</section>
+
+<!-- SLIDE 6: LCM GCF WITH PRIME FACTORISATION -->
+<section id="slide-5" class="slide">
+  <div class="max-w-6xl mx-auto py-6">
+    <div class="mb-6">
+      <div class="text-sm font-bold uppercase tracking-wider text-[var(--accent)] mb-2">Chapter 5</div>
+      <h2 class="font-display text-4xl font-bold mb-3">LCM & GCF Using Prime Factorisation</h2>
+      <p class="text-sm text-[var(--ink-soft)] max-w-3xl">Use prime factorisation to find GCF and LCM of 2 or 3 numbers efficiently.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-4 mb-5">
+      <div class="card-paper p-5">
+        <h4 class="font-display text-lg font-bold mb-2 text-[var(--accent-dark)]"><i class="fa-solid fa-scissors mr-2"></i>GCF Method</h4>
+        <p class="text-sm text-[var(--ink-soft)] mb-2">Take the <strong>lowest power</strong> of each common prime factor, then multiply.</p>
+        <div class="formula-box text-xs">
+          <div>12 = 2² × 3¹</div>
+          <div>18 = 2¹ × 3²</div>
+          <div class="mt-1 font-bold">GCF = 2¹ × 3¹ = 6</div>
+        </div>
+      </div>
+      <div class="card-paper p-5">
+        <h4 class="font-display text-lg font-bold mb-2 text-[var(--green)]"><i class="fa-solid fa-infinity mr-2"></i>LCM Method</h4>
+        <p class="text-sm text-[var(--ink-soft)] mb-2">Take the <strong>highest power</strong> of each prime factor (from any number), then multiply.</p>
+        <div class="formula-box text-xs">
+          <div>12 = 2² × 3¹</div>
+          <div>18 = 2¹ × 3²</div>
+          <div class="mt-1 font-bold">LCM = 2² × 3² = 36</div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="primeMethodArea"></div>
+  </div>
+</section>
+
+<!-- SLIDE 7: PROBLEM CLASSIFICATION -->
+<section id="slide-6" class="slide">
+  <div class="max-w-4xl mx-auto py-6">
+    <div class="mb-6">
+      <div class="text-sm font-bold uppercase tracking-wider text-[var(--accent)] mb-2">Chapter 6</div>
+      <h2 class="font-display text-4xl font-bold mb-3">GCF or LCM Problem?</h2>
+      <p class="text-sm text-[var(--ink-soft)] max-w-3xl">Read each problem and decide: should you use <strong>GCF</strong> or <strong>LCM</strong> to solve it?</p>
+    </div>
+    
+    <div class="card-paper p-4 mb-5">
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div class="p-3 rounded-lg bg-[#ffe9c5]">
+          <div class="font-bold mb-1">Use GCF when...</div>
+          <p class="text-xs text-[var(--ink-soft)]">You want to <strong>split</strong>, <strong>divide</strong>, or <strong>group</strong> items equally. Words: "greatest", "largest", "maximum groups", "equal pieces".</p>
+        </div>
+        <div class="p-3 rounded-lg bg-[#d8f3dc]">
+          <div class="font-bold mb-1">Use LCM when...</div>
+          <p class="text-xs text-[var(--ink-soft)]">Events <strong>repeat</strong> at different intervals and you want them to <strong>align</strong>. Words: "smallest", "next time together", "minimum", "least".</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+      <div class="text-sm font-semibold">Progress: <span id="classifyProgress" class="font-display text-lg font-bold text-[var(--accent)]">0</span> / 30</div>
+      <div class="flex gap-2 text-sm font-semibold">
+        <span class="px-3 py-1.5 rounded-full bg-[#ffe9c5] border border-[var(--ink)]">GCF: <span id="gcfCount">0</span></span>
+        <span class="px-3 py-1.5 rounded-full bg-[#d8f3dc] border border-[var(--ink)]">LCM: <span id="lcmCount">0</span></span>
+      </div>
+    </div>
+    
+    <div id="classifyArea"></div>
+  </div>
+</section>
+
+<!-- SLIDE 8: EXERCISES -->
+<section id="slide-7" class="slide">
+  <div class="max-w-7xl mx-auto py-6">
+    <div class="mb-6">
+      <div class="flex items-end justify-between flex-wrap gap-3 mb-3">
+        <div>
+          <div class="text-sm font-bold uppercase tracking-wider text-[var(--accent)] mb-1">Chapter 7</div>
+          <h2 class="font-display text-4xl font-bold">Mixed Exercises</h2>
+        </div>
+        <button class="btn-secondary" onclick="finishExercises()"><i class="fa-solid fa-flag-checkered"></i> Finish & See Results</button>
+      </div>
+      <div class="progress-bar"><div id="exProgress" class="progress-fill" style="width: 0%;"></div></div>
+    </div>
+    
+    <div class="grid lg:grid-cols-[1fr_280px] gap-5">
+      <main class="card-paper p-6">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-4 pb-4 border-b-2 border-dashed border-[var(--bg-deep)]">
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="font-display text-2xl font-bold">Q <span id="exNum">1</span><span class="text-[var(--ink-soft)]">/20</span></div>
+            <span id="exBadge" class="badge badge-easy">Easy</span>
+            <span id="exType" class="badge" style="background:var(--paper-dark);border:1.5px solid var(--ink-soft);color:var(--ink-soft);">MCQ</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">Score</div>
+            <div id="exScore" class="font-display text-2xl font-bold text-[var(--accent)]">0</div>
+          </div>
+        </div>
+        
+        <div class="mb-5">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <p id="exText" class="font-display text-lg font-semibold leading-snug flex-1"></p>
+            <button id="translateBtn" class="btn-secondary text-sm flex-shrink-0" onclick="toggleTranslate()">
+              <i class="fa-solid fa-language"></i> <span id="translateLabel">ID</span>
+            </button>
+          </div>
+          <p id="exTextId" class="text-sm text-[var(--ink-soft)] italic hidden"></p>
+        </div>
+        
+        <div id="exOptions" class="space-y-3 mb-5"></div>
+        
+        <div id="exFeedback" class="hidden mb-4 p-4 rounded-xl font-semibold"></div>
+        
+        <div id="exExplanation" class="hidden explanation-box">
+          <div class="flex items-start gap-3">
+            <i class="fa-solid fa-circle-info text-[var(--accent-dark)] text-xl mt-1"></i>
+            <div>
+              <div class="font-bold mb-1">Explanation / Pembahasan:</div>
+              <p id="exExpText" class="text-sm leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex flex-wrap gap-3 pt-4 border-t-2 border-dashed border-[var(--bg-deep)]">
+          <button class="btn-secondary" onclick="prevExercise()"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+          <button id="exCheckBtn" class="btn-accent" onclick="checkExercise()"><i class="fa-solid fa-check"></i> Check Answer</button>
+          <button id="exExplainBtn" class="btn-secondary" onclick="showExExplanation()" disabled><i class="fa-solid fa-circle-info"></i> Explanation</button>
+          <button class="btn-primary ml-auto" onclick="nextExercise()">Next <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </main>
+      
+      <aside class="space-y-4">
+        <div class="card-paper p-4">
+          <h3 class="font-display font-bold mb-3 text-sm">Navigator</h3>
+          <div id="exNavigator" class="grid grid-cols-5 gap-1.5"></div>
+          <div class="mt-4 pt-4 border-t-2 border-dashed border-[var(--bg-deep)] space-y-1.5 text-xs">
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded border border-[var(--ink)] bg-[var(--paper)]"></span> Not answered</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded border border-[var(--ink)] bg-[var(--green)]"></span> Correct</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded border border-[var(--ink)] bg-[var(--red)]"></span> Incorrect</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded border border-[var(--ink)] bg-[var(--ink)]"></span> Current</div>
+          </div>
+        </div>
+        <div class="card-paper p-4">
+          <h3 class="font-display font-bold mb-3 text-sm">Statistics</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-[var(--ink-soft)]">Answered:</span> <span id="exAnswered" class="font-bold">0 / 20</span></div>
+            <div class="flex justify-between"><span class="text-[var(--ink-soft)]">Correct:</span> <span id="exCorrect" class="font-bold text-[var(--green)]">0</span></div>
+            <div class="flex justify-between"><span class="text-[var(--ink-soft)]">Incorrect:</span> <span id="exIncorrect" class="font-bold text-[var(--red)]">0</span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 9: CONCLUSION -->
+<section id="slide-8" class="slide">
+  <div class="max-w-5xl mx-auto py-8">
+    <div class="text-center mb-10">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--paper)] border-2 border-[var(--ink)] mb-6 shadow-[3px_3px_0_var(--ink)]">
+        <i class="fa-solid fa-flag-checkered text-[var(--accent)]"></i>
+        <span class="text-sm font-bold">Adventure Complete</span>
+      </div>
+      <h2 class="font-display text-5xl font-bold mb-4">
+        Conclusion & <span class="text-[var(--accent)] italic">Reflection</span>
+      </h2>
+      <p class="text-lg text-[var(--ink-soft)] max-w-2xl mx-auto">
+        Fantastic work, <span id="conclusionName" class="font-bold">Friend</span>! Let's summarise what we learned today.
+      </p>
+    </div>
+    
+    <div id="exResultSummary" class="hidden mb-8">
+      <div class="card-paper p-6">
+        <h3 class="font-display text-2xl font-bold mb-4 text-center">Final Exercise Results</h3>
+        <div class="grid sm:grid-cols-3 gap-4 text-center">
+          <div>
+            <div id="finalScore" class="font-display text-5xl font-bold text-[var(--accent)]">0</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">Correct</div>
+          </div>
+          <div>
+            <div id="finalPercent" class="font-display text-5xl font-bold text-[var(--green)]">0%</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">Percentage</div>
+          </div>
+          <div>
+            <div id="finalAnswered" class="font-display text-5xl font-bold text-[var(--gold)]">0</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)]">Answered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-5 mb-8">
+      <div class="card-paper p-6">
+        <div class="text-3xl mb-3"><i class="fa-solid fa-lightbulb text-[var(--gold)]"></i></div>
+        <h3 class="font-display text-2xl font-bold mb-3">Key Takeaways</h3>
+        <ul class="space-y-2 text-sm text-[var(--ink-soft)]">
+          <li class="flex gap-2"><i class="fa-solid fa-check text-[var(--green)] mt-1"></i><span><strong>GCF</strong> = largest common factor (use for splitting/grouping)</span></li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-[var(--green)] mt-1"></i><span><strong>LCM</strong> = smallest common multiple (use for repeating events)</span></li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-[var(--green)] mt-1"></i><span>Every composite number has a unique prime factorisation</span></li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-[var(--green)] mt-1"></i><span>Factor trees help us find prime factors visually</span></li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-[var(--green)] mt-1"></i><span>GCF: take <strong>lowest</strong> powers of common primes</span></li>
+          <li class="flex gap-2"><i class="fa-solid fa-check text-[var(--green)] mt-1"></i><span>LCM: take <strong>highest</strong> powers of all primes</span></li>
+        </ul>
+      </div>
+      
+      <div class="card-paper p-6">
+        <div class="text-3xl mb-3"><i class="fa-solid fa-comment-dots text-[var(--accent)]"></i></div>
+        <h3 class="font-display text-2xl font-bold mb-3">Reflect & Connect</h3>
+        <div class="space-y-3 text-sm text-[var(--ink-soft)]">
+          <div class="p-3 rounded-lg bg-[var(--paper-dark)]">
+            <div class="font-semibold text-[var(--ink)] mb-1">1. Which method did you find easiest?</div>
+            <div class="text-xs italic">Listing multiples/factors, or using prime factorisation?</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[var(--paper-dark)]">
+            <div class="font-semibold text-[var(--ink)] mb-1">2. When will you use GCF or LCM in real life?</div>
+            <div class="text-xs italic">Think of one example at home, school, or with friends.</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[var(--paper-dark)]">
+            <div class="font-semibold text-[var(--ink)] mb-1">3. What part was trickiest?</div>
+            <div class="text-xs italic">Share with a friend or teacher to deepen your understanding.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-paper p-8 text-center mb-6">
+      <div class="text-5xl mb-4"><i class="fa-solid fa-heart text-[var(--red)]"></i></div>
+      <h3 class="font-display text-4xl font-bold mb-3">Thank You for Today!</h3>
+      <p class="text-[var(--ink-soft)] max-w-xl mx-auto mb-5">
+        You've explored GCF and LCM from many angles — multiples, factors, prime trees, and real problems. Keep practising, and you'll master these powerful maths tools!
+      </p>
+      <div class="font-display text-lg italic text-[var(--ink-soft)] mb-6">
+        "Mathematics is the music of reason." — James Joseph Sylvester
+      </div>
+      <div class="flex justify-center gap-3 flex-wrap">
+        <button class="btn-primary" onclick="restartAll()"><i class="fa-solid fa-rotate-right"></i> Start Again</button>
+        <button class="btn-secondary" onclick="showSlide(0)"><i class="fa-solid fa-house"></i> Back to Cover</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ============== UTILITIES ==============
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+function lcm(a, b) { return Math.abs(a * b) / gcd(a, b); }
+function isPrime(n) { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; }
+function primeFactorize(n) { const f = []; let d = 2; while (n > 1) { while (n % d === 0) { f.push(d); n /= d; } d++; } return f; }
+function smallestPrimeFactor(n) { for (let i = 2; i <= n; i++) if (n % i === 0) return i; return n; }
+
+const SUP_MAP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+
+function toSuperscript(d) {
+  return String(d).split('').map(c => SUP_MAP[c] || c).join('');
+}
+
+function formatExp(factors) {
+  const counts = {};
+  factors.forEach(f => counts[f] = (counts[f] || 0) + 1);
+  const primes = Object.keys(counts).sort((a, b) => a - b);
+  return primes.map(p => counts[p] === 1 ? p : p + toSuperscript(counts[p])).join(' × ');
+}
+
+function caretToSuperscript(str) {
+  return str.replace(/\^(\d+)/g, (m, d) => toSuperscript(d));
+}
+
+function normalizeExp(str) {
+  let r = str.replace(/\s/g, '').toLowerCase().replace(/x/g, '×');
+  r = r.replace(/\^(\d+)/g, (m, d) => toSuperscript(d));
+  return r;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============== STATE ==============
+let currentSlide = 0;
+let studentName = '';
+let practiceMode = 'lcm';
+let practiceIndex = { lcm: 0, gcf: 0 };
+let primeIndex = 0;
+let primeMethodIndex = 0;
+let classifyIndex = 0;
+let exIndex = 0;
+let translateMode = 'en';
+
+// ============== SLIDE NAVIGATION ==============
+function showSlide(idx) {
+  document.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('active', i === idx));
+  currentSlide = idx;
+  document.getElementById('slideCounter').textContent = `${idx + 1} / 9`;
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').style.display = idx === 8 ? 'none' : 'inline-flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (idx === 8) showFinalSummary();
+}
+function nextSlide() { if (currentSlide < 8) showSlide(currentSlide + 1); }
+function prevSlide() { if (currentSlide > 0) showSlide(currentSlide - 1); }
+
+// ============== COVER ==============
+document.getElementById('studentName').addEventListener('input', e => {
+  document.getElementById('startBtn').disabled = e.target.value.trim().length < 2;
+});
+function startAdventure() {
+  studentName = document.getElementById('studentName').value.trim();
+  if (studentName.length < 2) return;
+  document.getElementById('conclusionName').textContent = studentName;
+  showSlide(1);
+}
+
+// ============== SLIDE 4: LCM & GCF PRACTICE ==============
+const lcmPairs = [
+  [4,6],[3,5],[8,12],[6,9],[10,15],[4,10],[6,15],[8,10],[12,16],[5,10],
+  [3,9],[7,14],[9,12],[15,20],[4,8],[6,8],[10,12],[6,14],[16,20],[3,12],
+  [5,15],[9,15],[8,16],[12,18],[5,20],[7,21],[8,14],[6,10],[4,14],[9,18]
+];
+const gcfPairs = [
+  [12,18],[8,12],[15,20],[10,15],[16,24],[9,12],[14,21],[18,24],[20,30],[6,9],
+  [8,16],[12,20],[15,25],[10,25],[18,27],[16,20],[14,28],[21,28],[24,32],[9,15],
+  [12,30],[15,30],[20,25],[8,20],[18,30],[16,28],[24,36],[10,20],[12,24],[14,18]
+];
+
+function switchPractice(mode) {
+  practiceMode = mode;
+  document.getElementById('tabLCM').className = mode === 'lcm' ? 'btn-primary' : 'btn-secondary';
+  document.getElementById('tabGCF').className = mode === 'gcf' ? 'btn-primary' : 'btn-secondary';
+  renderPractice();
+}
+
+function renderPractice() {
+  const area = document.getElementById('practiceArea');
+  if (practiceMode === 'lcm') {
+    const idx = practiceIndex.lcm;
+    const [a, b] = lcmPairs[idx];
+    const correctLcm = lcm(a, b);
+    const multA = []; for (let i = 1; i <= 10; i++) multA.push(a * i);
+    const multB = []; for (let i = 1; i <= 10; i++) multB.push(b * i);
+    
+    area.innerHTML = `
+      <div class="card-paper p-6">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--accent-dark)]">LCM Question ${idx + 1} of 30</div>
+            <h3 class="font-display text-3xl font-bold">Find the LCM of <span class="text-[var(--accent)]">${a}</span> and <span class="text-[var(--accent)]">${b}</span></h3>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn-secondary" onclick="navPractice(-1)" ${idx === 0 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-secondary" onclick="navPractice(1)"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-5 mb-5">
+          <div>
+            <div class="text-sm font-bold mb-2">Step 1: List multiples of ${a}</div>
+            <div class="flex flex-wrap gap-2" id="multABox">
+              ${multA.map((m, i) => `<input type="number" class="input-clean w-20 text-center" data-mult="a" data-i="${i}" data-correct="${m}" placeholder="?">`).join('')}
+            </div>
+          </div>
+          <div>
+            <div class="text-sm font-bold mb-2">Step 2: List multiples of ${b}</div>
+            <div class="flex flex-wrap gap-2" id="multBBox">
+              ${multB.map((m, i) => `<input type="number" class="input-clean w-20 text-center" data-mult="b" data-i="${i}" data-correct="${m}" placeholder="?">`).join('')}
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-5">
+          <div class="text-sm font-bold mb-2">Step 3: Tick the common multiples</div>
+          <div id="commonBox" class="flex flex-wrap gap-2"></div>
+        </div>
+        
+        <div class="flex flex-wrap items-end gap-4">
+          <div>
+            <div class="text-sm font-bold mb-2">Step 4: The LCM is</div>
+            <input type="number" id="lcmAnswer" class="input-clean w-32 text-2xl text-center font-display" placeholder="LCM">
+          </div>
+          <button class="btn-accent" onclick="checkLCM(${a}, ${b}, ${correctLcm})"><i class="fa-solid fa-check"></i> Check Answer</button>
+          <button class="btn-secondary" onclick="revealLCM(${a}, ${b}, ${correctLcm})"><i class="fa-solid fa-eye"></i> Reveal</button>
+        </div>
+        
+        <div id="lcmFeedback" class="mt-4"></div>
+      </div>
+    `;
+    
+    document.querySelectorAll('[data-mult]').forEach(inp => {
+      inp.addEventListener('input', updateCommonMultiples);
+    });
+    updateCommonMultiples();
+  } else {
+    const idx = practiceIndex.gcf;
+    const [a, b] = gcfPairs[idx];
+    const correctGcf = gcd(a, b);
+    const factorsA = getFactorPairs(a);
+    const factorsB = getFactorPairs(b);
+    
+    area.innerHTML = `
+      <div class="card-paper p-6">
+        <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--green)]">GCF Question ${idx + 1} of 30</div>
+            <h3 class="font-display text-3xl font-bold">Find the GCF of <span class="text-[var(--green)]">${a}</span> and <span class="text-[var(--green)]">${b}</span></h3>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn-secondary" onclick="navPractice(-1)" ${idx === 0 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn-secondary" onclick="navPractice(1)"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-5 mb-5">
+          <div>
+            <div class="text-sm font-bold mb-2">Step 1: Fill in factor pairs of ${a}</div>
+            <table class="factor-table">
+              <thead><tr><th>×</th><th>= ${a}</th></tr></thead>
+              <tbody>
+                ${factorsA.map((p, i) => `<tr><td><input type="number" data-fact="a" data-i="${i}" data-pos="0" data-correct="${p[0]}" value="${p[0] === 1 ? 1 : ''}" placeholder="?"></td><td><input type="number" data-fact="a" data-i="${i}" data-pos="1" data-correct="${p[1]}" value="${p[0] === 1 ? a : ''}" placeholder="?"></td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <div class="text-sm font-bold mb-2">Step 2: Fill in factor pairs of ${b}</div>
+            <table class="factor-table">
+              <thead><tr><th>×</th><th>= ${b}</th></tr></thead>
+              <tbody>
+                ${factorsB.map((p, i) => `<tr><td><input type="number" data-fact="b" data-i="${i}" data-pos="0" data-correct="${p[0]}" value="${p[0] === 1 ? 1 : ''}" placeholder="?"></td><td><input type="number" data-fact="b" data-i="${i}" data-pos="1" data-correct="${p[1]}" value="${p[0] === 1 ? b : ''}" placeholder="?"></td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="mb-5">
+          <div class="text-sm font-bold mb-2">Step 3: Tick the common factors</div>
+          <div id="commonFactorBox" class="flex flex-wrap gap-2"></div>
+        </div>
+        
+        <div class="flex flex-wrap items-end gap-4">
+          <div>
+            <div class="text-sm font-bold mb-2">Step 4: The GCF is</div>
+            <input type="number" id="gcfAnswer" class="input-clean w-32 text-2xl text-center font-display" placeholder="GCF">
+          </div>
+          <button class="btn-accent" onclick="checkGCF(${a}, ${b}, ${correctGcf})"><i class="fa-solid fa-check"></i> Check Answer</button>
+          <button class="btn-secondary" onclick="revealGCF(${a}, ${b}, ${correctGcf})"><i class="fa-solid fa-eye"></i> Reveal</button>
+        </div>
+        
+        <div id="gcfFeedback" class="mt-4"></div>
+      </div>
+    `;
+    
+    document.querySelectorAll('[data-fact]').forEach(inp => {
+      inp.addEventListener('input', updateCommonFactors);
+    });
+    updateCommonFactors();
+  }
+}
+
+function getFactorPairs(n) {
+  const pairs = [];
+  for (let i = 1; i * i <= n; i++) {
+    if (n % i === 0) pairs.push([i, n / i]);
+  }
+  return pairs;
+}
+
+function navPractice(dir) {
+  if (practiceMode === 'lcm') {
+    practiceIndex.lcm = Math.max(0, Math.min(29, practiceIndex.lcm + dir));
+  } else {
+    practiceIndex.gcf = Math.max(0, Math.min(29, practiceIndex.gcf + dir));
+  }
+  renderPractice();
+}
+
+function updateCommonMultiples() {
+  const aVals = Array.from(document.querySelectorAll('[data-mult="a"]')).map(i => i.value);
+  const bVals = Array.from(document.querySelectorAll('[data-mult="b"]')).map(i => i.value);
+  const common = [];
+  aVals.forEach(v => { if (v && bVals.includes(v) && !common.includes(v)) common.push(v); });
+  common.sort((a, b) => a - b);
+  const box = document.getElementById('commonBox');
+  if (common.length === 0) {
+    box.innerHTML = '<div class="text-sm text-[var(--ink-soft)] italic">Fill in multiples above to see common ones...</div>';
+  } else {
+    box.innerHTML = common.map(v => `<span class="multiple-chip common">${v}</span>`).join('');
+  }
+}
+
+function checkLCM(a, b, correctLcm) {
+  let allCorrect = true;
+  document.querySelectorAll('[data-mult]').forEach(inp => {
+    const val = parseInt(inp.value);
+    const correct = parseInt(inp.dataset.correct);
+    if (val === correct) {
+      inp.classList.add('correct'); inp.classList.remove('incorrect');
+    } else {
+      inp.classList.add('incorrect'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  
+  const lcmInput = document.getElementById('lcmAnswer');
+  const lcmVal = parseInt(lcmInput.value);
+  const fb = document.getElementById('lcmFeedback');
+  
+  if (lcmVal === correctLcm) {
+    lcmInput.classList.add('correct'); lcmInput.classList.remove('incorrect');
+    fb.innerHTML = `<div class="p-4 rounded-xl" style="background:#d8f3dc;border:2px solid var(--green);color:#1b4332;">
+      <i class="fa-solid fa-circle-check mr-2"></i> Correct! LCM of ${a} and ${b} is <strong>${correctLcm}</strong>.
+      <br><span class="text-xs">${a} × ${correctLcm/a} = ${correctLcm}, ${b} × ${correctLcm/b} = ${correctLcm}</span>
+    </div>`;
+    document.querySelectorAll('.multiple-chip.common').forEach(c => {
+      if (parseInt(c.textContent) === correctLcm) c.classList.add('lcm');
+    });
+  } else {
+    lcmInput.classList.add('incorrect'); lcmInput.classList.remove('correct');
+    fb.innerHTML = `<div class="p-4 rounded-xl" style="background:#ffe0e0;border:2px solid var(--red);color:#7a1f1f;">
+      <i class="fa-solid fa-circle-xmark mr-2"></i> Not yet. The correct LCM is <strong>${correctLcm}</strong>.
+      <br><span class="text-xs">It's the smallest number in both lists of multiples.</span>
+    </div>`;
+  }
+}
+
+function revealLCM(a, b, correctLcm) {
+  document.querySelectorAll('[data-mult="a"]').forEach((inp, i) => { inp.value = a * (i + 1); inp.classList.add('correct'); });
+  document.querySelectorAll('[data-mult="b"]').forEach((inp, i) => { inp.value = b * (i + 1); inp.classList.add('correct'); });
+  updateCommonMultiples();
+  document.getElementById('lcmAnswer').value = correctLcm;
+  document.getElementById('lcmAnswer').classList.add('correct');
+  document.querySelectorAll('.multiple-chip.common').forEach(c => {
+    if (parseInt(c.textContent) === correctLcm) c.classList.add('lcm');
+  });
+}
+
+function updateCommonFactors() {
+  const aVals = [];
+  const bVals = [];
+  document.querySelectorAll('[data-fact="a"]').forEach(inp => { if (inp.value) aVals.push(parseInt(inp.value)); });
+  document.querySelectorAll('[data-fact="b"]').forEach(inp => { if (inp.value) bVals.push(parseInt(inp.value)); });
+  const common = aVals.filter(v => bVals.includes(v));
+  const unique = [...new Set(common)].sort((a, b) => a - b);
+  const box = document.getElementById('commonFactorBox');
+  if (unique.length === 0) {
+    box.innerHTML = '<div class="text-sm text-[var(--ink-soft)] italic">Fill in factor pairs above to see common factors...</div>';
+  } else {
+    box.innerHTML = unique.map(v => `<span class="multiple-chip common">${v}</span>`).join('');
+  }
+}
+
+function checkGCF(a, b, correctGcf) {
+  document.querySelectorAll('[data-fact]').forEach(inp => {
+    const val = parseInt(inp.value);
+    const correct = parseInt(inp.dataset.correct);
+    if (val === correct) { inp.classList.add('correct'); inp.parentElement.classList.add('common'); }
+    else { inp.classList.add('incorrect'); }
+  });
+  
+  const gcfInput = document.getElementById('gcfAnswer');
+  const gcfVal = parseInt(gcfInput.value);
+  const fb = document.getElementById('gcfFeedback');
+  
+  if (gcfVal === correctGcf) {
+    gcfInput.classList.add('correct'); gcfInput.classList.remove('incorrect');
+    fb.innerHTML = `<div class="p-4 rounded-xl" style="background:#d8f3dc;border:2px solid var(--green);color:#1b4332;">
+      <i class="fa-solid fa-circle-check mr-2"></i> Correct! GCF of ${a} and ${b} is <strong>${correctGcf}</strong>.
+      <br><span class="text-xs">${a} ÷ ${correctGcf} = ${a/correctGcf}, ${b} ÷ ${correctGcf} = ${b/correctGcf} (both divide exactly)</span>
+    </div>`;
+  } else {
+    gcfInput.classList.add('incorrect'); gcfInput.classList.remove('correct');
+    fb.innerHTML = `<div class="p-4 rounded-xl" style="background:#ffe0e0;border:2px solid var(--red);color:#7a1f1f;">
+      <i class="fa-solid fa-circle-xmark mr-2"></i> Not yet. The correct GCF is <strong>${correctGcf}</strong>.
+      <br><span class="text-xs">It's the largest number in the common factors list.</span>
+    </div>`;
+  }
+}
+
+function revealGCF(a, b, correctGcf) {
+  document.querySelectorAll('[data-fact="a"]').forEach(inp => { inp.value = inp.dataset.correct; inp.classList.add('correct'); });
+  document.querySelectorAll('[data-fact="b"]').forEach(inp => { inp.value = inp.dataset.correct; inp.classList.add('correct'); });
+  updateCommonFactors();
+  document.getElementById('gcfAnswer').value = correctGcf;
+  document.getElementById('gcfAnswer').classList.add('correct');
+}
+
+// ============== HELPER FOR MULTIPLY BUTTON ==============
+function insertMultiply(inputId, ni) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  let currentVal = input.value;
+  if (currentVal.length > 0 && !currentVal.endsWith(' ')) {
+    input.value += ' × ';
+  } else if (currentVal.length > 0) {
+    input.value += '× ';
+  } else {
+    input.value += '×';
+  }
+  input.focus();
+  if (inputId === 'expForm') {
+    updateExpPreview(input);
+  } else if (inputId.startsWith('pf')) {
+    updatePfPreview(input, ni);
+  }
+}
+
+// ============== SLIDE 5: PRIME FACTORISATION ==============
+const primeNumbers = [12, 18, 24, 36, 20, 30, 40, 50, 60, 72, 48, 100, 28, 42, 56, 84, 90, 32, 27, 75];
+
+function renderPrimePractice() {
+  const n = primeNumbers[primeIndex];
+  const factors = primeFactorize(n);
+  const expForm = formatExp(factors);
+  
+  let multInputsHtml = '';
+  factors.forEach((f, i) => {
+    if (i > 0) multInputsHtml += '<span class="mult-separator">×</span>';
+    multInputsHtml += `<input type="number" class="mult-factor-input" data-mult-i="${i}" data-correct="${f}" placeholder="?">`;
+  });
+  
+  const area = document.getElementById('primePracticeArea');
+  area.innerHTML = `
+    <div class="card-paper p-6">
+      <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-[var(--accent-dark)]">Question ${primeIndex + 1} of 20</div>
+          <h3 class="font-display text-3xl font-bold">Find the prime factors of <span class="text-[var(--accent)]">${n}</span></h3>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn-secondary" onclick="navPrime(-1)" ${primeIndex === 0 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="btn-secondary" onclick="navPrime(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+      
+      <div class="grid lg:grid-cols-[1.3fr_1fr] gap-6">
+        <div>
+          <div class="text-sm font-bold mb-3">Step 1: Complete the factor tree</div>
+          <div class="bg-[var(--paper-dark)] rounded-xl p-6 overflow-x-auto">
+            <div id="treeContainer"></div>
+          </div>
+          <div class="text-xs text-[var(--ink-soft)] mt-2 italic">Fill in the empty circles. Each pair of children must multiply to give their parent. Prime numbers will turn green when locked.</div>
+        </div>
+        
+        <div class="space-y-4">
+          <div>
+            <div class="text-sm font-bold mb-2">Step 2: Multiplication form</div>
+            <div class="flex items-center gap-2 flex-wrap p-3 rounded-lg bg-[var(--paper-dark)]">
+              ${multInputsHtml}
+            </div>
+            <div class="text-xs text-[var(--ink-soft)] mt-1">Input the prime factors in order (left to right from tree)</div>
+          </div>
+          <div>
+            <div class="text-sm font-bold mb-2">Step 3: Exponent form</div>
+            <div class="flex gap-2">
+              <input type="text" id="expForm" class="input-clean w-full text-lg" placeholder="e.g. 2^3 × 3" oninput="updateExpPreview(this)" onblur="formatExpInput(this)">
+              <button type="button" class="btn-multiply" onclick="insertMultiply('expForm')">×</button>
+            </div>
+            <div class="text-xs text-[var(--ink-soft)] mt-1">Use ^ for exponents — e.g. type <strong>2^3</strong> and it becomes <strong>2³</strong>. Use <strong>×</strong> button for multiplication.</div>
+            <div class="mt-2 p-2.5 rounded-lg bg-[var(--paper-dark)] text-center min-h-[44px] flex items-center justify-center gap-2">
+              <span class="text-xs text-[var(--ink-soft)]">Preview:</span>
+              <span id="expPreviewText" class="font-display text-xl font-bold text-[var(--ink)]">—</span>
+            </div>
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <button class="btn-accent" onclick="checkPrime(${n})"><i class="fa-solid fa-check"></i> Check</button>
+            <button class="btn-secondary" onclick="revealPrime(${n})"><i class="fa-solid fa-eye"></i> Reveal</button>
+          </div>
+          <div id="primeFeedback"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  renderTree(buildTreeStructure(n), 'treeContainer', n);
+}
+
+function buildTreeStructure(n) {
+  if (isPrime(n)) return { value: n, isPrime: true, children: [], isInput: false };
+  const p = smallestPrimeFactor(n);
+  return {
+    value: n,
+    isPrime: false,
+    isInput: false,
+    children: [
+      { value: p, isPrime: true, isInput: false, children: [] },
+      buildTreeStructure(n / p)
+    ]
+  };
+}
+
+function renderTree(node, containerId, rootVal) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const html = renderTreeNode(node, 0, rootVal);
+  container.innerHTML = `<div class="tree-root">${html}</div>`;
+  
+  if (!document.getElementById('treeStyles')) {
+    const style = document.createElement('style');
+    style.id = 'treeStyles';
+    style.textContent = `
+      .tree-root { font-family: 'Fraunces', serif; }
+      .tree-ul { display: flex; justify-content: center; padding-top: 20px; position: relative; list-style: none; }
+      .tree-ul::before { content: ''; position: absolute; top: 0; left: 50%; width: 50%; height: 20px; border-left: 2px solid var(--ink); border-top: 2px solid var(--ink); }
+      .tree-ul.right::before { left: 0; width: 50%; border-left: 2px solid var(--ink); border-right: none; }
+      .tree-ul.left::before { left: 50%; width: 50%; border-right: 2px solid var(--ink); border-left: none; }
+      .tree-li { padding: 0 10px; position: relative; }
+      .tree-li::before, .tree-li::after { content: ''; position: absolute; top: -20px; width: 50%; height: 20px; border-top: 2px solid var(--ink); }
+      .tree-li::before { left: 50%; border-left: 2px solid var(--ink); }
+      .tree-li::after { right: 50%; border-right: 2px solid var(--ink); }
+      .tree-li:only-child::before, .tree-li:only-child::after { display: none; }
+      .tree-li:only-child { padding-top: 0; }
+      .tree-li:first-child::before, .tree-li:last-child::after { border: none; }
+      .tree-li:first-child::before { border-right: 2px solid var(--ink); border-top: 2px solid var(--ink); width: 50%; left: 50%; }
+      .tree-li:last-child::after { border-left: 2px solid var(--ink); border-top: 2px solid var(--ink); width: 50%; right: 50%; }
+      .tree-root > .tree-li::before, .tree-root > .tree-li::after { display: none; }
+      .tree-root > .tree-li { padding-top: 0; }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
+function renderTreeNode(node, depth, rootVal) {
+  if (node.isPrime && depth > 0) {
+    return `<li class="tree-li"><div class="flex flex-col items-center gap-1">
+      <input type="number" class="input-circle prime-input" data-correct="${node.value}" placeholder="?" onchange="checkPrimeNode(this)">
+      <div class="text-xs font-bold text-[var(--green)]">prime</div>
+    </div></li>`;
+  } else if (node.isPrime) {
+    return `<li class="tree-li"><div class="node-circle prime">${node.value}</div></li>`;
+  } else if (depth === 0) {
+    return `<li class="tree-li"><div class="node-circle given" style="font-size:1.3rem;width:64px;height:64px;">${node.value}</div>
+      <ul class="tree-ul">${node.children.map(c => renderTreeNode(c, depth + 1, rootVal)).join('')}</ul>
+    </li>`;
+  } else {
+    return `<li class="tree-li"><div class="flex flex-col items-center gap-1">
+      <input type="number" class="input-circle comp-input" data-correct="${node.value}" placeholder="?" onchange="checkPrimeNode(this)">
+    </div>
+    <ul class="tree-ul">${node.children.map(c => renderTreeNode(c, depth + 1, rootVal)).join('')}</ul>
+    </li>`;
+  }
+}
+
+function checkPrimeNode(input) {
+  const val = parseInt(input.value);
+  const correct = parseInt(input.dataset.correct);
+  if (val === correct) {
+    input.classList.add('correct');
+    if (isPrime(correct)) {
+      input.style.background = '#d8f3dc';
+      input.style.borderColor = 'var(--green)';
+    }
+  } else {
+    input.classList.add('incorrect');
+    showToast('Try again — check your multiplication');
+  }
+}
+
+function updateExpPreview(input) {
+  const preview = caretToSuperscript(input.value);
+  document.getElementById('expPreviewText').textContent = preview || '—';
+}
+
+function formatExpInput(input) {
+  input.value = caretToSuperscript(input.value);
+  updateExpPreview(input);
+}
+
+function navPrime(dir) {
+  primeIndex = Math.max(0, Math.min(19, primeIndex + dir));
+  renderPrimePractice();
+}
+
+function checkPrime(n) {
+  const factors = primeFactorize(n);
+  const expForm = formatExp(factors);
+  
+  let multCorrect = true;
+  factors.forEach((f, i) => {
+    const inp = document.querySelector(`[data-mult-i="${i}"]`);
+    if (!inp) return;
+    const val = parseInt(inp.value);
+    if (val === f) {
+      inp.classList.add('correct'); inp.classList.remove('incorrect');
+    } else {
+      inp.classList.add('incorrect'); inp.classList.remove('correct');
+      multCorrect = false;
+    }
+  });
+  
+  if (!multCorrect) {
+    const userVals = factors.map((f, i) => {
+      const inp = document.querySelector(`[data-mult-i="${i}"]`);
+      return inp ? parseInt(inp.value) : NaN;
+    }).filter(v => !isNaN(v)).sort((a, b) => a - b);
+    const correctSorted = factors.slice().sort((a, b) => a - b);
+    if (JSON.stringify(userVals) === JSON.stringify(correctSorted)) {
+      multCorrect = true;
+      factors.forEach((f, i) => {
+        const inp = document.querySelector(`[data-mult-i="${i}"]`);
+        if (inp) { inp.classList.add('correct'); inp.classList.remove('incorrect'); }
+      });
+    }
+  }
+  
+  const expInput = document.getElementById('expForm');
+  let expCorrect = normalizeExp(expInput.value) === normalizeExp(expForm);
+  
+  expInput.classList.toggle('correct', expCorrect);
+  expInput.classList.toggle('incorrect', !expCorrect);
+  
+  const fb = document.getElementById('primeFeedback');
+  const multFormStr = factors.join(' × ');
+  
+  if (multCorrect && expCorrect) {
+    fb.innerHTML = `<div class="p-3 rounded-xl mt-3" style="background:#d8f3dc;border:2px solid var(--green);color:#1b4332;">
+      <i class="fa-solid fa-circle-check mr-2"></i> Perfect! ${n} = ${multFormStr} = <strong>${expForm}</strong>
+    </div>`;
+  } else {
+    fb.innerHTML = `<div class="p-3 rounded-xl mt-3" style="background:#ffe0e0;border:2px solid var(--red);color:#7a1f1f;">
+      <i class="fa-solid fa-circle-xmark mr-2"></i> Check again. ${n} = ${multFormStr} = <strong>${expForm}</strong>
+    </div>`;
+  }
+}
+
+function revealPrime(n) {
+  const factors = primeFactorize(n);
+  const expForm = formatExp(factors);
+  
+  document.querySelectorAll('.prime-input, .comp-input').forEach(inp => {
+    inp.value = inp.dataset.correct;
+    inp.classList.add('correct');
+    if (inp.classList.contains('prime-input')) {
+      inp.style.background = '#d8f3dc';
+      inp.style.borderColor = 'var(--green)';
+    }
+  });
+  
+  factors.forEach((f, i) => {
+    const inp = document.querySelector(`[data-mult-i="${i}"]`);
+    if (inp) { inp.value = f; inp.classList.add('correct'); inp.classList.remove('incorrect'); }
+  });
+  
+  const expInput = document.getElementById('expForm');
+  expInput.value = expForm;
+  expInput.classList.add('correct');
+  expInput.classList.remove('incorrect');
+  document.getElementById('expPreviewText').textContent = expForm;
+  
+  const multFormStr = factors.join(' × ');
+  document.getElementById('primeFeedback').innerHTML = `<div class="p-3 rounded-xl mt-3" style="background:#fff8e7;border:2px solid var(--gold);color:#7f4f24;">
+    <i class="fa-solid fa-eye mr-2"></i> ${n} = ${multFormStr} = <strong>${expForm}</strong>
+  </div>`;
+}
+
+// ============== SLIDE 6: LCM GCF WITH PRIME FACTORISATION ==============
+const primeMethodQuestions = [
+  { nums: [12, 18], gcf: 6, lcm: 36 },
+  { nums: [8, 12], gcf: 4, lcm: 24 },
+  { nums: [15, 20], gcf: 5, lcm: 60 },
+  { nums: [24, 36], gcf: 12, lcm: 72 },
+  { nums: [18, 30], gcf: 6, lcm: 90 },
+  { nums: [16, 24], gcf: 8, lcm: 48 },
+  { nums: [20, 30], gcf: 10, lcm: 60 },
+  { nums: [12, 20], gcf: 4, lcm: 60 },
+  { nums: [14, 21], gcf: 7, lcm: 42 },
+  { nums: [18, 27], gcf: 9, lcm: 54 },
+  { nums: [12, 18, 24], gcf: 6, lcm: 72 },
+  { nums: [8, 12, 16], gcf: 4, lcm: 48 },
+  { nums: [15, 20, 25], gcf: 5, lcm: 300 },
+  { nums: [10, 15, 20], gcf: 5, lcm: 60 },
+  { nums: [6, 9, 12], gcf: 3, lcm: 36 },
+  { nums: [20, 30, 40], gcf: 10, lcm: 120 },
+  { nums: [16, 24, 32], gcf: 8, lcm: 96 },
+  { nums: [14, 21, 28], gcf: 7, lcm: 84 },
+  { nums: [18, 24, 36], gcf: 6, lcm: 72 },
+  { nums: [12, 15, 20], gcf: 1, lcm: 60 }
+];
+
+function renderPrimeMethod() {
+  const q = primeMethodQuestions[primeMethodIndex];
+  const nums = q.nums;
+  
+  let html = `
+    <div class="card-paper p-6">
+      <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-[var(--accent-dark)]">Question ${primeMethodIndex + 1} of 20</div>
+          <h3 class="font-display text-3xl font-bold">Find GCF & LCM of <span class="text-[var(--accent)]">${nums.join(', ')}</span></h3>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn-secondary" onclick="navPrimeMethod(-1)" ${primeMethodIndex === 0 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="btn-secondary" onclick="navPrimeMethod(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-${nums.length} gap-4 mb-5">
+  `;
+  
+  nums.forEach((n, ni) => {
+    const factors = primeFactorize(n);
+    const expForm = formatExp(factors);
+    html += `
+      <div class="card-soft">
+        <div class="text-center font-display text-2xl font-bold mb-3 text-[var(--accent)]">${n}</div>
+        <div class="bg-[var(--paper-dark)] rounded-lg p-3 mb-3" id="treeBox${ni}"></div>
+        <div class="text-xs font-bold mb-1">Prime factorisation:</div>
+        <div class="flex gap-1">
+          <input type="text" class="input-clean w-full text-center" id="pf${ni}" data-correct="${expForm}" placeholder="e.g. 2^2 × 3" oninput="updatePfPreview(this, ${ni})" onblur="formatPfInput(this)">
+          <button type="button" class="btn-multiply" onclick="insertMultiply('pf${ni}', ${ni})">×</button>
+        </div>
+        <div class="mt-1 p-1.5 rounded bg-[var(--paper-dark)] text-center min-h-[32px]">
+          <span id="pfPreview${ni}" class="font-display text-sm font-bold">—</span>
+        </div>
+      </div>
+    `;
+  });
+  
+  html += `
+      </div>
+      
+      <div class="flex gap-3 mb-5">
+        <button class="btn-accent" onclick="checkPrimeFactorisation(${JSON.stringify(nums).replace(/"/g, '&quot;')})"><i class="fa-solid fa-check"></i> Check Factorisation</button>
+      </div>
+      
+      <div id="pfFeedback" class="mb-5"></div>
+      
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="card-soft" style="background:#fff8e7;">
+          <h4 class="font-display text-lg font-bold mb-3 text-[var(--accent-dark)]"><i class="fa-solid fa-scissors mr-2"></i>Find the GCF</h4>
+          <div class="text-xs mb-2 text-[var(--ink-soft)]">Take the <strong>lowest</strong> power of each common prime:</div>
+          <div class="flex gap-1 mb-2">
+            <input type="text" class="input-clean w-full" id="gcfCalc" placeholder="e.g. 2 × 3">
+            <button type="button" class="btn-multiply" onclick="insertMultiply('gcfCalc')">×</button>
+          </div>
+          <div class="text-xs mb-1 text-[var(--ink-soft)]">GCF value:</div>
+          <input type="number" class="input-clean w-32 text-center text-xl font-display" id="gcfVal" placeholder="GCF">
+          <button class="btn-accent mt-2" onclick="checkPrimeMethodGCF(${q.gcf})"><i class="fa-solid fa-check"></i> Check GCF</button>
+          <div id="gcfFb" class="mt-2"></div>
+        </div>
+        <div class="card-soft" style="background:#f0fff5;">
+          <h4 class="font-display text-lg font-bold mb-3 text-[var(--green)]"><i class="fa-solid fa-infinity mr-2"></i>Find the LCM</h4>
+          <div class="text-xs mb-2 text-[var(--ink-soft)]">Take the <strong>highest</strong> power of each prime (from any number):</div>
+          <div class="flex gap-1 mb-2">
+            <input type="text" class="input-clean w-full" id="lcmCalc" placeholder="e.g. 2² × 3²">
+            <button type="button" class="btn-multiply" onclick="insertMultiply('lcmCalc')">×</button>
+          </div>
+          <div class="text-xs mb-1 text-[var(--ink-soft)]">LCM value:</div>
+          <input type="number" class="input-clean w-32 text-center text-xl font-display" id="lcmVal" placeholder="LCM">
+          <button class="btn-accent mt-2" onclick="checkPrimeMethodLCM(${q.lcm})"><i class="fa-solid fa-check"></i> Check LCM</button>
+          <div id="lcmFb" class="mt-2"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('primeMethodArea').innerHTML = html;
+  
+  nums.forEach((n, ni) => {
+    const tree = buildTreeStructure(n);
+    renderTree(tree, `treeBox${ni}`, n);
+  });
+}
+
+function updatePfPreview(input, ni) {
+  const preview = caretToSuperscript(input.value);
+  document.getElementById(`pfPreview${ni}`).textContent = preview || '—';
+}
+
+function formatPfInput(input) {
+  input.value = caretToSuperscript(input.value);
+  if (input.id.startsWith('pf')) {
+    const ni = input.id.replace('pf', '');
+    updatePfPreview(input, ni);
+  }
+}
+
+function checkPrimeFactorisation(nums) {
+  let allCorrect = true;
+  nums.forEach((n, ni) => {
+    const factors = primeFactorize(n);
+    const expForm = formatExp(factors);
+    const inp = document.getElementById(`pf${ni}`);
+    if (normalizeExp(inp.value) === normalizeExp(expForm)) {
+      inp.classList.add('correct'); inp.classList.remove('incorrect');
+    } else {
+      inp.classList.add('incorrect'); inp.classList.remove('correct');
+      allCorrect = false;
+    }
+  });
+  
+  const fb = document.getElementById('pfFeedback');
+  if (allCorrect) {
+    fb.innerHTML = `<div class="p-3 rounded-xl" style="background:#d8f3dc;border:2px solid var(--green);color:#1b4332;">
+      <i class="fa-solid fa-circle-check mr-2"></i> All prime factorisations are correct! Now find the GCF and LCM below.
+    </div>`;
+  } else {
+    fb.innerHTML = `<div class="p-3 rounded-xl" style="background:#ffe0e0;border:2px solid var(--red);color:#7a1f1f;">
+      <i class="fa-solid fa-circle-xmark mr-2"></i> Some factorisations need fixing. Red = incorrect, green = correct.
+    </div>`;
+  }
+}
+
+function checkPrimeMethodGCF(correctGcf) {
+  const calcInput = document.getElementById('gcfCalc');
+  const valInput = document.getElementById('gcfVal');
+  const fb = document.getElementById('gcfFb');
+  const val = parseInt(valInput.value);
+  
+  if (val === correctGcf) {
+    valInput.classList.add('correct'); valInput.classList.remove('incorrect');
+    calcInput.classList.add('correct');
+    fb.innerHTML = `<div class="p-2 rounded-lg text-sm" style="background:#d8f3dc;color:#1b4332;">
+      <i class="fa-solid fa-check mr-1"></i> Correct! GCF = ${correctGcf}
+    </div>`;
+  } else {
+    valInput.classList.add('incorrect'); valInput.classList.remove('correct');
+    fb.innerHTML = `<div class="p-2 rounded-lg text-sm" style="background:#ffe0e0;color:#7a1f1f;">
+      <i class="fa-solid fa-xmark mr-1"></i> Try again. GCF = ${correctGcf}
+    </div>`;
+  }
+}
+
+function checkPrimeMethodLCM(correctLcm) {
+  const calcInput = document.getElementById('lcmCalc');
+  const valInput = document.getElementById('lcmVal');
+  const fb = document.getElementById('lcmFb');
+  const val = parseInt(valInput.value);
+  
+  if (val === correctLcm) {
+    valInput.classList.add('correct'); valInput.classList.remove('incorrect');
+    calcInput.classList.add('correct');
+    fb.innerHTML = `<div class="p-2 rounded-lg text-sm" style="background:#d8f3dc;color:#1b4332;">
+      <i class="fa-solid fa-check mr-1"></i> Correct! LCM = ${correctLcm}
+    </div>`;
+  } else {
+    valInput.classList.add('incorrect'); valInput.classList.remove('correct');
+    fb.innerHTML = `<div class="p-2 rounded-lg text-sm" style="background:#ffe0e0;color:#7a1f1f;">
+      <i class="fa-solid fa-xmark mr-1"></i> Try again. LCM = ${correctLcm}
+    </div>`;
+  }
+}
+
+function navPrimeMethod(dir) {
+  primeMethodIndex = Math.max(0, Math.min(19, primeMethodIndex + dir));
+  renderPrimeMethod();
+}
+
+// ============== SLIDE 7: CLASSIFICATION (ONE BY ONE) ==============
+const classifyQuestions = [
+  { s: 'Split 24 pencils and 36 erasers into identical gift bags with no leftovers.', a: 'GCF' },
+  { s: 'Two buses leave the station every 12 minutes and 15 minutes. When will they next leave together?', a: 'LCM' },
+  { s: 'Find the largest square tile that can cover a floor 60 cm by 80 cm without cutting.', a: 'GCF' },
+  { s: 'Bells ring every 8 seconds and 12 seconds. When do they next ring together?', a: 'LCM' },
+  { s: 'Maximum number of equal teams from 18 boys and 24 girls.', a: 'GCF' },
+  { s: 'Two runners lap a track every 4 minutes and 6 minutes. When will they meet again?', a: 'LCM' },
+  { s: 'Cut a 30 cm and 45 cm ribbon into equal pieces with no leftover.', a: 'GCF' },
+  { s: 'Lights flash every 20 seconds and 30 seconds. Next simultaneous flash?', a: 'LCM' },
+  { s: 'Largest possible number of students per row when 32 boys and 40 girls line up equally.', a: 'GCF' },
+  { s: 'Find the smallest number divisible by both 9 and 12.', a: 'LCM' },
+  { s: 'Make identical bouquets from 24 roses and 30 tulips. Maximum bouquets?', a: 'GCF' },
+  { s: 'Packets contain 6 or 8 pens. Smallest number of pens to fill either exactly?', a: 'LCM' },
+  { s: 'Biggest square card cut from 15 cm × 20 cm paper without waste.', a: 'GCF' },
+  { s: 'Three bells ring every 4, 6, and 8 minutes. When all ring together?', a: 'LCM' },
+  { s: 'Divide 60 marbles and 80 stickers equally into bags. Maximum bags?', a: 'GCF' },
+  { s: 'Two taps fill a tank every 15 and 20 minutes. When do they next start together?', a: 'LCM' },
+  { s: 'Largest number of equal rows for 24 carrot and 36 tomato plants.', a: 'GCF' },
+  { s: 'Smallest box size to pack 10 or 12 cookies with no leftover.', a: 'LCM' },
+  { s: 'Cut 28 m and 42 m wire into the longest equal pieces.', a: 'GCF' },
+  { s: 'Wheels rotate every 9 and 12 seconds. When align again?', a: 'LCM' },
+  { s: 'Make identical gift baskets from 36 apples and 48 oranges. Max baskets?', a: 'GCF' },
+  { s: 'Smallest length divisible by both 5 m and 7 m.', a: 'LCM' },
+  { s: 'Largest group size for 45 boys and 60 girls doing projects together.', a: 'GCF' },
+  { s: 'Fountain A sprays every 18 min, B every 24 min. Next together?', a: 'LCM' },
+  { s: 'Max books per shelf if 36 maths and 48 science books arranged equally.', a: 'GCF' },
+  { s: 'Three events repeat every 5, 10, 15 days. When all align?', a: 'LCM' },
+  { s: 'Largest possible number of equal teams from 16 boys and 20 girls.', a: 'GCF' },
+  { s: 'Two planets orbit every 8 and 12 years. Next alignment?', a: 'LCM' },
+  { s: 'Smallest number of flowers for garlands of 8 or 12.', a: 'LCM' },
+  { s: 'A shop has 42 red and 56 blue balloons. Largest identical bunches?', a: 'GCF' }
+];
+
+let classifyAnswers = new Array(30).fill(null);
+let classifyChecked = new Array(30).fill(false);
+
+function renderClassify() {
+  if (classifyIndex >= 30) {
+    let correct = 0;
+    classifyChecked.forEach((c, i) => {
+      if (c && classifyAnswers[i] === classifyQuestions[i].a) correct++;
+    });
+    document.getElementById('classifyArea').innerHTML = `
+      <div class="card-paper p-8 text-center" style="animation: bounceIn 0.5s;">
+        <div class="text-5xl mb-4"><i class="fa-solid fa-trophy text-[var(--gold)]"></i></div>
+        <h3 class="font-display text-3xl font-bold mb-2">All Done!</h3>
+        <p class="text-[var(--ink-soft)] mb-4">You classified all 30 problems!</p>
+        <div class="font-display text-6xl font-bold text-[var(--accent)] mb-2">${correct} / 30</div>
+        <p class="text-sm text-[var(--ink-soft)] mb-6">${correct >= 25 ? 'Excellent work!' : correct >= 18 ? 'Good job!' : 'Keep practising!'}</p>
+        <button class="btn-primary" onclick="classifyIndex=0; classifyAnswers=new Array(30).fill(null); classifyChecked=new Array(30).fill(false); renderClassify();"><i class="fa-solid fa-rotate-right"></i> Try Again</button>
+      </div>
+    `;
+    updateClassifyStats();
+    return;
+  }
+  
+  const q = classifyQuestions[classifyIndex];
+  const ans = classifyAnswers[classifyIndex];
+  const checked = classifyChecked[classifyIndex];
+  
+  let gcfCls = 'gcf', lcmCls = 'lcm';
+  if (checked) {
+    if (ans === 'GCF') {
+      gcfCls += q.a === 'GCF' ? ' correct' : ' incorrect';
+      if (q.a === 'LCM') lcmCls += ' correct';
+    } else if (ans === 'LCM') {
+      lcmCls += q.a === 'LCM' ? ' correct' : ' incorrect';
+      if (q.a === 'GCF') gcfCls += ' correct';
+    }
+  }
+  
+  document.getElementById('classifyArea').innerHTML = `
+    <div class="card-paper p-8" style="animation: slideUp 0.4s;">
+      <div class="flex items-center justify-between mb-5">
+        <div class="text-sm font-bold uppercase tracking-wider text-[var(--accent)]">Problem ${classifyIndex + 1} of 30</div>
+        <div class="progress-bar w-40"><div class="progress-fill" style="width: ${(classifyIndex / 30) * 100}%"></div></div>
+      </div>
+      
+      <div class="mb-8 min-h-[100px] flex items-center">
+        <div>
+          <div class="text-xs font-bold uppercase tracking-wider text-[var(--ink-soft)] mb-3">Read and decide:</div>
+          <p class="font-display text-2xl font-semibold leading-snug">${q.s}</p>
+        </div>
+      </div>
+      
+      <div class="flex gap-4 justify-center mb-4">
+        <button class="classify-btn ${gcfCls}" onclick="selectClassify('GCF')" ${checked ? 'disabled' : ''}>
+          <i class="fa-solid fa-scissors mr-2"></i> GCF
+        </button>
+        <button class="classify-btn ${lcmCls}" onclick="selectClassify('LCM')" ${checked ? 'disabled' : ''}>
+          <i class="fa-solid fa-infinity mr-2"></i> LCM
+        </button>
+      </div>
+      
+      <div id="classifyFeedback" class="text-center mb-4 min-h-[60px]">
+        ${checked ? `
+          <div class="p-4 rounded-xl inline-block ${ans === q.a ? 'bg-[#d8f3dc] border-2 border-[var(--green)]' : 'bg-[#ffe0e0] border-2 border-[var(--red)]'}" style="animation: slideUp 0.3s;">
+            ${ans === q.a 
+              ? `<i class="fa-solid fa-circle-check text-[var(--green)] mr-2"></i> <strong>Correct!</strong> This problem uses <strong>${q.a}</strong>.`
+              : `<i class="fa-solid fa-circle-xmark text-[var(--red)] mr-2"></i> <strong>Not quite.</strong> This problem should use <strong>${q.a}</strong>.`
+            }
+          </div>
+        ` : '<div class="text-sm text-[var(--ink-soft)] italic">Choose GCF or LCM above</div>'}
+      </div>
+      
+      <div class="text-center">
+        ${checked ? `
+          <button class="btn-primary" onclick="classifyIndex++; renderClassify();" style="animation: slideUp 0.3s;">
+            ${classifyIndex < 29 ? 'Next Problem' : 'See Results'} <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        ` : ''}
+      </div>
+      
+      <div class="text-center mt-4">
+        ${classifyIndex > 0 ? `
+          <button class="text-sm text-[var(--ink-soft)] underline cursor-pointer" onclick="classifyIndex--; renderClassify();">
+            <i class="fa-solid fa-arrow-left"></i> Previous
+          </button>
+        ` : ''}
+      </div>
+    </div>
+  `;
+  updateClassifyStats();
+}
+
+function selectClassify(choice) {
+  if (classifyChecked[classifyIndex]) return;
+  classifyAnswers[classifyIndex] = choice;
+  classifyChecked[classifyIndex] = true;
+  renderClassify();
+}
+
+function updateClassifyStats() {
+  let answered = 0, gcfC = 0, lcmC = 0;
+  classifyAnswers.forEach((a, i) => {
+    if (a) {
+      answered++;
+      if (a === 'GCF') gcfC++;
+      else lcmC++;
+    }
+  });
+  document.getElementById('classifyProgress').textContent = answered;
+  document.getElementById('gcfCount').textContent = gcfC;
+  document.getElementById('lcmCount').textContent = lcmC;
+}
+
+// ============== SLIDE 8: EXERCISES ==============
+const exercises = [
+  { t:'mcq', d:'easy', q:'What is the LCM of 6 and 8?', qi:'Berapakah KPK dari 6 dan 8?', o:['16','24','32','48'], oi:['16','24','32','48'], a:1, e:'Multiples of 6: 6,12,18,24. Multiples of 8: 8,16,24. LCM = 24.' },
+  { t:'mcq', d:'easy', q:'What is the GCF of 12 and 18?', qi:'Berapakah FPB dari 12 dan 18?', o:['2','3','6','9'], oi:['2','3','6','9'], a:2, e:'Factors of 12: 1,2,3,4,6,12. Factors of 18: 1,2,3,6,9,18. Common: 1,2,3,6. GCF = 6.' },
+  { t:'tf', d:'easy', q:'The GCF of two prime numbers is always 1.', qi:'FPB dari dua bilangan prima selalu 1.', a:0, e:'True. Prime numbers only have factors 1 and themselves, so the only common factor is 1.' },
+  { t:'mcq', d:'medium', q:'Find the LCM of 4, 6, and 8.', qi:'Tentukan KPK dari 4, 6, dan 8.', o:['12','16','24','48'], oi:['12','16','24','48'], a:2, e:'LCM of 4 and 6 is 12. LCM of 12 and 8 is 24. So LCM(4,6,8) = 24.' },
+  { t:'short', d:'medium', q:'What is the GCF of 24 and 36?', qi:'Berapakah FPB dari 24 dan 36?', a:'12', e:'24 = 2³×3, 36 = 2²×3². GCF = 2²×3 = 12.' },
+  { t:'mcq', d:'medium', q:'Two buses leave every 12 minutes and 15 minutes. After how many minutes will they leave together again?', qi:'Dua bus berangkat setiap 12 menit dan 15 menit. Setelah berapa menit mereka berangkat bersama lagi?', o:['30','45','60','75'], oi:['30','45','60','75'], a:2, e:'LCM(12, 15). 12 = 2²×3, 15 = 3×5. LCM = 2²×3×5 = 60 minutes.' },
+  { t:'tf', d:'easy', q:'The LCM of 5 and 10 is 10.', qi:'KPK dari 5 dan 10 adalah 10.', a:0, e:'True. Multiples of 5: 5,10,15... Multiples of 10: 10,20... LCM = 10.' },
+  { t:'short', d:'medium', q:'Find the LCM of 9 and 12.', qi:'Tentukan KPK dari 9 dan 12.', a:'36', e:'9 = 3², 12 = 2²×3. LCM = 2²×3² = 36.' },
+  { t:'mcq', d:'medium', q:'What is the prime factorisation of 30?', qi:'Berapakah faktorisasi prima dari 30?', o:['2 × 3 × 5','2 × 5 × 7','3 × 5 × 7','2 × 3 × 7'], oi:['2 × 3 × 5','2 × 5 × 7','3 × 5 × 7','2 × 3 × 7'], a:0, e:'30 = 2 × 15 = 2 × 3 × 5. All three are prime.' },
+  { t:'mcq', d:'medium', q:'A teacher has 24 pencils and 36 erasers. What is the greatest number of identical gift bags she can make?', qi:'Seorang guru memiliki 24 pensil dan 36 penghapus. Berapa jumlah kantong hadiah identik maksimum yang dapat dibuat?', o:['4','6','8','12'], oi:['4','6','8','12'], a:1, e:'GCF(24, 36). 24 = 2³×3, 36 = 2²×3². GCF = 2²×3 = 6 bags.' },
+  { t:'tf', d:'easy', q:'The GCF of any number and 1 is always 1.', qi:'FPB dari sembarang bilangan dan 1 selalu 1.', a:0, e:'True. The only common factor of any number and 1 is 1 itself.' },
+  { t:'short', d:'medium', q:'What is the GCF of 16 and 24?', qi:'Berapakah FPB dari 16 dan 24?', a:'8', e:'16 = 2⁴, 24 = 2³×3. GCF = 2³ = 8.' },
+  { t:'mcq', d:'medium', q:'Two bells ring every 8 seconds and 12 seconds. When will they next ring together?', qi:'Dua lonceng berbunyi setiap 8 detik dan 12 detik. Kapan mereka berbunyi bersama lagi?', o:['20 s','24 s','48 s','96 s'], oi:['20 dtk','24 dtk','48 dtk','96 dtk'], a:1, e:'LCM(8, 12) = 24 seconds.' },
+  { t:'mcq', d:'easy', q:'What is the LCM of 10 and 15?', qi:'Berapakah KPK dari 10 dan 15?', o:['20','30','45','60'], oi:['20','30','45','60'], a:1, e:'10 = 2×5, 15 = 3×5. LCM = 2×3×5 = 30.' },
+  { t:'short', d:'hard', q:'What is the smallest 3-digit number divisible by both 6 and 8?', qi:'Berapakah bilangan 3-angka terkecil yang habis dibagi 6 dan 8?', a:'120', e:'LCM(6,8) = 24. Multiples: 24,48,72,96,120. Smallest 3-digit = 120.' },
+  { t:'mcq', d:'hard', q:'Find the GCF of 20, 30, and 40.', qi:'Tentukan FPB dari 20, 30, dan 40.', o:['5','10','20','60'], oi:['5','10','20','60'], a:1, e:'20 = 2²×5, 30 = 2×3×5, 40 = 2³×5. GCF = 2×5 = 10.' },
+  { t:'tf', d:'medium', q:'The LCM of two different prime numbers is their product.', qi:'KPK dari dua bilangan prima yang berbeda adalah hasil kalinya.', a:0, e:'True. Since primes share no common factors, LCM = product. E.g. LCM(3,5) = 15.' },
+  { t:'short', d:'medium', q:'Find the LCM of 4, 5, and 6.', qi:'Tentukan KPK dari 4, 5, dan 6.', a:'60', e:'4 = 2², 5 = 5, 6 = 2×3. LCM = 2²×3×5 = 60.' },
+  { t:'mcq', d:'hard', q:'A rectangular floor is 60 cm by 80 cm. What is the largest square tile that can cover it without cutting?', qi:'Lantai persegi panjang berukuran 60 cm × 80 cm. Berapa ukuran ubin persegi terbesar yang dapat menutupinya tanpa dipotong?', o:['10 cm','15 cm','20 cm','40 cm'], oi:['10 cm','15 cm','20 cm','40 cm'], a:2, e:'GCF(60, 80). 60 = 2²×3×5, 80 = 2⁴×5. GCF = 2²×5 = 20 cm.' },
+  { t:'mcq', d:'medium', q:'What is the prime factorisation of 36?', qi:'Berapakah faktorisasi prima dari 36?', o:['2 × 3','2² × 3','2 × 3²','2² × 3²'], oi:['2 × 3','2² × 3','2 × 3²','2² × 3²'], a:3, e:'36 = 4 × 9 = 2² × 3².' }
+];
+
+let exAnswers = new Array(20).fill(null);
+let exChecked = new Array(20).fill(false);
+
+function renderExercise() {
+  const q = exercises[exIndex];
+  document.getElementById('exNum').textContent = exIndex + 1;
+  document.getElementById('exProgress').style.width = `${(exIndex / 20) * 100}%`;
+  
+  const badge = document.getElementById('exBadge');
+  badge.className = 'badge ' + (q.d === 'easy' ? 'badge-easy' : q.d === 'medium' ? 'badge-medium' : 'badge-hard');
+  badge.textContent = q.d.charAt(0).toUpperCase() + q.d.slice(1);
+  
+  const typeBadge = document.getElementById('exType');
+  const types = { mcq: 'Multiple Choice', tf: 'True / False', short: 'Short Answer' };
+  typeBadge.textContent = types[q.t];
+  
+  updateTranslateDisplay();
+  
+  let html = '';
+  if (q.t === 'tf') {
+    const opts = [
+      { idx: 0, label: translateMode === 'en' ? 'True' : 'Benar' },
+      { idx: 1, label: translateMode === 'en' ? 'False' : 'Salah' }
+    ];
+    opts.forEach(opt => {
+      const selected = exAnswers[exIndex] === opt.idx;
+      let cls = '';
+      if (exChecked[exIndex]) {
+        if (q.a === opt.idx) cls = 'correct';
+        else if (selected) cls = 'incorrect';
+      } else if (selected) cls = 'selected';
+      html += `<button class="tf-btn ${cls}" onclick="selectExercise(${opt.idx})" ${exChecked[exIndex] ? 'disabled' : ''}>${opt.label}</button>`;
+    });
+    html = `<div class="flex gap-3">${html}</div>`;
+  } else if (q.t === 'mcq') {
+    q.o.forEach((opt, i) => {
+      const selected = exAnswers[exIndex] === i;
+      let cls = '';
+      if (exChecked[exIndex]) {
+        if (q.a === i) cls = 'correct';
+        else if (selected) cls = 'incorrect';
+      } else if (selected) cls = 'selected';
+      const optText = translateMode === 'en' ? opt : (q.oi[i] || opt);
+      html += `<button class="option-btn ${cls}" onclick="selectExercise(${i})" ${exChecked[exIndex] ? 'disabled' : ''}>
+        <span class="opt-letter">${String.fromCharCode(65 + i)}</span>
+        <span>${optText}</span>
+      </button>`;
+    });
+  } else if (q.t === 'short') {
+    const val = exAnswers[exIndex] || '';
+    let cls = '';
+    if (exChecked[exIndex]) {
+      cls = String(exAnswers[exIndex]).toLowerCase() === String(q.a).toLowerCase() ? 'correct' : 'incorrect';
+    }
+    html = `<input type="text" class="input-clean w-full text-2xl font-display text-center ${cls}" id="shortAnswer" value="${val}" placeholder="Type your answer..." ${exChecked[exIndex] ? 'disabled' : ''} oninput="exAnswers[exIndex] = this.value">`;
+  }
+  document.getElementById('exOptions').innerHTML = html;
+  
+  document.getElementById('exFeedback').classList.add('hidden');
+  document.getElementById('exExplanation').classList.add('hidden');
+  document.getElementById('exCheckBtn').disabled = exChecked[exIndex];
+  document.getElementById('exExplainBtn').disabled = !exChecked[exIndex];
+  
+  if (exChecked[exIndex]) {
+    showExFeedback();
+  }
+  
+  renderExNavigator();
+  updateExStats();
+}
+
+function selectExercise(idx) {
+  if (exChecked[exIndex]) return;
+  exAnswers[exIndex] = idx;
+  renderExercise();
+}
+
+function checkExercise() {
+  const q = exercises[exIndex];
+  if (exAnswers[exIndex] === null || exAnswers[exIndex] === '') {
+    showToast('Please answer first!');
+    return;
+  }
+  exChecked[exIndex] = true;
+  document.getElementById('exCheckBtn').disabled = true;
+  document.getElementById('exExplainBtn').disabled = false;
+  renderExercise();
+  showExFeedback();
+  renderExNavigator();
+  updateExStats();
+}
+
+function showExFeedback() {
+  const q = exercises[exIndex];
+  const ans = exAnswers[exIndex];
+  const fb = document.getElementById('exFeedback');
+  fb.classList.remove('hidden');
+  
+  let correct = false;
+  if (q.t === 'short') {
+    correct = String(ans).toLowerCase().replace(/\s/g, '') === String(q.a).toLowerCase().replace(/\s/g, '');
+  } else {
+    correct = ans === q.a;
+  }
+  
+  if (correct) {
+    fb.style.background = '#d8f3dc';
+    fb.style.color = '#1b4332';
+    fb.style.border = '2px solid var(--green)';
+    fb.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> Correct! Well done.`;
+  } else {
+    fb.style.background = '#ffe0e0';
+    fb.style.color = '#7a1f1f';
+    fb.style.border = '2px solid var(--red)';
+    let correctAns = q.t === 'tf' ? (q.a === 0 ? 'True' : 'False') : (q.t === 'mcq' ? q.o[q.a] : q.a);
+    fb.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i> Not quite. Correct answer: <strong>${correctAns}</strong>`;
+  }
+}
+
+function showExExplanation() {
+  const q = exercises[exIndex];
+  document.getElementById('exExpText').textContent = q.e;
+  document.getElementById('exExplanation').classList.remove('hidden');
+}
+
+function toggleTranslate() {
+  translateMode = translateMode === 'en' ? 'id' : 'en';
+  document.getElementById('translateLabel').textContent = translateMode === 'en' ? 'ID' : 'EN';
+  updateTranslateDisplay();
+  renderExercise();
+}
+
+function updateTranslateDisplay() {
+  const q = exercises[exIndex];
+  if (translateMode === 'id') {
+    document.getElementById('exText').textContent = q.qi;
+    document.getElementById('exTextId').classList.add('hidden');
+  } else {
+    document.getElementById('exText').textContent = q.q;
+    if (q.qi && q.qi !== q.q) {
+      document.getElementById('exTextId').textContent = q.qi;
+      document.getElementById('exTextId').classList.remove('hidden');
+    }
+  }
+}
+
+function nextExercise() {
+  if (exIndex < 19) { exIndex++; renderExercise(); }
+  else showToast('This is the last question!');
+}
+
+function prevExercise() {
+  if (exIndex > 0) { exIndex--; renderExercise(); }
+}
+
+function renderExNavigator() {
+  const nav = document.getElementById('exNavigator');
+  let html = '';
+  for (let i = 0; i < 20; i++) {
+    let cls = '';
+    if (i === exIndex) cls = 'current';
+    else if (exChecked[i]) {
+      const q = exercises[i];
+      let correct = q.t === 'short' ? String(exAnswers[i]).toLowerCase().replace(/\s/g,'') === String(q.a).toLowerCase().replace(/\s/g,'') : exAnswers[i] === q.a;
+      cls = correct ? 'correct' : 'incorrect';
+    }
+    else if (exAnswers[i] !== null && exAnswers[i] !== '') cls = 'answered';
+    html += `<button class="q-nav-btn ${cls}" onclick="exIndex=${i};renderExercise()">${i + 1}</button>`;
+  }
+  nav.innerHTML = html;
+}
+
+function updateExStats() {
+  let answered = 0, correct = 0, incorrect = 0;
+  exChecked.forEach((c, i) => {
+    if (c) {
+      answered++;
+      const q = exercises[i];
+      let isCorrect = q.t === 'short' ? String(exAnswers[i]).toLowerCase().replace(/\s/g,'') === String(q.a).toLowerCase().replace(/\s/g,'') : exAnswers[i] === q.a;
+      if (isCorrect) correct++; else incorrect++;
+    }
+  });
+  document.getElementById('exAnswered').textContent = `${answered} / 20`;
+  document.getElementById('exCorrect').textContent = correct;
+  document.getElementById('exIncorrect').textContent = incorrect;
+  document.getElementById('exScore').textContent = correct;
+}
+
+function finishExercises() {
+  for (let i = 0; i < 20; i++) {
+    if (!exChecked[i]) {
+      exChecked[i] = true;
+      if (exAnswers[i] === null || exAnswers[i] === '') exAnswers[i] = '';
+    }
+  }
+  showSlide(8);
+}
+
+function showFinalSummary() {
+  let correct = 0, answered = 0;
+  exChecked.forEach((c, i) => {
+    if (c) {
+      answered++;
+      const q = exercises[i];
+      let isCorrect = q.t === 'short' ? String(exAnswers[i]).toLowerCase().replace(/\s/g,'') === String(q.a).toLowerCase().replace(/\s/g,'') : exAnswers[i] === q.a;
+      if (isCorrect) correct++;
+    }
+  });
+  const percent = Math.round((correct / 20) * 100);
+  document.getElementById('finalScore').textContent = correct;
+  document.getElementById('finalPercent').textContent = `${percent}%`;
+  document.getElementById('finalAnswered').textContent = answered;
+  document.getElementById('exResultSummary').classList.remove('hidden');
+}
+
+// ============== RESTART ==============
+function restartAll() {
+  exAnswers = new Array(20).fill(null);
+  exChecked = new Array(20).fill(false);
+  exIndex = 0;
+  classifyIndex = 0;
+  classifyAnswers = new Array(30).fill(null);
+  classifyChecked = new Array(30).fill(false);
+  primeIndex = 0;
+  primeMethodIndex = 0;
+  practiceIndex = { lcm: 0, gcf: 0 };
+  translateMode = 'en';
+  showSlide(0);
+}
+
+// ============== INIT ==============
+window.addEventListener('DOMContentLoaded', () => {
+  renderPractice();
+  renderPrimePractice();
+  renderPrimeMethod();
+  renderClassify();
+  renderExercise();
+});
+</script>
+</body>
+</html>
