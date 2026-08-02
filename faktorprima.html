@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Faktorisasi Prima ✨ Belajar KPK & FPB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&family=Comfortaa:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink-light: #ffe5f0;
+  --pink: #ff8fb1;
+  --pink-deep: #ff5e94;
+  --lavender: #c8b6ff;
+  --lavender-deep: #9d7aff;
+  --mint: #b8f2d8;
+  --mint-deep: #5fb88a;
+  --yellow: #ffe9a8;
+  --yellow-deep: #d4a72c;
+  --text: #5a3d55;
+  --text-light: #8a6b85;
+  --shadow: rgba(255, 94, 148, 0.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(135deg, #ffe5f0 0%, #f5e5ff 40%, #e5f0ff 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.deco-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.deco-bg span { position: absolute; animation: float 15s infinite linear; opacity: 0.6; }
+@keyframes float { 0% { transform: translateY(110vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+
+.slide { display: none; min-height: 100vh; padding: 30px 20px 100px; position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; }
+.slide.active { display: block; animation: fadeIn 0.6s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+.nav-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); padding: 12px 24px; border-radius: 30px; display: flex; gap: 15px; align-items: center; z-index: 100; box-shadow: 0 8px 30px var(--shadow); border: 2px solid white; }
+.nav-btn { background: linear-gradient(135deg, var(--pink), var(--pink-deep)); color: white; border: none; padding: 10px 22px; border-radius: 20px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px var(--shadow); }
+.nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px var(--shadow); }
+.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.nav-info { font-weight: 700; color: var(--text); font-size: 14px; }
+
+.card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 8px 30px var(--shadow); border: 3px solid white; margin-bottom: 20px; }
+.card-pink { background: linear-gradient(135deg, #fff5fa, #ffe5f0); border-color: var(--pink); }
+.card-lavender { background: linear-gradient(135deg, #f5f0ff, #e5dbff); border-color: var(--lavender); }
+.card-mint { background: linear-gradient(135deg, #f0fff8, #d8f5e8); border-color: var(--mint); }
+.card-yellow { background: linear-gradient(135deg, #fff9e8, #ffefb8); border-color: var(--yellow); }
+
+.section-title { font-family: 'Pacifico', cursive; font-size: 28px; color: var(--pink-deep); margin-bottom: 10px; text-align: center; }
+.subtitle { font-family: 'Comfortaa', cursive; font-size: 16px; color: var(--text-light); text-align: center; }
+.tag { display: inline-block; padding: 5px 15px; border-radius: 15px; background: var(--pink-light); color: var(--pink-deep); font-weight: 700; font-size: 12px; margin-bottom: 10px; }
+
+.cover-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; text-align: center; }
+.cover-title { font-family: 'Pacifico', cursive; font-size: clamp(36px, 7vw, 70px); background: linear-gradient(135deg, var(--pink-deep), var(--lavender-deep)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; line-height: 1.2; }
+.cover-subtitle { font-family: 'Comfortaa', cursive; font-size: 18px; color: var(--text-light); margin-bottom: 40px; }
+.cover-emoji { font-size: 50px; margin-bottom: 20px; animation: bounce 2s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+.name-inputs { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
+.name-input-group { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 8px 25px var(--shadow); border: 3px solid var(--pink); width: 280px; }
+.name-input-group h3 { color: var(--pink-deep); margin-bottom: 10px; font-size: 18px; }
+.name-input-group input { width: 100%; padding: 12px 15px; border: 2px solid var(--lavender); border-radius: 15px; font-family: 'Quicksand', sans-serif; font-size: 16px; color: var(--text); outline: none; transition: border-color 0.2s; }
+.name-input-group input:focus { border-color: var(--pink-deep); }
+
+.btn-primary { background: linear-gradient(135deg, var(--pink), var(--pink-deep)); color: white; border: none; padding: 15px 40px; border-radius: 30px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 18px; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 25px var(--shadow); }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 30px var(--shadow); }
+.btn-secondary { background: linear-gradient(135deg, var(--lavender), var(--lavender-deep)); color: white; border: none; padding: 12px 28px; border-radius: 25px; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; box-shadow: 0 6px 20px rgba(157, 122, 255, 0.3); }
+.btn-secondary:hover { transform: translateY(-2px); }
+.btn-mint { background: linear-gradient(135deg, var(--mint), var(--mint-deep)); color: #2d6e4f; }
+.btn-small { padding: 8px 16px; font-size: 13px; border-radius: 15px; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+.student-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+.student-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--pink), var(--lavender)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; }
+.student-name { font-weight: 700; color: var(--text); font-size: 16px; }
+
+.problem-box { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border: 2px solid var(--pink-light); transition: all 0.2s; }
+.problem-box.correct { border-color: var(--mint-deep); background: #f0fff8; }
+.problem-question { font-weight: 600; margin-bottom: 10px; color: var(--text); font-size: 15px; }
+
+.input-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.input-row label { font-size: 13px; color: var(--text-light); min-width: 70px; }
+.input-row input { width: 45px; padding: 6px; border: 2px solid var(--lavender); border-radius: 8px; text-align: center; font-family: 'Quicksand', sans-serif; font-weight: 600; color: var(--text); outline: none; font-size: 14px; }
+.input-row input:focus { border-color: var(--pink-deep); }
+.input-row input.correct { border-color: var(--mint-deep); background: #d8f5e8; }
+.input-row input.incorrect { border-color: var(--pink-deep); background: #ffe5e5; animation: shake 0.3s; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+/* POHON FAKTOR */
+.factor-tree-container { background: linear-gradient(135deg, #fff9fc, #f9f0ff); border-radius: 20px; padding: 40px 20px; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-x: auto; border: 3px dashed var(--lavender); }
+.tree-node-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 25px; }
+.tree-node-wrapper:has(.tree-input) { padding-top: 0; }
+.tree-node { width: 55px; height: 55px; border-radius: 50%; background: white; border: 3px solid var(--pink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; color: var(--text); z-index: 2; position: relative; box-shadow: 0 4px 12px var(--shadow); }
+.tree-node.prime { background: linear-gradient(135deg, var(--mint), #88e8b8); border-color: var(--mint-deep); color: #2d6e4f; }
+.tree-node.filled { background: linear-gradient(135deg, #fff5fa, #ffe5f0); }
+.tree-input { width: 50px; height: 50px; text-align: center; border: 3px solid var(--pink); border-radius: 50%; font-size: 15px; font-weight: 700; font-family: 'Quicksand', sans-serif; color: var(--text); outline: none; background: white; z-index: 2; position: relative; }
+.tree-input.valid { border-color: var(--mint-deep); background: #d8f5e8; color: #2d6e4f; }
+.tree-input.invalid { border-color: #ff5e94; background: #ffe5e5; animation: shake 0.3s; }
+.tree-children { display: flex; gap: 60px; position: relative; margin-top: 15px; }
+.tree-children::before { content: ''; position: absolute; top: -15px; left: 50%; width: 3px; height: 15px; background: var(--pink); transform: translateX(-50%); }
+.tree-children::after { content: ''; position: absolute; top: 0; left: 30px; right: 30px; height: 3px; background: var(--pink); }
+.tree-children > .tree-node-wrapper::before { content: ''; position: absolute; top: 0; left: 50%; width: 3px; height: 15px; background: var(--pink); transform: translateX(-50%); z-index: 1; }
+
+/* BENTUK PERKALIAN & PANGKAT */
+.math-form { display: flex; flex-direction: row; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; padding: 20px; background: white; border-radius: 15px; border: 2px solid var(--lavender); min-height: 70px; }
+.mult-input { width: 50px; height: 50px; padding: 5px; border: 2px solid var(--lavender); border-radius: 12px; text-align: center; font-weight: 700; font-size: 18px; color: var(--text); outline: none; font-family: 'Quicksand', sans-serif; }
+.mult-input:focus { border-color: var(--pink-deep); }
+.mult-input.correct { border-color: var(--mint-deep); background: #d8f5e8; }
+.mult-input.incorrect { border-color: var(--pink-deep); background: #ffe5e5; }
+.math-symbol { font-size: 24px; color: var(--pink-deep); font-weight: 700; display: flex; align-items: center; height: 50px; }
+.add-factor-btn { padding: 0 18px; height: 50px; border: 2px dashed var(--lavender); background: white; color: var(--lavender-deep); font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 12px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.add-factor-btn:hover { background: var(--lavender); color: white; }
+
+.exp-pair { display: flex; align-items: flex-start; position: relative; height: 55px; }
+.exp-base { width: 45px; height: 45px; padding: 5px; border: 2px solid var(--lavender); border-radius: 10px; text-align: center; font-weight: 700; font-size: 18px; outline: none; margin-top: 10px; font-family: 'Quicksand', sans-serif; color: var(--text); }
+.exp-power { width: 35px; height: 35px; padding: 4px; border: 2px solid var(--lavender); border-radius: 8px; text-align: center; font-weight: 700; font-size: 14px; outline: none; margin-left: 4px; margin-top: 0; font-family: 'Quicksand', sans-serif; color: var(--text); }
+.exp-base:focus, .exp-power:focus { border-color: var(--pink-deep); }
+.exp-base.correct, .exp-power.correct { border-color: var(--mint-deep); background: #d8f5e8; }
+.exp-base.incorrect, .exp-power.incorrect { border-color: var(--pink-deep); background: #ffe5e5; }
+.remove-btn { position: absolute; top: 2px; right: -8px; width: 20px; height: 20px; border-radius: 50%; background: var(--pink-deep); color: white; border: none; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+.equation-preview { font-size: 24px; font-weight: 700; color: var(--text); margin: 15px 0 5px; text-align: center; padding: 15px; background: linear-gradient(135deg, #fff9fc, #f5f0ff); border-radius: 12px; min-height: 60px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; line-height: 1.5; }
+.equation-preview sup, .validation sup { color: var(--pink-deep); font-size: 0.65em; font-weight: 700; margin-left: 1px; vertical-align: super; line-height: 0; }
+.equation-preview .eq-sym { color: var(--pink-deep); margin: 0 4px; }
+
+.spinner-container { background: linear-gradient(135deg, var(--lavender), var(--pink-light)); border-radius: 20px; padding: 25px; text-align: center; margin: 20px 0; border: 3px solid white; }
+.spinner { width: 280px; height: 80px; background: white; border-radius: 40px; margin: 15px auto; display: flex; align-items: center; justify-content: center; font-family: 'Pacifico', cursive; font-size: 20px; color: var(--pink-deep); box-shadow: 0 8px 20px var(--shadow); border: 3px solid var(--pink); transition: all 0.1s; padding: 0 20px; text-align: center; }
+.spinner.spinning { animation: spinPulse 0.15s infinite; }
+@keyframes spinPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+.mc-options { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.mc-option { display: flex; align-items: center; gap: 10px; padding: 10px 15px; background: white; border: 2px solid var(--lavender); border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+.mc-option:hover { background: var(--pink-light); border-color: var(--pink); }
+.mc-option.selected { background: linear-gradient(135deg, #fff5fa, #ffe5f0); border-color: var(--pink-deep); }
+.mc-option.correct { background: linear-gradient(135deg, #d8f5e8, var(--mint)); border-color: var(--mint-deep); }
+.mc-option.incorrect { background: linear-gradient(135deg, #ffe5e5, var(--pink-light)); border-color: var(--pink-deep); }
+.mc-checkbox { width: 22px; height: 22px; border: 2px solid var(--lavender); border-radius: 6px; display: flex; align-items: center; justify-content: center; background: white; flex-shrink: 0; font-weight: 700; color: var(--pink-deep); font-size: 13px; }
+.mc-option.radio .mc-checkbox { border-radius: 50%; }
+.mc-option.selected .mc-checkbox { background: var(--pink-deep); color: white; border-color: var(--pink-deep); }
+.mc-option.correct .mc-checkbox { background: var(--mint-deep); color: white; border-color: var(--mint-deep); }
+
+.problem-nav { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding: 12px 20px; background: white; border-radius: 20px; box-shadow: 0 4px 15px var(--shadow); flex-wrap: wrap; gap: 10px; }
+.problem-counter { font-weight: 700; color: var(--pink-deep); }
+.problem-dots { display: flex; gap: 4px; flex-wrap: wrap; max-width: 300px; }
+.problem-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pink-light); cursor: pointer; transition: all 0.2s; }
+.problem-dot.active { background: var(--pink-deep); transform: scale(1.3); }
+.problem-dot.done { background: var(--mint-deep); }
+
+.validation { margin-top: 12px; padding: 12px 18px; border-radius: 12px; font-weight: 600; display: none; font-size: 14px; line-height: 1.6; }
+.validation.show { display: block; animation: pop 0.3s; }
+.validation.success { background: #d8f5e8; color: #2d6e4f; border: 2px solid var(--mint-deep); }
+.validation.error { background: #ffe5e5; color: #c0336e; border: 2px solid var(--pink-deep); }
+.validation.info { background: #e5dbff; color: #5b3d9d; border: 2px solid var(--lavender-deep); }
+@keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+.explanation { margin-top: 12px; padding: 15px; background: linear-gradient(135deg, #fff9e8, #ffefb8); border-radius: 12px; border: 2px solid var(--yellow); display: none; font-size: 14px; line-height: 1.6; }
+.explanation.show { display: block; animation: pop 0.3s; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; flex-wrap: wrap; }
+.tab { padding: 10px 25px; background: white; border: 3px solid var(--pink-light); border-radius: 20px; cursor: pointer; font-weight: 700; color: var(--text-light); transition: all 0.2s; }
+.tab.active { background: linear-gradient(135deg, var(--pink), var(--pink-deep)); color: white; border-color: var(--pink-deep); }
+
+.conclusion-card { background: white; border-radius: 25px; padding: 30px; text-align: center; margin: 20px 0; box-shadow: 0 8px 30px var(--shadow); border: 3px solid white; }
+.conclusion-card h2 { font-family: 'Pacifico', cursive; color: var(--pink-deep); font-size: 26px; margin-bottom: 15px; }
+.reflection-input { width: 100%; max-width: 500px; padding: 12px 18px; border: 2px solid var(--lavender); border-radius: 15px; font-family: 'Quicksand', sans-serif; font-size: 15px; color: var(--text); outline: none; margin: 8px 0; resize: vertical; min-height: 60px; }
+.reflection-input:focus { border-color: var(--pink-deep); }
+.cute-divider { text-align: center; margin: 20px 0; color: var(--pink); font-size: 20px; letter-spacing: 10px; }
+.info-pill { display: inline-block; padding: 5px 12px; background: var(--pink-light); border-radius: 15px; font-size: 13px; font-weight: 600; color: var(--pink-deep); }
+.steps { display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; justify-content: center; }
+.step { background: white; padding: 8px 16px; border-radius: 15px; border: 2px solid var(--pink-light); font-size: 13px; font-weight: 600; color: var(--text-light); transition: all 0.3s; }
+.step.active { background: linear-gradient(135deg, var(--pink), var(--pink-deep)); color: white; border-color: var(--pink-deep); }
+.step.done { background: linear-gradient(135deg, var(--mint), var(--mint-deep)); color: white; border-color: var(--mint-deep); }
+.prime-list { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 10px; }
+.prime-pill { background: linear-gradient(135deg, var(--mint), #88e8b8); color: #2d6e4f; padding: 6px 12px; border-radius: 12px; font-weight: 700; font-size: 14px; border: 2px solid var(--mint-deep); }
+@media (max-width: 768px) { .cover-title { font-size: 40px; } .section-title { font-size: 22px; } .card { padding: 18px; } .nav-bar { padding: 8px 15px; gap: 8px; } .nav-btn { padding: 8px 15px; font-size: 12px; } .tree-children { gap: 30px; } .problem-dots { max-width: 200px; } }
+</style>
+</head>
+<body>
+
+<div class="deco-bg" id="decoBg"></div>
+
+<!-- SLIDE 1: COVER -->
+<section class="slide active" id="slide1">
+  <div class="cover-container">
+    <div class="cover-emoji">🌸✨🎀</div>
+    <h1 class="cover-title">Petualangan Faktorisasi Prima</h1>
+    <p class="cover-subtitle">Belajar KPK & FPB dengan Cara yang Seru! 💕</p>
+    
+    <div class="name-inputs">
+      <div class="name-input-group">
+        <h3>👧 Siswa 1</h3>
+        <input type="text" id="name1" placeholder="Tulis namamu di sini..." maxlength="20">
+      </div>
+      <div class="name-input-group">
+        <h3>👩 Siswa 2</h3>
+        <input type="text" id="name2" placeholder="Tulis namamu di sini..." maxlength="20">
+      </div>
+    </div>
+    
+    <button class="btn-primary" onclick="startPresentation()">Mulai Belajar! 🚀</button>
+    <div class="cute-divider">♡ ♡ ♡ ♡ ♡</div>
+  </div>
+</section>
+
+<!-- SLIDE 2 -->
+<section class="slide" id="slide2">
+  <div class="card card-lavender">
+    <span class="tag">📖 Ingat Kembali</span>
+    <h2 class="section-title">Berkelip Bersama Bintang Kecil ✨</h2>
+    <p class="subtitle">Sebelum mulai, mari kita ingat pelajaran sebelumnya!</p>
+  </div>
+  
+  <div class="card card-mint">
+    <h3 style="color: var(--mint-deep); margin-bottom: 8px;">🌟 Bilangan Prima</h3>
+    <p style="margin-bottom: 10px; font-size: 14px;">Bilangan prima adalah bilangan yang hanya memiliki 2 faktor: 1 dan dirinya sendiri.</p>
+    <div class="prime-list">
+      <span class="prime-pill">2</span><span class="prime-pill">3</span><span class="prime-pill">5</span>
+      <span class="prime-pill">7</span><span class="prime-pill">11</span><span class="prime-pill">13</span>
+      <span class="prime-pill">17</span><span class="prime-pill">19</span><span class="prime-pill">23</span>
+      <span class="prime-pill">29</span><span class="prime-pill">31</span><span class="prime-pill">...</span>
+    </div>
+  </div>
+  
+  <div class="two-col">
+    <div>
+      <div class="card card-pink">
+        <div class="student-header">
+          <div class="student-avatar">1</div>
+          <div class="student-name" id="displayName1">Siswa 1</div>
+        </div>
+        <h3 style="color: var(--pink-deep); margin-bottom: 8px; font-size: 16px;">📋 KPK - Mendaftar Kelipatan</h3>
+        <p style="font-size: 13px; margin-bottom: 12px; line-height: 1.5;">KPK = Kelipatan Persekutuan Terkecil. Daftar kelipatan masing-masing bilangan, lalu cari yang terkecil dan sama!</p>
+        <div id="kpkProblems1"></div>
+      </div>
+      
+      <div class="card card-yellow">
+        <h3 style="color: var(--yellow-deep); margin-bottom: 8px; font-size: 16px;">📋 FPB - Mendaftar Faktor</h3>
+        <p style="font-size: 13px; margin-bottom: 12px; line-height: 1.5;">FPB = Faktor Persekutuan Terbesar. Daftar faktor masing-masing bilangan, lalu cari yang terbesar dan sama!</p>
+        <div id="fpbProblems1"></div>
+      </div>
+    </div>
+    
+    <div>
+      <div class="card card-pink">
+        <div class="student-header">
+          <div class="student-avatar">2</div>
+          <div class="student-name" id="displayName2">Siswa 2</div>
+        </div>
+        <h3 style="color: var(--pink-deep); margin-bottom: 8px; font-size: 16px;">📋 KPK - Mendaftar Kelipatan</h3>
+        <p style="font-size: 13px; margin-bottom: 12px; line-height: 1.5;">KPK = Kelipatan Persekutuan Terkecil. Daftar kelipatan masing-masing bilangan, lalu cari yang terkecil dan sama!</p>
+        <div id="kpkProblems2"></div>
+      </div>
+      
+      <div class="card card-yellow">
+        <h3 style="color: var(--yellow-deep); margin-bottom: 8px; font-size: 16px;">📋 FPB - Mendaftar Faktor</h3>
+        <p style="font-size: 13px; margin-bottom: 12px; line-height: 1.5;">FPB = Faktor Persekutuan Terbesar. Daftar faktor masing-masing bilangan, lalu cari yang terbesar dan sama!</p>
+        <div id="fpbProblems2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3 -->
+<section class="slide" id="slide3">
+  <div class="card card-lavender">
+    <span class="tag">🌟 Materi Baru</span>
+    <h2 class="section-title">Faktor Prima & Pohon Faktor 🌳</h2>
+    <p class="subtitle">Ayo kenalan dengan pohon faktor yang ajaib!</p>
+  </div>
+  
+  <div class="tabs">
+    <div class="tab active" id="tab3-1" onclick="switchStudent3(1)">👧 <span id="tabName1">Siswa 1</span></div>
+    <div class="tab" id="tab3-2" onclick="switchStudent3(2)">👩 <span id="tabName2">Siswa 2</span></div>
+  </div>
+  
+  <div class="problem-nav">
+    <button class="btn-secondary btn-small" onclick="prevProblem(3)">← Sebelumnya</button>
+    <div class="problem-counter">Soal <span id="problemCounter3">1</span>/20</div>
+    <div class="problem-dots" id="problemDots3"></div>
+    <button class="btn-secondary btn-small" onclick="nextProblem(3)">Berikutnya →</button>
+  </div>
+  
+  <div class="card">
+    <div class="steps">
+      <div class="step active" id="step3-1">1️⃣ Pohon Faktor</div>
+      <div class="step" id="step3-2">2️⃣ Bentuk Perkalian</div>
+      <div class="step" id="step3-3">3️⃣ Bentuk Pangkat</div>
+    </div>
+    
+    <div style="text-align: center; margin: 15px 0;">
+      <span class="info-pill">🔢 Tentukan faktor prima dari:</span>
+      <h3 style="font-family: 'Pacifico', cursive; font-size: 40px; color: var(--pink-deep); margin: 10px 0;" id="numberToFactor">72</h3>
+    </div>
+    
+    <div id="step3Content1">
+      <h4 style="text-align: center; color: var(--lavender-deep); margin-bottom: 10px;">🌳 Lengkapi Pohon Faktor</h4>
+      <p style="text-align: center; font-size: 13px; color: var(--text-light); margin-bottom: 10px;">Isi dua kotak di bawah bilangan. Jika pasangan perkaliannya benar, pohon akan tumbuh! ✨</p>
+      <div class="factor-tree-container" id="factorTree3"></div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-secondary" onclick="checkFactorTree('factorTree3', 'validation3')">✓ Cek Pohon Faktor</button>
+        <button class="btn-secondary btn-small" onclick="renderSlide3()" style="margin-left: 8px;">🔄 Reset</button>
+      </div>
+    </div>
+    
+    <div id="step3Content2" style="display: none;">
+      <h4 style="text-align: center; color: var(--lavender-deep); margin-bottom: 10px;">✏️ Tulis Bentuk Perkalian Faktor Primanya</h4>
+      <p style="text-align: center; font-size: 13px; color: var(--text-light); margin-bottom: 10px;">Urutkan dari yang terkecil ya! Klik + untuk menambah kotak</p>
+      <div class="math-form" id="multForm3"></div>
+      <div class="equation-preview" id="multPreview3"></div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-secondary" onclick="checkMultForm('multForm3', 'validation3')">✓ Cek Jawaban</button>
+      </div>
+    </div>
+    
+    <div id="step3Content3" style="display: none;">
+      <h4 style="text-align: center; color: var(--lavender-deep); margin-bottom: 10px;">⬆️ Tulis Bentuk Pangkatnya</h4>
+      <p style="text-align: center; font-size: 13px; color: var(--text-light); margin-bottom: 10px;">Contoh: 2²×3. Isi basis dan pangkat, klik + Tambah Faktor untuk menambah</p>
+      <div class="math-form" id="expForm3"></div>
+      <div class="equation-preview" id="expPreview3"></div>
+      <div style="text-align: center; margin-top: 10px;">
+        <button class="btn-secondary" onclick="checkExpForm('expForm3', 'validation3')">✓ Cek Jawaban</button>
+      </div>
+    </div>
+    
+    <div class="validation" id="validation3"></div>
+  </div>
+</section>
+
+<!-- SLIDE 4 -->
+<section class="slide" id="slide4">
+  <div class="card card-pink">
+    <span class="tag">🤝 Kerja Sama</span>
+    <h2 class="section-title">KPK & FPB dengan Faktorisasi Prima 💕</h2>
+    <p class="subtitle">Berdua lebih seru! Ayo saling membantu!</p>
+  </div>
+  
+  <div class="problem-nav">
+    <button class="btn-secondary btn-small" onclick="prevProblem(4)">← Sebelumnya</button>
+    <div class="problem-counter">Soal <span id="problemCounter4">1</span>/20</div>
+    <div class="problem-dots" id="problemDots4"></div>
+    <button class="btn-secondary btn-small" onclick="nextProblem(4)">Berikutnya →</button>
+  </div>
+  
+  <div class="card">
+    <div style="text-align: center; margin-bottom: 15px;">
+      <span class="info-pill">🔢 Cari KPK dan FPB dari:</span>
+      <h3 style="font-family: 'Pacifico', cursive; font-size: 36px; color: var(--pink-deep); margin: 10px 0;">
+        <span id="number4A">12</span> dan <span id="number4B">18</span>
+      </h3>
+    </div>
+    
+    <div class="steps">
+      <div class="step active" id="step4-1">1️⃣ Bagi Tugas Faktorisasi</div>
+      <div class="step" id="step4-2">2️⃣ Bagi Tugas KPK/FPB</div>
+      <div class="step" id="step4-3">3️⃣ Selesai</div>
+    </div>
+    
+    <div id="step4Content1">
+      <div class="spinner-container">
+        <h3 style="color: var(--lavender-deep); margin-bottom: 5px;">🎲 Undi Tugas Faktorisasi Prima</h3>
+        <p style="font-size: 13px; color: var(--text-light);">Klik untuk mengundi siapa kerjakan bilangan pertama dan kedua!</p>
+        <div class="spinner" id="spinner1">Klik untuk mulai</div>
+        <button class="btn-primary" onclick="spinSpinner(1)">🎲 Putar Undian</button>
+        <div id="spinnerResult1" style="margin-top: 15px; font-weight: 700; color: var(--pink-deep);"></div>
+      </div>
+      
+      <div class="two-col">
+        <div class="card card-pink">
+          <div class="student-header">
+            <div class="student-avatar" id="studentA-avatar">?</div>
+            <div class="student-name" id="studentA-name">Tunggu undian...</div>
+          </div>
+          <p style="font-size: 13px; margin-bottom: 8px;">Faktorkan: <strong id="assignNumA" style="color: var(--pink-deep);">?</strong></p>
+          
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 8px 0 5px;">🌳 Pohon Faktor:</h4>
+          <div class="factor-tree-container" id="factorTree4A" style="min-height: 200px; padding: 15px;"></div>
+          <div style="text-align: center; margin-top: 8px;">
+            <button class="btn-secondary btn-small" onclick="checkFactorTree('factorTree4A', 'validation4A')">✓ Cek Pohon</button>
+          </div>
+
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 10px 0 5px;">✏️ Bentuk Perkalian:</h4>
+          <div class="math-form" id="multForm4A" style="padding: 10px; min-height: 50px;"></div>
+          <div class="equation-preview" id="multPreview4A" style="font-size: 18px; min-height: 40px; padding: 8px;"></div>
+
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 10px 0 5px;">⬆️ Bentuk Pangkat:</h4>
+          <div class="math-form" id="expForm4A" style="padding: 10px; min-height: 50px;"></div>
+          <div class="equation-preview" id="expPreview4A" style="font-size: 18px; min-height: 40px; padding: 8px;"></div>
+
+          <div style="text-align: center; margin-top: 8px;">
+            <button class="btn-secondary btn-small" onclick="check4A()">✓ Cek Semua Jawaban</button>
+          </div>
+          <div class="validation" id="validation4A"></div>
+        </div>
+        
+        <div class="card card-lavender">
+          <div class="student-header">
+            <div class="student-avatar" id="studentB-avatar">?</div>
+            <div class="student-name" id="studentB-name">Tunggu undian...</div>
+          </div>
+          <p style="font-size: 13px; margin-bottom: 8px;">Faktorkan: <strong id="assignNumB" style="color: var(--lavender-deep);">?</strong></p>
+          
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 8px 0 5px;">🌳 Pohon Faktor:</h4>
+          <div class="factor-tree-container" id="factorTree4B" style="min-height: 200px; padding: 15px;"></div>
+          <div style="text-align: center; margin-top: 8px;">
+            <button class="btn-secondary btn-small" onclick="checkFactorTree('factorTree4B', 'validation4B')">✓ Cek Pohon</button>
+          </div>
+
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 10px 0 5px;">✏️ Bentuk Perkalian:</h4>
+          <div class="math-form" id="multForm4B" style="padding: 10px; min-height: 50px;"></div>
+          <div class="equation-preview" id="multPreview4B" style="font-size: 18px; min-height: 40px; padding: 8px;"></div>
+
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 10px 0 5px;">⬆️ Bentuk Pangkat:</h4>
+          <div class="math-form" id="expForm4B" style="padding: 10px; min-height: 50px;"></div>
+          <div class="equation-preview" id="expPreview4B" style="font-size: 18px; min-height: 40px; padding: 8px;"></div>
+
+          <div style="text-align: center; margin-top: 8px;">
+            <button class="btn-secondary btn-small" onclick="check4B()">✓ Cek Semua Jawaban</button>
+          </div>
+          <div class="validation" id="validation4B"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="step4Content2" style="display: none;">
+      <div class="spinner-container">
+        <h3 style="color: var(--lavender-deep); margin-bottom: 5px;">🎲 Undi Tugas KPK atau FPB</h3>
+        <p style="font-size: 13px; color: var(--text-light);">Klik untuk mengundi siapa kerjakan KPK dan siapa FPB!</p>
+        <div class="spinner" id="spinner2">Klik untuk mulai</div>
+        <button class="btn-primary" onclick="spinSpinner(2)">🎲 Putar Undian</button>
+        <div id="spinnerResult2" style="margin-top: 15px; font-weight: 700; color: var(--pink-deep);"></div>
+      </div>
+      
+      <div class="card card-mint" style="text-align: center; margin-bottom: 20px;">
+        <h4 style="color: var(--mint-deep);">🌳 Hasil Faktorisasi Prima (dari Langkah 1):</h4>
+        <div style="font-size: 20px; font-weight: 700; margin-top: 10px; color: var(--text);">
+          <span id="number4A"></span> = <span id="fact4A">...</span>
+          <br> DAN <br>
+          <span id="number4B"></span> = <span id="fact4B">...</span>
+        </div>
+      </div>
+
+      <div class="card card-yellow" style="margin-bottom: 20px;">
+        <h4 style="color: var(--yellow-deep); text-align: center; margin-bottom: 10px;">💡 Rumus Cepat:</h4>
+        <p style="font-size: 14px; line-height: 1.6;">
+          ➕ <strong>KPK:</strong> Ambil <strong>semua</strong> faktor prima yang ada. Jika ada faktor yang sama, pilih pangkat yang <strong>terbesar</strong>.<br>
+          ➖ <strong>FPB:</strong> Ambil faktor prima yang <strong>sama</strong>. Pilih pangkat yang <strong>terkecil</strong>.
+        </p>
+      </div>
+      
+      <div class="two-col">
+        <div class="card card-pink">
+          <div class="student-header">
+            <div class="student-avatar" id="studentKPK-avatar">?</div>
+            <div class="student-name" id="studentKPK-name">Tunggu undian...</div>
+          </div>
+          <p style="font-size: 14px; margin-bottom: 8px;">Tentukan <strong style="color: var(--pink-deep);">KPK</strong></p>
+          
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 8px 0 5px;">⬆️ Bentuk Pangkat KPK:</h4>
+          <div class="math-form" id="expFormKPK" style="padding: 10px; min-height: 50px;"></div>
+          <div class="equation-preview" id="expPreviewKPK" style="font-size: 18px; min-height: 40px; padding: 8px;"></div>
+          
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 10px 0 5px;">✏️ Bentuk Perkalian KPK:</h4>
+          <div class="math-form" id="multFormKPK" style="padding: 10px; min-height: 50px;"></div>
+          <div class="equation-preview" id="multPreviewKPK" style="font-size: 18px; min-height: 40px; padding: 8px;"></div>
+          
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 10px 0 5px;">🔢 Hasil Akhir KPK:</h4>
+          <div class="input-row">
+            <label>KPK = </label>
+            <input type="number" id="kpkAnswer" style="width: 100px;">
+          </div>
+          <div style="text-align: center; margin-top: 8px;">
+            <button class="btn-secondary btn-small" onclick="checkKPK()">✓ Cek Jawaban KPK</button>
+          </div>
+          <div class="validation" id="validationKPK"></div>
+        </div>
+        
+        <div class="card card-lavender">
+          <div class="student-header">
+            <div class="student-avatar" id="studentFPB-avatar">?</div>
+            <div class="student-name" id="studentFPB-name">Tunggu undian...</div>
+          </div>
+          <p style="font-size: 14px; margin-bottom: 8px;">Tentukan <strong style="color: var(--lavender-deep);">FPB</strong></p>
+          
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 8px 0 5px;">⬆️ Bentuk Pangkat FPB:</h4>
+          <div class="math-form" id="expFormFPB" style="padding: 10px; min-height: 50px;"></div>
+          <div class="equation-preview" id="expPreviewFPB" style="font-size: 18px; min-height: 40px; padding: 8px;"></div>
+          
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 10px 0 5px;">✏️ Bentuk Perkalian FPB:</h4>
+          <div class="math-form" id="multFormFPB" style="padding: 10px; min-height: 50px;"></div>
+          <div class="equation-preview" id="multPreviewFPB" style="font-size: 18px; min-height: 40px; padding: 8px;"></div>
+          
+          <h4 style="font-size: 12px; color: var(--text-light); margin: 10px 0 5px;">🔢 Hasil Akhir FPB:</h4>
+          <div class="input-row">
+            <label>FPB = </label>
+            <input type="number" id="fpbAnswer" style="width: 100px;">
+          </div>
+          <div style="text-align: center; margin-top: 8px;">
+            <button class="btn-secondary btn-small" onclick="checkFPB()">✓ Cek Jawaban FPB</button>
+          </div>
+          <div class="validation" id="validationFPB"></div>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn-primary" onclick="nextProblem4()">➡️ Ganti Soal</button>
+      </div>
+    </div>
+    
+    <div class="validation" id="validation4Main"></div>
+  </div>
+</section>
+
+<!-- SLIDE 5 -->
+<section class="slide" id="slide5">
+  <div class="card card-mint">
+    <span class="tag">📝 Latihan Mandiri</span>
+    <h2 class="section-title">Waktu Mengerjakan Sendiri! ✨</h2>
+    <p class="subtitle">20 soal untuk masing-masing siswa. Tingkat kesulitan sama, semangat ya!</p>
+  </div>
+  
+  <div class="problem-nav">
+    <button class="btn-secondary btn-small" onclick="prevProblem(5)">← Sebelumnya</button>
+    <div class="problem-counter">Soal <span id="problemCounter5">1</span>/20</div>
+    <div class="problem-dots" id="problemDots5"></div>
+    <button class="btn-secondary btn-small" onclick="nextProblem(5)">Berikutnya →</button>
+  </div>
+  
+  <div class="two-col">
+    <div class="card card-pink">
+      <div class="student-header">
+        <div class="student-avatar">1</div>
+        <div class="student-name" id="displayName5A">Siswa 1</div>
+      </div>
+      <div id="problem5A"></div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-secondary btn-small" onclick="check5(1)">✓ Cek Jawaban</button>
+        <button class="btn-secondary btn-small" onclick="toggleExplanation5(1)" style="margin-left: 8px;">📖 Pembahasan</button>
+      </div>
+      <div class="validation" id="validation5A"></div>
+      <div class="explanation" id="explanation5A"></div>
+    </div>
+    
+    <div class="card card-lavender">
+      <div class="student-header">
+        <div class="student-avatar">2</div>
+        <div class="student-name" id="displayName5B">Siswa 2</div>
+      </div>
+      <div id="problem5B"></div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-secondary btn-small" onclick="check5(2)">✓ Cek Jawaban</button>
+        <button class="btn-secondary btn-small" onclick="toggleExplanation5(2)" style="margin-left: 8px;">📖 Pembahasan</button>
+      </div>
+      <div class="validation" id="validation5B"></div>
+      <div class="explanation" id="explanation5B"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6 -->
+<section class="slide" id="slide6">
+  <div class="conclusion-card">
+    <div style="font-size: 60px; margin-bottom: 15px;">🌸✨🌸</div>
+    <h1 class="cover-title" style="font-size: 50px;">Terima Kasih! 💕</h1>
+    <p class="cover-subtitle">Kalian hebat sudah belajar bersama hari ini!</p>
+  </div>
+  
+  <div class="card card-pink">
+    <h2 class="section-title">🌟 Kesimpulan</h2>
+    <div style="text-align: left; max-width: 700px; margin: 15px auto; line-height: 1.9; font-size: 15px;">
+      <p>📖 <strong>Faktorisasi Prima</strong> adalah menguraikan bilangan menjadi perkalian faktor-faktor primanya.</p>
+      <p>🌳 <strong>Pohon Faktor</strong> adalah cara visual untuk menemukan faktor prima suatu bilangan.</p>
+      <p>➕ <strong>KPK</strong> dicari dengan mengambil pangkat <strong>terbesar</strong> dari setiap faktor prima yang sama.</p>
+      <p>➖ <strong>FPB</strong> dicari dengan mengambil pangkat <strong>terkecil</strong> dari setiap faktor prima yang sama.</p>
+    </div>
+  </div>
+  
+  <div class="card card-lavender">
+    <h2 class="section-title">💭 Refleksi</h2>
+    <p style="text-align: center; margin-bottom: 15px;">Yuk isi refleksi pembelajaran hari ini!</p>
+    
+    <div style="max-width: 600px; margin: 0 auto;">
+      <label style="font-weight: 600; color: var(--lavender-deep); font-size: 14px;">Apa yang sudah kamu pelajari hari ini?</label>
+      <textarea class="reflection-input" id="reflection1" placeholder="Tulis di sini..."></textarea>
+      
+      <label style="font-weight: 600; color: var(--lavender-deep); font-size: 14px;">Bagian mana yang paling kamu sukai? 💕</label>
+      <textarea class="reflection-input" id="reflection2" placeholder="Tulis di sini..."></textarea>
+      
+      <label style="font-weight: 600; color: var(--lavender-deep); font-size: 14px;">Apa yang masih membingungkan?</label>
+      <textarea class="reflection-input" id="reflection3" placeholder="Tulis di sini..."></textarea>
+      
+      <label style="font-weight: 600; color: var(--lavender-deep); font-size: 14px; display: block; margin-bottom: 8px;">Bagaimana perasaanmu setelah belajar hari ini?</label>
+      <div style="text-align: center; margin: 10px 0;" id="moodButtons">
+        <button class="btn-secondary btn-small" onclick="selectMood('😊', this)">😊 Senang</button>
+        <button class="btn-secondary btn-small" onclick="selectMood('🤔', this)">🤔 Bingung</button>
+        <button class="btn-secondary btn-small" onclick="selectMood('😎', this)">😎 Pintar</button>
+        <button class="btn-secondary btn-small" onclick="selectMood('😴', this)">😴 Capek</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="conclusion-card" style="background: linear-gradient(135deg, var(--pink-light), var(--lavender));">
+    <div style="font-size: 50px; margin-bottom: 10px;">🎀💖🎀</div>
+    <h2 style="font-family: 'Pacifico', cursive; color: var(--pink-deep); font-size: 36px;">Sampai Jumpa Lagi!</h2>
+    <p style="margin-top: 15px; font-size: 16px; line-height: 1.6;">Terus belajar dan jangan pernah menyerah ya!<br>Matematika itu indah seperti bunga yang mekar 🌸</p>
+    <div class="cute-divider" style="margin-top: 20px;">♡ ♡ ♡ ♡ ♡</div>
+  </div>
+</section>
+
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">← Sebelumnya</button>
+  <span class="nav-info">Slide <span id="currentSlide">1</span>/6</span>
+  <button class="nav-btn" id="nextBtn" onclick="navigate(1)">Selanjutnya →</button>
+</div>
+
+<script>
+// ===== STATE GLOBAL =====
+let currentSlide = 1;
+let studentNames = { s1: 'Siswa 1', s2: 'Siswa 2' };
+let problemIndices = { 3: { 1: 0, 2: 0 }, 4: 0, 5: 0 };
+let currentStudent3 = 1;
+let selectedMood = null;
+let treeRoots = {}; 
+
+// ===== DEKORASI =====
+function createDecorations() {
+  const decoBg = document.getElementById('decoBg');
+  const emojis = ['🌸', '✨', '🎀', '💕', '🌷', '⭐', '🌺', '🍓', '🦋', '💖'];
+  for (let i = 0; i < 25; i++) {
+    const span = document.createElement('span');
+    span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    span.style.left = Math.random() * 100 + '%';
+    span.style.animationDelay = Math.random() * 15 + 's';
+    span.style.animationDuration = (10 + Math.random() * 10) + 's';
+    span.style.fontSize = (16 + Math.random() * 20) + 'px';
+    decoBg.appendChild(span);
+  }
+}
+
+// ===== NAVIGASI =====
+function navigate(direction) {
+  const newSlide = currentSlide + direction;
+  if (newSlide < 1 || newSlide > 6) return;
+  document.getElementById('slide' + currentSlide).classList.remove('active');
+  document.getElementById('slide' + newSlide).classList.add('active');
+  currentSlide = newSlide;
+  document.getElementById('currentSlide').textContent = currentSlide;
+  document.getElementById('prevBtn').disabled = currentSlide === 1;
+  document.getElementById('nextBtn').disabled = currentSlide === 6;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startPresentation() {
+  const name1 = document.getElementById('name1').value.trim();
+  const name2 = document.getElementById('name2').value.trim();
+  if (!name1 || !name2) { alert('Isi nama dua siswa dulu ya! 💕'); return; }
+  studentNames.s1 = name1; studentNames.s2 = name2;
+  document.getElementById('displayName1').textContent = name1;
+  document.getElementById('displayName2').textContent = name2;
+  document.getElementById('displayName5A').textContent = name1;
+  document.getElementById('displayName5B').textContent = name2;
+  document.getElementById('tabName1').textContent = name1;
+  document.getElementById('tabName2').textContent = name2;
+  initSlide2(); initSlide3(); initSlide4(); initSlide5();
+  navigate(1);
+}
+
+// ===== UTILITY =====
+function isPrime(n) {
+  if (n < 2) return false; if (n === 2) return true; if (n % 2 === 0) return false;
+  for (let i = 3; i <= Math.sqrt(n); i += 2) { if (n % i === 0) return false; }
+  return true;
+}
+function getPrimeFactors(n) {
+  const factors = []; let num = n;
+  for (let i = 2; i <= num; i++) { while (num % i === 0) { factors.push(i); num /= i; } }
+  return factors;
+}
+function getPrimeFactorization(n) {
+  const factors = getPrimeFactors(n); const factorization = {};
+  factors.forEach(f => factorization[f] = (factorization[f] || 0) + 1);
+  return factorization;
+}
+function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+function lcm(a, b) { return (a * b) / gcd(a, b); }
+function formatFactorization(factorization) {
+  return Object.keys(factorization).sort((a,b) => a-b).map(k => 
+    factorization[k] > 1 ? `${k}<sup>${factorization[k]}</sup>` : k
+  ).join(' × ');
+}
+
+// ===== SLIDE 2 =====
+const slide2Data = {
+  kpk1: [{ a: 4, b: 6, ans: 12 }, { a: 3, b: 5, ans: 15 }, { a: 6, b: 8, ans: 24 }, { a: 4, b: 10, ans: 20 }, { a: 3, b: 9, ans: 9 }],
+  kpk2: [{ a: 6, b: 9, ans: 18 }, { a: 5, b: 10, ans: 10 }, { a: 4, b: 8, ans: 8 }, { a: 6, b: 10, ans: 30 }, { a: 5, b: 15, ans: 15 }],
+  fpb1: [{ a: 12, b: 18, ans: 6 }, { a: 8, b: 12, ans: 4 }, { a: 15, b: 25, ans: 5 }, { a: 20, b: 30, ans: 10 }, { a: 9, b: 15, ans: 3 }],
+  fpb2: [{ a: 16, b: 24, ans: 8 }, { a: 18, b: 27, ans: 9 }, { a: 14, b: 21, ans: 7 }, { a: 10, b: 25, ans: 5 }, { a: 12, b: 16, ans: 4 }]
+};
+function initSlide2() {
+  renderKPKProblems('kpkProblems1', slide2Data.kpk1, 1);
+  renderKPKProblems('kpkProblems2', slide2Data.kpk2, 2);
+  renderFPBProblems('fpbProblems1', slide2Data.fpb1, 1);
+  renderFPBProblems('fpbProblems2', slide2Data.fpb2, 2);
+}
+function renderKPKProblems(containerId, problems, student) {
+  const container = document.getElementById(containerId); container.innerHTML = '';
+  problems.forEach((p, i) => {
+    const div = document.createElement('div'); div.className = 'problem-box'; div.id = `kpk-box-${student}-${i}`;
+    let inputs1 = '', inputs2 = '';
+    for (let j = 0; j < 5; j++) {
+      inputs1 += `<input type="number" placeholder="?" data-type="kpk-a-${i}-${j}-${student}">`;
+      inputs2 += `<input type="number" placeholder="?" data-type="kpk-b-${i}-${j}-${student}">`;
+    }
+    div.innerHTML = `
+      <div class="problem-question">${i+1}. KPK dari ${p.a} dan ${p.b} = ?</div>
+      <div class="input-row"><label>Kelipatan ${p.a}:</label>${inputs1}</div>
+      <div class="input-row"><label>Kelipatan ${p.b}:</label>${inputs2}</div>
+      <div class="input-row"><label>KPK:</label><input type="number" id="kpk-ans-${student}-${i}" style="width: 80px;"><button class="btn-secondary btn-small" onclick="checkKPKProblem(${i}, ${student})">Cek</button></div>
+      <div class="validation" id="kpk-validation-${student}-${i}"></div>`;
+    container.appendChild(div);
+  });
+}
+function renderFPBProblems(containerId, problems, student) {
+  const container = document.getElementById(containerId); container.innerHTML = '';
+  problems.forEach((p, i) => {
+    const div = document.createElement('div'); div.className = 'problem-box'; div.id = `fpb-box-${student}-${i}`;
+    let inputs1 = '', inputs2 = '';
+    for (let j = 0; j < 5; j++) {
+      inputs1 += `<input type="number" placeholder="?" data-type="fpb-a-${i}-${j}-${student}">`;
+      inputs2 += `<input type="number" placeholder="?" data-type="fpb-b-${i}-${j}-${student}">`;
+    }
+    div.innerHTML = `
+      <div class="problem-question">${i+1}. FPB dari ${p.a} dan ${p.b} = ?</div>
+      <div class="input-row"><label>Faktor ${p.a}:</label>${inputs1}</div>
+      <div class="input-row"><label>Faktor ${p.b}:</label>${inputs2}</div>
+      <div class="input-row"><label>FPB:</label><input type="number" id="fpb-ans-${student}-${i}" style="width: 80px;"><button class="btn-secondary btn-small" onclick="checkFPBProblem(${i}, ${student})">Cek</button></div>
+      <div class="validation" id="fpb-validation-${student}-${i}"></div>`;
+    container.appendChild(div);
+  });
+}
+function checkKPKProblem(idx, student) {
+  const data = student === 1 ? slide2Data.kpk1[idx] : slide2Data.kpk2[idx];
+  const ansInput = document.getElementById(`kpk-ans-${student}-${idx}`);
+  const userAns = parseInt(ansInput.value); const validation = document.getElementById(`kpk-validation-${student}-${idx}`); const box = document.getElementById(`kpk-box-${student}-${idx}`);
+  if (isNaN(userAns)) { validation.className = 'validation show error'; validation.textContent = '💔 Isi jawaban dulu ya!'; return; }
+  if (userAns === data.ans) { validation.className = 'validation show success'; validation.textContent = `🎉 Hebat! KPK dari ${data.a} dan ${data.b} = ${data.ans}`; ansInput.classList.add('correct'); box.classList.add('correct'); }
+  else { validation.className = 'validation show error'; validation.textContent = `💔 Belum tepat. Coba cek lagi kelipatan ${data.a} dan ${data.b} ya!`; ansInput.classList.add('incorrect'); }
+}
+function checkFPBProblem(idx, student) {
+  const data = student === 1 ? slide2Data.fpb1[idx] : slide2Data.fpb2[idx];
+  const ansInput = document.getElementById(`fpb-ans-${student}-${idx}`);
+  const userAns = parseInt(ansInput.value); const validation = document.getElementById(`fpb-validation-${student}-${idx}`); const box = document.getElementById(`fpb-box-${student}-${idx}`);
+  if (isNaN(userAns)) { validation.className = 'validation show error'; validation.textContent = '💔 Isi jawaban dulu ya!'; return; }
+  if (userAns === data.ans) { validation.className = 'validation show success'; validation.textContent = `🎉 Mantap! FPB dari ${data.a} dan ${data.b} = ${data.ans}`; ansInput.classList.add('correct'); box.classList.add('correct'); }
+  else { validation.className = 'validation show error'; validation.textContent = `💔 Belum tepat. Coba cek lagi faktor ${data.a} dan ${data.b} ya!`; ansInput.classList.add('incorrect'); }
+}
+
+// ===== SLIDE 3: POHON FAKTOR INTERAKTIF =====
+const slide3Data = {
+  1: [12, 18, 24, 30, 36, 40, 42, 45, 48, 50, 54, 60, 63, 70, 72, 75, 80, 84, 90, 96],
+  2: [16, 20, 28, 32, 44, 52, 56, 64, 66, 68, 76, 81, 88, 92, 98, 100, 105, 108, 112, 120]
+};
+let step3Progress = { 1: 1, 2: 1 };
+let slide3Completed = { 1: Array(20).fill(false), 2: Array(20).fill(false) };
+
+function initSlide3() { renderSlide3(); renderProblemDots(3); }
+function switchStudent3(student) {
+  currentStudent3 = student;
+  document.getElementById('tab3-1').classList.toggle('active', student === 1);
+  document.getElementById('tab3-2').classList.toggle('active', student === 2);
+  renderSlide3();
+}
+function renderSlide3() {
+  const student = currentStudent3; const idx = problemIndices[3][student]; const number = slide3Data[student][idx];
+  document.getElementById('problemCounter3').textContent = idx + 1;
+  document.getElementById('numberToFactor').textContent = number;
+  step3Progress[student] = 1; showStep3(1);
+  buildAndRenderTree('factorTree3', number);
+  renderMultForm('multForm3', 'multPreview3');
+  renderExpForm('expForm3', 'expPreview3');
+  document.getElementById('validation3').className = 'validation';
+  renderProblemDots(3);
+}
+
+function createEmptyChildren(parentNode) {
+  return [
+    { value: null, isInput: true, isPrime: false, children: null, parent: parentNode },
+    { value: null, isInput: true, isPrime: false, children: null, parent: parentNode }
+  ];
+}
+function buildAndRenderTree(containerId, number) {
+  const tree = { value: number, isInput: false, isPrime: isPrime(number), children: null, parent: null };
+  if (!tree.isPrime) { tree.children = createEmptyChildren(tree); }
+  treeRoots[containerId] = tree;
+  renderFactorTree(containerId);
+}
+function renderFactorTree(containerId) {
+  const container = document.getElementById(containerId); container.innerHTML = '';
+  if (treeRoots[containerId]) { container.appendChild(createTreeNodeElement(treeRoots[containerId], containerId)); }
+}
+function createTreeNodeElement(node, containerId) {
+  const wrapper = document.createElement('div'); wrapper.className = 'tree-node-wrapper';
+  if (node.isInput) {
+    const input = document.createElement('input'); input.type = 'number'; input.className = 'tree-input'; input.placeholder = '?'; input.value = node.value || '';
+    if (node.value) input.classList.add('valid');
+    input.addEventListener('input', function() { handleTreeInput(this, node, containerId); });
+    wrapper.appendChild(input);
+  } else {
+    const nodeDiv = document.createElement('div'); nodeDiv.className = 'tree-node';
+    if (node.isPrime) nodeDiv.classList.add('prime'); else nodeDiv.classList.add('filled');
+    nodeDiv.textContent = node.value; wrapper.appendChild(nodeDiv);
+  }
+  if (node.children) {
+    const childrenDiv = document.createElement('div'); childrenDiv.className = 'tree-children';
+    node.children.forEach(child => { childrenDiv.appendChild(createTreeNodeElement(child, containerId)); });
+    wrapper.appendChild(childrenDiv);
+  }
+  return wrapper;
+}
+function handleTreeInput(inputElement, node, containerId) {
+  const val = parseInt(inputElement.value); const parent = node.parent;
+  if (isNaN(val) || val <= 1 || parent.value % val !== 0) {
+    inputElement.classList.remove('valid'); inputElement.classList.add('invalid'); node.value = null; return;
+  }
+  inputElement.classList.remove('invalid'); inputElement.classList.add('valid'); node.value = val;
+  const sibling = parent.children.find(c => c !== node);
+  if (sibling.value) {
+    if (node.value * sibling.value === parent.value) {
+      node.isInput = false; sibling.isInput = false;
+      node.isPrime = isPrime(node.value); sibling.isPrime = isPrime(sibling.value);
+      if (!node.isPrime) node.children = createEmptyChildren(node);
+      if (!sibling.isPrime) sibling.children = createEmptyChildren(sibling);
+      renderFactorTree(containerId);
+    } else {
+      inputElement.classList.remove('valid'); inputElement.classList.add('invalid'); node.value = null;
+    }
+  }
+}
+function checkFactorTree(containerId, validationId) {
+  const rootNode = treeRoots[containerId]; const validation = document.getElementById(validationId);
+  const allInputs = document.querySelectorAll(`#${containerId} .tree-input`);
+  let allFilled = true;
+  allInputs.forEach(input => { if (!input.value || input.classList.contains('invalid')) { allFilled = false; } });
+  if (!allFilled) {
+    validation.className = 'validation show error'; validation.textContent = '💔 Masih ada kotak yang kosong atau salah. Lengkapi pohonnya dulu ya!'; return;
+  }
+  validation.className = 'validation show success'; validation.textContent = '🎉 Pohon faktor lengkap! Lanjut ke bentuk perkalian.';
+  if (containerId === 'factorTree3') { setTimeout(() => { step3Progress[currentStudent3] = 2; showStep3(2); }, 1000); }
+}
+function showStep3(step) {
+  const student = currentStudent3; step3Progress[student] = step;
+  document.getElementById('step3Content1').style.display = step === 1 ? 'block' : 'none';
+  document.getElementById('step3Content2').style.display = step === 2 ? 'block' : 'none';
+  document.getElementById('step3Content3').style.display = step === 3 ? 'block' : 'none';
+  document.getElementById('step3-1').classList.toggle('active', step === 1);
+  document.getElementById('step3-2').classList.toggle('active', step === 2);
+  document.getElementById('step3-3').classList.toggle('active', step === 3);
+  if (step > 1) { document.getElementById('step3-' + (step-1)).classList.add('done'); document.getElementById('step3-' + (step-1)).classList.remove('active'); }
+}
+
+// === Form Perkalian & Pangkat ===
+function renderMultForm(containerId, previewId) {
+  const container = document.getElementById(containerId); container.innerHTML = '';
+  const addBtn = document.createElement('button'); addBtn.className = 'add-factor-btn'; addBtn.textContent = '+ Tambah';
+  addBtn.onclick = () => addMultInput(container, true, previewId); container.appendChild(addBtn);
+  addMultInput(container, false, previewId); updateMathPreview(containerId, previewId, 'mult');
+}
+function addMultInput(container, withSymbol, previewId) {
+  const addBtn = container.querySelector('.add-factor-btn'); if (!addBtn) return;
+  if (withSymbol) { const sym = document.createElement('span'); sym.className = 'math-symbol'; sym.textContent = '×'; container.insertBefore(sym, addBtn); }
+  const input = document.createElement('input'); input.type = 'number'; input.className = 'mult-input'; input.placeholder = '?';
+  input.addEventListener('input', () => updateMathPreview(container.id, previewId, 'mult'));
+  container.insertBefore(input, addBtn);
+}
+function renderExpForm(containerId, previewId) {
+  const container = document.getElementById(containerId); container.innerHTML = '';
+  const addBtn = document.createElement('button'); addBtn.className = 'add-factor-btn'; addBtn.textContent = '+ Tambah Faktor';
+  addBtn.onclick = () => addExpPair(container, true, previewId); container.appendChild(addBtn);
+  addExpPair(container, false, previewId); updateMathPreview(containerId, previewId, 'exp');
+}
+function addExpPair(container, withSymbol, previewId) {
+  const addBtn = container.querySelector('.add-factor-btn'); if (!addBtn) return;
+  if (withSymbol) { const sym = document.createElement('span'); sym.className = 'math-symbol'; sym.textContent = '×'; container.insertBefore(sym, addBtn); }
+  const pair = document.createElement('div'); pair.className = 'exp-pair';
+  const base = document.createElement('input'); base.type = 'number'; base.className = 'exp-base'; base.placeholder = 'b';
+  const power = document.createElement('input'); power.type = 'number'; power.className = 'exp-power'; power.placeholder = 'p';
+  pair.appendChild(base); pair.appendChild(power);
+  if (container.querySelectorAll('.exp-pair').length > 0) {
+    const removeBtn = document.createElement('button'); removeBtn.className = 'remove-btn'; removeBtn.textContent = '×';
+    removeBtn.onclick = () => {
+      const prev = pair.previousSibling;
+      if (prev && prev.classList && prev.classList.contains('math-symbol')) { prev.remove(); }
+      else { const next = pair.nextSibling; if (next && next.classList && next.classList.contains('math-symbol')) { next.remove(); } }
+      pair.remove(); updateMathPreview(container.id, previewId, 'exp');
+    };
+    pair.appendChild(removeBtn);
+  }
+  base.addEventListener('input', () => updateMathPreview(container.id, previewId, 'exp'));
+  power.addEventListener('input', () => updateMathPreview(container.id, previewId, 'exp'));
+  container.insertBefore(pair, addBtn);
+}
+function updateMathPreview(containerId, previewId, type) {
+  const container = document.getElementById(containerId); const preview = document.getElementById(previewId);
+  if (!preview) return; let html = '';
+  if (type === 'mult') {
+    const inputs = container.querySelectorAll('.mult-input');
+    inputs.forEach((input, i) => { const val = input.value; if (val) { if (i > 0) html += ' <span class="eq-sym">×</span> '; html += val; } });
+  } else {
+    const pairs = container.querySelectorAll('.exp-pair');
+    pairs.forEach((pair, i) => {
+      const base = pair.querySelector('.exp-base').value; const power = pair.querySelector('.exp-power').value;
+      if (base) { if (i > 0) html += ' <span class="eq-sym">×</span> '; html += base; if (power && parseInt(power) > 1) { html += `<sup>${power}</sup>`; } }
+    });
+  }
+  preview.innerHTML = html || '...';
+}
+function checkMultForm(containerId, validationId) {
+  const student = currentStudent3; const idx = problemIndices[3][student]; const number = slide3Data[student][idx];
+  const correctFactors = getPrimeFactors(number);
+  const inputs = document.querySelectorAll(`#${containerId} .mult-input`); const userFactors = []; let allFilled = true;
+  inputs.forEach(input => { input.classList.remove('correct', 'incorrect'); if (!input.value) allFilled = false; else userFactors.push(parseInt(input.value)); });
+  const validation = document.getElementById(validationId);
+  if (!allFilled) { validation.className = 'validation show error'; validation.textContent = '💔 Isi semua kotak ya! Jika ada sisa, klik tombol + untuk menambah.'; return; }
+  const allPrime = userFactors.every(f => isPrime(f));
+  if (!allPrime) { validation.className = 'validation show error'; validation.textContent = '💔 Ingat, faktor prima harus bilangan prima! Cek lagi ya.'; inputs.forEach(input => { if (input.value && !isPrime(parseInt(input.value))) input.classList.add('incorrect'); }); return; }
+  const product = userFactors.reduce((a, b) => a * b, 1);
+  if (product !== number) { validation.className = 'validation show error'; validation.textContent = `💔 Perkalian faktor primanya harus sama dengan ${number}. Coba cek lagi!`; inputs.forEach(input => input.classList.add('incorrect')); return; }
+  const sortedUser = [...userFactors].sort((a, b) => a - b); const sortedCorrect = [...correctFactors].sort((a, b) => a - b);
+  const isCorrect = sortedUser.length === sortedCorrect.length && sortedUser.every((v, i) => v === sortedCorrect[i]);
+  if (isCorrect) {
+    validation.className = 'validation show success'; validation.textContent = '🎉 Bentuk perkalian benar! Lanjut ke bentuk pangkat ya!';
+    inputs.forEach(input => input.classList.add('correct'));
+    setTimeout(() => { step3Progress[student] = 3; showStep3(3); }, 1500);
+  } else { validation.className = 'validation show error'; validation.textContent = `💔 Faktor prima belum lengkap atau berlebih. ${number} = ${correctFactors.join(' × ')}`; inputs.forEach(input => input.classList.add('incorrect')); }
+}
+function checkExpForm(containerId, validationId) {
+  const student = currentStudent3; const idx = problemIndices[3][student]; const number = slide3Data[student][idx];
+  const correctFactorization = getPrimeFactorization(number);
+  const pairs = document.querySelectorAll(`#${containerId} .exp-pair`); const userFactorization = {}; let allFilled = true;
+  pairs.forEach(pair => {
+    const base = pair.querySelector('.exp-base'); const power = pair.querySelector('.exp-power');
+    base.classList.remove('correct', 'incorrect'); power.classList.remove('correct', 'incorrect');
+    if (!base.value || !power.value) allFilled = false;
+    else { const b = parseInt(base.value); const p = parseInt(power.value); userFactorization[b] = (userFactorization[b] || 0) + p; }
+  });
+  const validation = document.getElementById(validationId);
+  if (!allFilled) { validation.className = 'validation show error'; validation.textContent = '💔 Isi semua basis dan pangkat ya! Jika ada sisa, hapus dengan tombol ×'; return; }
+  const correctKeys = Object.keys(correctFactorization).map(Number).sort((a,b) => a-b);
+  const userKeys = Object.keys(userFactorization).map(Number).sort((a,b) => a-b);
+  const isCorrect = correctKeys.length === userKeys.length && correctKeys.every(k => userFactorization[k] === correctFactorization[k]);
+  if (isCorrect) {
+    validation.className = 'validation show success'; validation.innerHTML = `🎉 Sempurna! ${number} = ${formatFactorization(correctFactorization)}`;
+    pairs.forEach(pair => { pair.querySelector('.exp-base').classList.add('correct'); pair.querySelector('.exp-power').classList.add('correct'); });
+    slide3Completed[student][idx] = true; renderProblemDots(3);
+  } else { validation.className = 'validation show error'; validation.innerHTML = `💔 Belum tepat. ${number} = ${formatFactorization(correctFactorization)}`; pairs.forEach(pair => { pair.querySelector('.exp-base').classList.add('incorrect'); pair.querySelector('.exp-power').classList.add('incorrect'); }); }
+}
+
+// ===== SLIDE 4 =====
+const slide4Data = [
+  { a: 12, b: 18 }, { a: 15, b: 20 }, { a: 24, b: 36 }, { a: 18, b: 27 },
+  { a: 16, b: 24 }, { a: 20, b: 30 }, { a: 14, b: 21 }, { a: 28, b: 35 },
+  { a: 30, b: 45 }, { a: 36, b: 48 }, { a: 40, b: 60 }, { a: 27, b: 36 },
+  { a: 32, b: 48 }, { a: 42, b: 56 }, { a: 45, b: 60 }, { a: 50, b: 75 },
+  { a: 54, b: 72 }, { a: 60, b: 80 }, { a: 63, b: 84 }, { a: 72, b: 96 }
+];
+let slide4State = { assignment: null, kpkFpbAssignment: null, factorizationDone: { A: false, B: false } };
+
+function initSlide4() { renderSlide4(); renderProblemDots(4); }
+function renderSlide4() {
+  const idx = problemIndices[4]; const data = slide4Data[idx];
+  document.getElementById('problemCounter4').textContent = idx + 1;
+  document.getElementById('number4A').textContent = data.a; document.getElementById('number4B').textContent = data.b;
+  slide4State = { assignment: null, kpkFpbAssignment: null, factorizationDone: { A: false, B: false } };
+  showStep4(1);
+  document.getElementById('spinner1').textContent = 'Klik untuk mulai'; document.getElementById('spinner1').classList.remove('spinning'); document.getElementById('spinnerResult1').textContent = '';
+  document.getElementById('spinner2').textContent = 'Klik untuk mulai'; document.getElementById('spinner2').classList.remove('spinning'); document.getElementById('spinnerResult2').textContent = '';
+  document.getElementById('studentA-avatar').textContent = '?'; document.getElementById('studentA-name').textContent = 'Tunggu undian...';
+  document.getElementById('studentB-avatar').textContent = '?'; document.getElementById('studentB-name').textContent = 'Tunggu undian...';
+  document.getElementById('assignNumA').textContent = '?'; document.getElementById('assignNumB').textContent = '?';
+  document.getElementById('studentKPK-avatar').textContent = '?'; document.getElementById('studentKPK-name').textContent = 'Tunggu undian...';
+  document.getElementById('studentFPB-avatar').textContent = '?'; document.getElementById('studentFPB-name').textContent = 'Tunggu undian...';
+  document.getElementById('kpkAnswer').value = ''; document.getElementById('fpbAnswer').value = '';
+  document.getElementById('factorTree4A').innerHTML = ''; document.getElementById('factorTree4B').innerHTML = '';
+  renderMultForm('multForm4A', 'multPreview4A'); renderMultForm('multForm4B', 'multPreview4B');
+  renderExpForm('expForm4A', 'expPreview4A'); renderExpForm('expForm4B', 'expPreview4B');
+  ['validation4A', 'validation4B', 'validationKPK', 'validationFPB', 'validation4Main'].forEach(id => { const el = document.getElementById(id); if (el) { el.className = 'validation'; el.textContent = ''; } });
+  renderProblemDots(4);
+}
+function spinSpinner(num) {
+  const spinner = document.getElementById('spinner' + num); const result = document.getElementById('spinnerResult' + num);
+  spinner.classList.add('spinning');
+  const options = num === 1 ? 
+    [`${studentNames.s1} → ${slide4Data[problemIndices[4]].a}, ${studentNames.s2} → ${slide4Data[problemIndices[4]].b}`,
+     `${studentNames.s1} → ${slide4Data[problemIndices[4]].b}, ${studentNames.s2} → ${slide4Data[problemIndices[4]].a}`] :
+    [`${studentNames.s1} → KPK, ${studentNames.s2} → FPB`, `${studentNames.s1} → FPB, ${studentNames.s2} → KPK`];
+  let count = 0; const interval = setInterval(() => { spinner.textContent = options[count % 2]; count++; }, 100);
+  setTimeout(() => {
+    clearInterval(interval); spinner.classList.remove('spinning'); const selected = Math.floor(Math.random() * 2);
+    spinner.textContent = options[selected]; result.textContent = '✨ Undian selesai! Mulai kerjakan ya!';
+    if (num === 1) { slide4State.assignment = selected === 0 ? 'A1B2' : 'A2B1'; setupFactorizationAssignment(selected === 0); }
+    else { slide4State.kpkFpbAssignment = selected === 0 ? 'K1F2' : 'K2F1'; setupKPKFPBAssignment(selected === 0); }
+  }, 2000);
+}
+function setupFactorizationAssignment(student1GetsA) {
+  const data = slide4Data[problemIndices[4]];
+  if (student1GetsA) {
+    document.getElementById('studentA-avatar').textContent = '1'; document.getElementById('studentA-name').textContent = studentNames.s1 + ' (Bilangan 1)';
+    document.getElementById('studentB-avatar').textContent = '2'; document.getElementById('studentB-name').textContent = studentNames.s2 + ' (Bilangan 2)';
+  } else {
+    document.getElementById('studentA-avatar').textContent = '2'; document.getElementById('studentA-name').textContent = studentNames.s2 + ' (Bilangan 1)';
+    document.getElementById('studentB-avatar').textContent = '1'; document.getElementById('studentB-name').textContent = studentNames.s1 + ' (Bilangan 2)';
+  }
+  document.getElementById('assignNumA').textContent = data.a; document.getElementById('assignNumB').textContent = data.b;
+  buildAndRenderTree('factorTree4A', data.a); buildAndRenderTree('factorTree4B', data.b);
+}
+function check4A() {
+  const data = slide4Data[problemIndices[4]]; const number = data.a;
+  const correctFactorization = getPrimeFactorization(number); const validation = document.getElementById('validation4A');
+  const treeInputs = document.querySelectorAll('#factorTree4A .tree-input'); let treeOk = true;
+  treeInputs.forEach(input => { if (!input.value || input.classList.contains('invalid')) treeOk = false; });
+  if (treeInputs.length > 0 && !treeOk) { validation.className = 'validation show error'; validation.textContent = '💔 Pohon faktor belum lengkap! Selesaikan dulu ya.'; return; }
+  const multInputs = document.querySelectorAll('#multForm4A .mult-input'); const userFactors = []; let multFilled = true;
+  multInputs.forEach(input => { input.classList.remove('correct', 'incorrect'); if (!input.value) multFilled = false; else userFactors.push(parseInt(input.value)); });
+  if (!multFilled) { validation.className = 'validation show error'; validation.textContent = '💔 Lengkapi bentuk perkalian dulu ya!'; return; }
+  if (!userFactors.every(f => isPrime(f))) { validation.className = 'validation show error'; validation.textContent = '💔 Faktor prima harus bilangan prima!'; return; }
+  if (userFactors.reduce((a,b) => a*b, 1) !== number) { validation.className = 'validation show error'; validation.textContent = `💔 Perkalian harus = ${number}.`; return; }
+  const expPairs = document.querySelectorAll('#expForm4A .exp-pair'); const userFactorization = {}; let expFilled = true;
+  expPairs.forEach(pair => {
+    const base = pair.querySelector('.exp-base'); const power = pair.querySelector('.exp-power');
+    base.classList.remove('correct', 'incorrect'); power.classList.remove('correct', 'incorrect');
+    if (!base.value || !power.value) expFilled = false;
+    else { const b = parseInt(base.value); const p = parseInt(power.value); userFactorization[b] = (userFactorization[b] || 0) + p; }
+  });
+  if (!expFilled) { validation.className = 'validation show error'; validation.textContent = '💔 Lengkapi bentuk pangkat dulu ya!'; return; }
+  const correctKeys = Object.keys(correctFactorization).map(Number).sort((a,b) => a-b);
+  const userKeys = Object.keys(userFactorization).map(Number).sort((a,b) => a-b);
+  const expOk = correctKeys.length === userKeys.length && correctKeys.every(k => userFactorization[k] === correctFactorization[k]);
+  if (expOk) {
+    validation.className = 'validation show success'; validation.innerHTML = `🎉 Sempurna! ${number} = ${formatFactorization(correctFactorization)}`;
+    multInputs.forEach(input => input.classList.add('correct'));
+    expPairs.forEach(pair => { pair.querySelector('.exp-base').classList.add('correct'); pair.querySelector('.exp-power').classList.add('correct'); });
+    slide4State.factorizationDone.A = true; checkBothFactorizationDone();
+  } else { validation.className = 'validation show error'; validation.innerHTML = `💔 Bentuk pangkat belum tepat. ${number} = ${formatFactorization(correctFactorization)}`; }
+}
+function check4B() {
+  const data = slide4Data[problemIndices[4]]; const number = data.b;
+  const correctFactorization = getPrimeFactorization(number); const validation = document.getElementById('validation4B');
+  const treeInputs = document.querySelectorAll('#factorTree4B .tree-input'); let treeOk = true;
+  treeInputs.forEach(input => { if (!input.value || input.classList.contains('invalid')) treeOk = false; });
+  if (treeInputs.length > 0 && !treeOk) { validation.className = 'validation show error'; validation.textContent = '💔 Pohon faktor belum lengkap! Selesaikan dulu ya.'; return; }
+  const multInputs = document.querySelectorAll('#multForm4B .mult-input'); const userFactors = []; let multFilled = true;
+  multInputs.forEach(input => { input.classList.remove('correct', 'incorrect'); if (!input.value) multFilled = false; else userFactors.push(parseInt(input.value)); });
+  if (!multFilled) { validation.className = 'validation show error'; validation.textContent = '💔 Lengkapi bentuk perkalian dulu ya!'; return; }
+  if (!userFactors.every(f => isPrime(f))) { validation.className = 'validation show error'; validation.textContent = '💔 Faktor prima harus bilangan prima!'; return; }
+  if (userFactors.reduce((a,b) => a*b, 1) !== number) { validation.className = 'validation show error'; validation.textContent = `💔 Perkalian harus = ${number}.`; return; }
+  const expPairs = document.querySelectorAll('#expForm4B .exp-pair'); const userFactorization = {}; let expFilled = true;
+  expPairs.forEach(pair => {
+    const base = pair.querySelector('.exp-base'); const power = pair.querySelector('.exp-power');
+    base.classList.remove('correct', 'incorrect'); power.classList.remove('correct', 'incorrect');
+    if (!base.value || !power.value) expFilled = false;
+    else { const b = parseInt(base.value); const p = parseInt(power.value); userFactorization[b] = (userFactorization[b] || 0) + p; }
+  });
+  if (!expFilled) { validation.className = 'validation show error'; validation.textContent = '💔 Lengkapi bentuk pangkat dulu ya!'; return; }
+  const correctKeys = Object.keys(correctFactorization).map(Number).sort((a,b) => a-b);
+  const userKeys = Object.keys(userFactorization).map(Number).sort((a,b) => a-b);
+  const expOk = correctKeys.length === userKeys.length && correctKeys.every(k => userFactorization[k] === correctFactorization[k]);
+  if (expOk) {
+    validation.className = 'validation show success'; validation.innerHTML = `🎉 Sempurna! ${number} = ${formatFactorization(correctFactorization)}`;
+    multInputs.forEach(input => input.classList.add('correct'));
+    expPairs.forEach(pair => { pair.querySelector('.exp-base').classList.add('correct'); pair.querySelector('.exp-power').classList.add('correct'); });
+    slide4State.factorizationDone.B = true; checkBothFactorizationDone();
+  } else { validation.className = 'validation show error'; validation.innerHTML = `💔 Bentuk pangkat belum tepat. ${number} = ${formatFactorization(correctFactorization)}`; }
+}
+function checkBothFactorizationDone() {
+  if (slide4State.factorizationDone.A && slide4State.factorizationDone.B) {
+    const validation = document.getElementById('validation4Main');
+    validation.className = 'validation show success'; validation.textContent = '🎉 Keduanya selesai! Sekarang lanjut ke undian KPK/FPB ya!';
+    setTimeout(() => showStep4(2), 1500);
+  }
+}
+function setupKPKFPBAssignment(student1GetsKPK) {
+  const data = slide4Data[problemIndices[4]];
+  document.getElementById('kpkNum1').textContent = data.a; document.getElementById('kpkNum2').textContent = data.b;
+  document.getElementById('fpbNum1').textContent = data.a; document.getElementById('fpbNum2').textContent = data.b;
+  if (student1GetsKPK) {
+    document.getElementById('studentKPK-avatar').textContent = '1'; document.getElementById('studentKPK-name').textContent = studentNames.s1 + ' (KPK)';
+    document.getElementById('studentFPB-avatar').textContent = '2'; document.getElementById('studentFPB-name').textContent = studentNames.s2 + ' (FPB)';
+  } else {
+    document.getElementById('studentKPK-avatar').textContent = '2'; document.getElementById('studentKPK-name').textContent = studentNames.s2 + ' (KPK)';
+    document.getElementById('studentFPB-avatar').textContent = '1'; document.getElementById('studentFPB-name').textContent = studentNames.s1 + ' (FPB)';
+  }
+}
+function checkKPK() {
+  const data = slide4Data[problemIndices[4]]; const correctAns = lcm(data.a, data.b);
+  const factA = getPrimeFactorization(data.a); const factB = getPrimeFactorization(data.b);
+  const correctFact = {};
+  for (let k in factA) correctFact[k] = factA[k];
+  for (let k in factB) { if (correctFact[k]) correctFact[k] = Math.max(correctFact[k], factB[k]); else correctFact[k] = factB[k]; }
+
+  const expPairs = document.querySelectorAll('#expFormKPK .exp-pair'); const userFact = {}; let expFilled = true;
+  expPairs.forEach(pair => {
+    const base = pair.querySelector('.exp-base'); const power = pair.querySelector('.exp-power');
+    base.classList.remove('correct', 'incorrect'); power.classList.remove('correct', 'incorrect');
+    if (!base.value || !power.value) expFilled = false;
+    else { const b = parseInt(base.value); const p = parseInt(power.value); userFact[b] = (userFact[b] || 0) + p; }
+  });
+
+  const val = document.getElementById('validationKPK');
+  if (!expFilled) { val.className = 'validation show error'; val.textContent = '💔 Lengkapi bentuk pangkat KPK dulu ya!'; return; }
+  const correctKeys = Object.keys(correctFact).map(Number).sort((a,b) => a-b);
+  const userKeys = Object.keys(userFact).map(Number).sort((a,b) => a-b);
+  const expOk = correctKeys.length === userKeys.length && correctKeys.every(k => userFact[k] === correctFact[k]);
+  if (!expOk) {
+    val.className = 'validation show error';
+    val.innerHTML = `💔 Bentuk pangkat KPK belum tepat. KPK ambil semua bilangan, jika sama pilih pangkat terbesar.<br>Seharusnya: ${formatFactorization(correctFact)}`;
+    expPairs.forEach(pair => { pair.querySelector('.exp-base').classList.add('incorrect'); pair.querySelector('.exp-power').classList.add('incorrect'); });
+    return;
+  }
+  expPairs.forEach(pair => { pair.querySelector('.exp-base').classList.add('correct'); pair.querySelector('.exp-power').classList.add('correct'); });
+
+  const multInputs = document.querySelectorAll('#multFormKPK .mult-input'); const userMult = []; let multFilled = true;
+  multInputs.forEach(input => { input.classList.remove('correct', 'incorrect'); if (!input.value) multFilled = false; else userMult.push(parseInt(input.value)); });
+  if (!multFilled) { val.className = 'validation show error'; val.textContent = '💔 Lengkapi bentuk perkalian KPK dulu ya!'; return; }
+
+  const correctMult = []; for (let k in correctFact) { for (let i = 0; i < correctFact[k]; i++) correctMult.push(parseInt(k)); }
+  correctMult.sort((a,b) => a-b); const userMultSorted = [...userMult].sort((a,b) => a-b);
+  const multOk = correctMult.length === userMultSorted.length && correctMult.every((v,i) => v === userMultSorted[i]);
+  if (!multOk) {
+    val.className = 'validation show error';
+    val.innerHTML = `💔 Bentuk perkalian KPK belum tepat. Seharusnya: ${correctMult.join(' × ')}`;
+    multInputs.forEach(input => input.classList.add('incorrect')); return;
+  }
+  multInputs.forEach(input => input.classList.add('correct'));
+
+  const ansInput = document.getElementById('kpkAnswer'); const userAns = parseInt(ansInput.value);
+  if (isNaN(userAns)) { val.className = 'validation show error'; val.textContent = '💔 Masukkan hasil akhir KPK dulu ya!'; return; }
+  if (userAns === correctAns) {
+    val.className = 'validation show success'; val.textContent = `🎉 Hebat! KPK dari ${data.a} dan ${data.b} = ${correctAns}`;
+    ansInput.classList.add('correct'); checkBothKPKFPBDone();
+  } else {
+    val.className = 'validation show error'; val.textContent = `💔 Hasil akhir KPK belum tepat. Coba hitung perkaliannya lagi ya!`;
+    ansInput.classList.add('incorrect');
+  }
+}
+function checkFPB() {
+  const data = slide4Data[problemIndices[4]]; const correctAns = gcd(data.a, data.b);
+  const factA = getPrimeFactorization(data.a); const factB = getPrimeFactorization(data.b);
+  const correctFact = {};
+  for (let k in factA) { if (factB[k]) correctFact[k] = Math.min(factA[k], factB[k]); }
+
+  const expPairs = document.querySelectorAll('#expFormFPB .exp-pair'); const userFact = {}; let expFilled = true;
+  expPairs.forEach(pair => {
+    const base = pair.querySelector('.exp-base'); const power = pair.querySelector('.exp-power');
+    base.classList.remove('correct', 'incorrect'); power.classList.remove('correct', 'incorrect');
+    if (!base.value || !power.value) expFilled = false;
+    else { const b = parseInt(base.value); const p = parseInt(power.value); userFact[b] = (userFact[b] || 0) + p; }
+  });
+
+  const val = document.getElementById('validationFPB');
+  if (!expFilled) { val.className = 'validation show error'; val.textContent = '💔 Lengkapi bentuk pangkat FPB dulu ya!'; return; }
+  const correctKeys = Object.keys(correctFact).map(Number).sort((a,b) => a-b);
+  const userKeys = Object.keys(userFact).map(Number).sort((a,b) => a-b);
+  const expOk = correctKeys.length === userKeys.length && correctKeys.every(k => userFact[k] === correctFact[k]);
+  if (!expOk) {
+    val.className = 'validation show error';
+    val.innerHTML = `💔 Bentuk pangkat FPB belum tepat. FPB ambil bilangan yang sama dengan pangkat terkecil.<br>Seharusnya: ${formatFactorization(correctFact)}`;
+    expPairs.forEach(pair => { pair.querySelector('.exp-base').classList.add('incorrect'); pair.querySelector('.exp-power').classList.add('incorrect'); });
+    return;
+  }
+  expPairs.forEach(pair => { pair.querySelector('.exp-base').classList.add('correct'); pair.querySelector('.exp-power').classList.add('correct'); });
+
+  const multInputs = document.querySelectorAll('#multFormFPB .mult-input'); const userMult = []; let multFilled = true;
+  multInputs.forEach(input => { input.classList.remove('correct', 'incorrect'); if (!input.value) multFilled = false; else userMult.push(parseInt(input.value)); });
+  if (!multFilled) { val.className = 'validation show error'; val.textContent = '💔 Lengkapi bentuk perkalian FPB dulu ya!'; return; }
+
+  const correctMult = []; for (let k in correctFact) { for (let i = 0; i < correctFact[k]; i++) correctMult.push(parseInt(k)); }
+  correctMult.sort((a,b) => a-b); const userMultSorted = [...userMult].sort((a,b) => a-b);
+  const multOk = correctMult.length === userMultSorted.length && correctMult.every((v,i) => v === userMultSorted[i]);
+  if (!multOk) {
+    val.className = 'validation show error';
+    val.innerHTML = `💔 Bentuk perkalian FPB belum tepat. Seharusnya: ${correctMult.join(' × ')}`;
+    multInputs.forEach(input => input.classList.add('incorrect')); return;
+  }
+  multInputs.forEach(input => input.classList.add('correct'));
+
+  const ansInput = document.getElementById('fpbAnswer'); const userAns = parseInt(ansInput.value);
+  if (isNaN(userAns)) { val.className = 'validation show error'; val.textContent = '💔 Masukkan hasil akhir FPB dulu ya!'; return; }
+  if (userAns === correctAns) {
+    val.className = 'validation show success'; val.textContent = `🎉 Hebat! FPB dari ${data.a} dan ${data.b} = ${correctAns}`;
+    ansInput.classList.add('correct'); checkBothKPKFPBDone();
+  } else {
+    val.className = 'validation show error'; val.textContent = `💔 Hasil akhir FPB belum tepat. Coba hitung perkaliannya lagi ya!`;
+    ansInput.classList.add('incorrect');
+  }
+}
+function checkBothKPKFPBDone() {
+  const kpkInput = document.getElementById('kpkAnswer'); const fpbInput = document.getElementById('fpbAnswer');
+  const data = slide4Data[problemIndices[4]];
+  if (parseInt(kpkInput.value) === lcm(data.a, data.b) && parseInt(fpbInput.value) === gcd(data.a, data.b)) {
+    const validation = document.getElementById('validation4Main');
+    validation.className = 'validation show success'; validation.textContent = '🎉 KPK dan FPB benar! Kerja sama yang luar biasa! Klik "Ganti Soal" untuk lanjut.';
+    showStep4(3);
+  }
+}
+function showStep4(step) {
+  document.getElementById('step4Content1').style.display = step === 1 ? 'block' : 'none';
+  document.getElementById('step4Content2').style.display = step === 2 ? 'block' : 'none';
+  document.getElementById('step4-1').classList.toggle('active', step === 1);
+  document.getElementById('step4-2').classList.toggle('active', step === 2);
+  document.getElementById('step4-3').classList.toggle('active', step === 3);
+  if (step > 1) { document.getElementById('step4-' + (step-1)).classList.add('done'); document.getElementById('step4-' + (step-1)).classList.remove('active'); }
+  if (step === 3) document.getElementById('step4-3').classList.add('done');
+  
+  if (step === 2) {
+    const data = slide4Data[problemIndices[4]];
+    const factA = getPrimeFactorization(data.a);
+    const factB = getPrimeFactorization(data.b);
+    document.getElementById('fact4A').innerHTML = formatFactorization(factA);
+    document.getElementById('fact4B').innerHTML = formatFactorization(factB);
+    
+    renderExpForm('expFormKPK', 'expPreviewKPK');
+    renderMultForm('multFormKPK', 'multPreviewKPK');
+    renderExpForm('expFormFPB', 'expPreviewFPB');
+    renderMultForm('multFormFPB', 'multPreviewFPB');
+    
+    document.getElementById('kpkAnswer').value = '';
+    document.getElementById('fpbAnswer').value = '';
+    document.getElementById('kpkAnswer').classList.remove('correct', 'incorrect');
+    document.getElementById('fpbAnswer').classList.remove('correct', 'incorrect');
+    document.getElementById('validationKPK').className = 'validation';
+    document.getElementById('validationFPB').className = 'validation';
+  }
+}
+function nextProblem4() {
+  if (problemIndices[4] < 19) { problemIndices[4]++; renderSlide4(); }
+  else { const validation = document.getElementById('validation4Main'); validation.className = 'validation show info'; validation.textContent = '🌸 Semua soal sudah selesai! Kalian hebat banar!'; }
+}
+
+// ===== SLIDE 5 =====
+const slide5Data = {
+  1: [
+    { type: 'mcq', q: 'Faktor prima dari 12 adalah...', options: ['2 × 2 × 3', '2 × 3', '2 × 2 × 2', '3 × 4'], ans: 0, exp: '12 = 2² × 3 = 2 × 2 × 3' },
+    { type: 'mcq', q: 'Bentuk pangkat dari 18 adalah...', options: ['2² × 3', '2 × 3²', '2² × 3²', '2 × 3'], ans: 1, exp: '18 = 2 × 3 × 3 = 2 × 3²' },
+    { type: 'mcq', q: 'KPK dari 4 dan 6 adalah...', options: ['12', '24', '2', '10'], ans: 0, exp: 'KPK(4,6) = 2² × 3 = 12' },
+    { type: 'mcq', q: 'FPB dari 12 dan 18 adalah...', options: ['36', '6', '3', '2'], ans: 1, exp: 'FPB(12,18) = 2 × 3 = 6' },
+    { type: 'mcq-complex', q: 'Manakah yang merupakan bilangan prima? (pilih semua yang benar)', options: ['2', '4', '7', '9', '11'], ans: [0, 2, 4], exp: 'Bilangan prima: 2, 3, 5, 7, 11, 13, ...' },
+    { type: 'mcq', q: 'Faktorisasi prima dari 24 adalah...', options: ['2³ × 3', '2² × 3', '2 × 3²', '2⁴ × 3'], ans: 0, exp: '24 = 2 × 2 × 2 × 3 = 2³ × 3' },
+    { type: 'mcq', q: 'KPK dari 8 dan 12 adalah...', options: ['24', '48', '4', '96'], ans: 0, exp: 'KPK(8,12) = 2³ × 3 = 24' },
+    { type: 'mcq', q: 'FPB dari 20 dan 30 adalah...', options: ['60', '10', '5', '2'], ans: 1, exp: 'FPB(20,30) = 2 × 5 = 10' },
+    { type: 'mcq', q: 'Bentuk pangkat dari 36 adalah...', options: ['2² × 3²', '2 × 3³', '2³ × 3', '2² × 3'], ans: 0, exp: '36 = 2² × 3²' },
+    { type: 'mcq-complex', q: 'Faktor prima dari 30 adalah... (pilih semua yang benar)', options: ['2', '3', '5', '6', '10'], ans: [0, 1, 2], exp: '30 = 2 × 3 × 5' },
+    { type: 'mcq', q: 'KPK dari 6 dan 9 adalah...', options: ['54', '3', '18', '9'], ans: 2, exp: 'KPK(6,9) = 2 × 3² = 18' },
+    { type: 'mcq', q: 'FPB dari 16 dan 24 adalah...', options: ['48', '8', '4', '2'], ans: 1, exp: 'FPB(16,24) = 2³ = 8' },
+    { type: 'mcq', q: 'Bentuk perkalian dari 2³ × 3² adalah...', options: ['2 × 2 × 2 × 3 × 3', '2 × 3 × 3', '2 × 2 × 3', '2 × 2 × 2 × 2 × 3'], ans: 0, exp: '2³ × 3² = 2 × 2 × 2 × 3 × 3 = 72' },
+    { type: 'mcq', q: 'KPK dari 5 dan 7 adalah...', options: ['12', '35', '70', '1'], ans: 1, exp: 'KPK(5,7) = 5 × 7 = 35' },
+    { type: 'mcq-complex', q: 'Manakah bilangan yang faktor primanya 2 dan 3? (pilih semua)', options: ['6', '12', '18', '15', '24'], ans: [0, 1, 2, 4], exp: '6=2×3, 12=2²×3, 18=2×3², 24=2³×3. Sedangkan 15=3×5' },
+    { type: 'mcq', q: 'FPB dari 14 dan 21 adalah...', options: ['42', '7', '3', '2'], ans: 1, exp: 'FPB(14,21) = 7' },
+    { type: 'mcq', q: 'Faktorisasi prima dari 50 adalah...', options: ['2 × 5²', '2² × 5', '2 × 5', '2² × 5²'], ans: 0, exp: '50 = 2 × 5 × 5 = 2 × 5²' },
+    { type: 'mcq', q: 'KPK dari 10 dan 15 adalah...', options: ['30', '150', '5', '45'], ans: 0, exp: 'KPK(10,15) = 2 × 3 × 5 = 30' },
+    { type: 'mcq', q: 'FPB dari 27 dan 36 adalah...', options: ['108', '9', '3', '12'], ans: 1, exp: 'FPB(27,36) = 3² = 9' },
+    { type: 'mcq-complex', q: 'Faktor dari 2² × 3 adalah... (pilih semua)', options: ['1', '2', '3', '6', '12'], ans: [0, 1, 2, 3, 4], exp: '2²×3=12, faktornya: 1,2,3,4,6,12' }
+  ],
+  2: [
+    { type: 'mcq', q: 'Faktor prima dari 20 adalah...', options: ['2 × 2 × 5', '2 × 5', '4 × 5', '2 × 10'], ans: 0, exp: '20 = 2² × 5 = 2 × 2 × 5' },
+    { type: 'mcq', q: 'Bentuk pangkat dari 24 adalah...', options: ['2³ × 3', '2² × 3', '2 × 3³', '2⁴ × 3'], ans: 0, exp: '24 = 2 × 2 × 2 × 3 = 2³ × 3' },
+    { type: 'mcq', q: 'KPK dari 6 dan 8 adalah...', options: ['24', '48', '2', '14'], ans: 0, exp: 'KPK(6,8) = 2³ × 3 = 24' },
+    { type: 'mcq', q: 'FPB dari 16 dan 24 adalah...', options: ['48', '8', '4', '2'], ans: 1, exp: 'FPB(16,24) = 2³ = 8' },
+    { type: 'mcq-complex', q: 'Manakah yang merupakan bilangan prima? (pilih semua)', options: ['3', '6', '11', '15', '17'], ans: [0, 2, 4], exp: 'Bilangan prima: 2, 3, 5, 7, 11, 13, 17, ...' },
+    { type: 'mcq', q: 'Faktorisasi prima dari 36 adalah...', options: ['2² × 3²', '2 × 3³', '2³ × 3', '2² × 3'], ans: 0, exp: '36 = 2² × 3²' },
+    { type: 'mcq', q: 'KPK dari 9 dan 12 adalah...', options: ['36', '108', '3', '21'], ans: 0, exp: 'KPK(9,12) = 2² × 3² = 36' },
+    { type: 'mcq', q: 'FPB dari 18 dan 27 adalah...', options: ['54', '9', '3', '6'], ans: 1, exp: 'FPB(18,27) = 3² = 9' },
+    { type: 'mcq', q: 'Bentuk pangkat dari 48 adalah...', options: ['2⁴ × 3', '2³ × 3', '2² × 3²', '2⁴ × 3²'], ans: 0, exp: '48 = 2⁴ × 3' },
+    { type: 'mcq-complex', q: 'Faktor prima dari 42 adalah... (pilih semua)', options: ['2', '3', '6', '7', '14'], ans: [0, 1, 3], exp: '42 = 2 × 3 × 7' },
+    { type: 'mcq', q: 'KPK dari 8 dan 10 adalah...', options: ['40', '80', '2', '18'], ans: 0, exp: 'KPK(8,10) = 2³ × 5 = 40' },
+    { type: 'mcq', q: 'FPB dari 20 dan 25 adalah...', options: ['100', '5', '2', '10'], ans: 1, exp: 'FPB(20,25) = 5' },
+    { type: 'mcq', q: 'Bentuk perkalian dari 2² × 5² adalah...', options: ['2 × 2 × 5 × 5', '2 × 5', '2 × 5 × 5', '2 × 2 × 5'], ans: 0, exp: '2² × 5² = 2 × 2 × 5 × 5 = 100' },
+    { type: 'mcq', q: 'KPK dari 4 dan 9 adalah...', options: ['36', '13', '18', '1'], ans: 0, exp: 'KPK(4,9) = 2² × 3² = 36' },
+    { type: 'mcq-complex', q: 'Manakah bilangan yang faktor primanya 2 dan 5? (pilih semua)', options: ['10', '20', '30', '15', '40'], ans: [0, 1, 2, 4], exp: '10=2×5, 20=2²×5, 30=2×3×5(bukan), 40=2³×5. 30 punya faktor 3 juga' },
+    { type: 'mcq', q: 'FPB dari 24 dan 36 adalah...', options: ['72', '12', '6', '4'], ans: 1, exp: 'FPB(24,36) = 2² × 3 = 12' },
+    { type: 'mcq', q: 'Faktorisasi prima dari 72 adalah...', options: ['2³ × 3²', '2² × 3³', '2³ × 3', '2⁴ × 3²'], ans: 0, exp: '72 = 2³ × 3²' },
+    { type: 'mcq', q: 'KPK dari 12 dan 18 adalah...', options: ['36', '6', '24', '72'], ans: 0, exp: 'KPK(12,18) = 2² × 3² = 36' },
+    { type: 'mcq', q: 'FPB dari 30 dan 45 adalah...', options: ['90', '15', '5', '9'], ans: 1, exp: 'FPB(30,45) = 3 × 5 = 15' },
+    { type: 'mcq-complex', q: 'Faktor dari 2³ × 3² adalah... (pilih semua)', options: ['1', '2', '3', '6', '72'], ans: [0, 1, 2, 3, 4], exp: '2³×3²=72, faktornya: 1,2,3,4,6,8,9,12,18,24,36,72' }
+  ]
+};
+let slide5State = { 1: { selected: [], checked: false }, 2: { selected: [], checked: false } };
+
+function initSlide5() { renderSlide5(); renderProblemDots(5); }
+function renderSlide5() {
+  document.getElementById('problemCounter5').textContent = problemIndices[5] + 1;
+  const idx = problemIndices[5];
+  slide5State = { 1: { selected: [], checked: false }, 2: { selected: [], checked: false } };
+  renderProblem5('problem5A', slide5Data[1][idx], 1); renderProblem5('problem5B', slide5Data[2][idx], 2);
+  ['validation5A', 'validation5B', 'explanation5A', 'explanation5B'].forEach(id => {
+    const el = document.getElementById(id); if (el) { el.className = el.id.includes('explanation') ? 'explanation' : 'validation'; el.innerHTML = ''; }
+  });
+  renderProblemDots(5);
+}
+function renderProblem5(containerId, problem, student) {
+  const container = document.getElementById(containerId); container.innerHTML = '';
+  const div = document.createElement('div'); div.className = 'problem-box';
+  const qNum = problemIndices[5] + 1; const typeLabel = problem.type === 'mcq-complex' ? ' (Pilih semua yang benar)' : '';
+  div.innerHTML = `<div class="problem-question">${qNum}. ${problem.q} <span style="color:var(--lavender-deep); font-size:12px;">${typeLabel}</span></div>`;
+  const optionsDiv = document.createElement('div'); optionsDiv.className = 'mc-options';
+  problem.options.forEach((opt, i) => {
+    const optDiv = document.createElement('div');
+    optDiv.className = 'mc-option' + (problem.type === 'mcq' ? ' radio' : '');
+    optDiv.dataset.idx = i; optDiv.onclick = () => toggleOption5(student, i, problem.type);
+    optDiv.innerHTML = `<div class="mc-checkbox"></div><span>${opt}</span>`;
+    optionsDiv.appendChild(optDiv);
+  });
+  div.appendChild(optionsDiv); container.appendChild(div);
+}
+function toggleOption5(student, idx, type) {
+  if (slide5State[student].checked) return;
+  if (type === 'mcq') { slide5State[student].selected = [idx]; }
+  else { const i = slide5State[student].selected.indexOf(idx); if (i > -1) slide5State[student].selected.splice(i, 1); else slide5State[student].selected.push(idx); }
+  const containerId = student === 1 ? 'problem5A' : 'problem5B';
+  const options = document.querySelectorAll('#' + containerId + ' .mc-option');
+  options.forEach(opt => { const i = parseInt(opt.dataset.idx); opt.classList.toggle('selected', slide5State[student].selected.includes(i)); });
+}
+function check5(student) {
+  const idx = problemIndices[5]; const problem = slide5Data[student][idx]; const state = slide5State[student];
+  if (state.selected.length === 0) {
+    const v = document.getElementById(student === 1 ? 'validation5A' : 'validation5B');
+    v.className = 'validation show error'; v.textContent = '💔 Pilih jawaban dulu ya!'; return;
+  }
+  let correct = false;
+  if (problem.type === 'mcq') { correct = state.selected[0] === problem.ans; }
+  else { const sortedSel = [...state.selected].sort((a,b) => a-b); const sortedAns = [...problem.ans].sort((a,b) => a-b); correct = sortedSel.length === sortedAns.length && sortedSel.every((v,i) => v === sortedAns[i]); }
+  state.checked = true;
+  const containerId = student === 1 ? 'problem5A' : 'problem5B';
+  const options = document.querySelectorAll('#' + containerId + ' .mc-option');
+  options.forEach(opt => {
+    const i = parseInt(opt.dataset.idx); opt.style.cursor = 'default';
+    if (problem.type === 'mcq' ? problem.ans === i : problem.ans.includes(i)) opt.classList.add('correct');
+    else if (state.selected.includes(i)) opt.classList.add('incorrect');
+  });
+  const v = document.getElementById(student === 1 ? 'validation5A' : 'validation5B');
+  if (correct) {
+    v.className = 'validation show success';
+    const praises = ['🎉 Hebat sekali!', '✨ Kamu pintar!', '🌟 Mantap!', '💕 Sempurna!', '🌸 Luar biasa!'];
+    v.textContent = praises[Math.floor(Math.random() * praises.length)] + ' Jawabanmu benar!';
+  } else { v.className = 'validation show error'; v.textContent = '💔 Belum tepat. Klik tombol pembahasan untuk melihat penjelasan ya!'; }
+}
+function toggleExplanation5(student) {
+  const idx = problemIndices[5]; const problem = slide5Data[student][idx];
+  const e = document.getElementById(student === 1 ? 'explanation5A' : 'explanation5B');
+  const correctAns = problem.type === 'mcq' ? problem.options[problem.ans] : problem.ans.map(i => problem.options[i]).join(', ');
+  e.innerHTML = `<strong>📖 Pembahasan:</strong><br>${problem.exp}<br><strong>Jawaban benar: ${correctAns}</strong>`;
+  e.classList.toggle('show');
+}
+
+// ===== NAVIGASI SOAL =====
+function prevProblem(slideNum) {
+  if (slideNum === 3) { const student = currentStudent3; if (problemIndices[3][student] > 0) { problemIndices[3][student]--; renderSlide3(); } }
+  else if (slideNum === 4) { if (problemIndices[4] > 0) { problemIndices[4]--; renderSlide4(); } }
+  else if (slideNum === 5) { if (problemIndices[5] > 0) { problemIndices[5]--; renderSlide5(); } }
+}
+function nextProblem(slideNum) {
+  if (slideNum === 3) { const student = currentStudent3; if (problemIndices[3][student] < 19) { problemIndices[3][student]++; renderSlide3(); } }
+  else if (slideNum === 4) { if (problemIndices[4] < 19) { problemIndices[4]++; renderSlide4(); } }
+  else if (slideNum === 5) { if (problemIndices[5] < 19) { problemIndices[5]++; renderSlide5(); } }
+}
+function renderProblemDots(slideNum) {
+  if (slideNum === 3) {
+    const student = currentStudent3; const container = document.getElementById('problemDots3'); container.innerHTML = '';
+    for (let i = 0; i < 20; i++) {
+      const dot = document.createElement('div'); dot.className = 'problem-dot';
+      if (i === problemIndices[3][student]) dot.classList.add('active');
+      if (slide3Completed[student][i]) dot.classList.add('done');
+      dot.onclick = () => { problemIndices[3][student] = i; renderSlide3(); };
+      container.appendChild(dot);
+    }
+  } else if (slideNum === 4) {
+    const container = document.getElementById('problemDots4'); container.innerHTML = '';
+    for (let i = 0; i < 20; i++) {
+      const dot = document.createElement('div'); dot.className = 'problem-dot';
+      if (i === problemIndices[4]) dot.classList.add('active');
+      dot.onclick = () => { problemIndices[4] = i; renderSlide4(); };
+      container.appendChild(dot);
+    }
+  } else if (slideNum === 5) {
+    const container = document.getElementById('problemDots5'); container.innerHTML = '';
+    for (let i = 0; i < 20; i++) {
+      const dot = document.createElement('div'); dot.className = 'problem-dot';
+      if (i === problemIndices[5]) dot.classList.add('active');
+      dot.onclick = () => { problemIndices[5] = i; renderSlide5(); };
+      container.appendChild(dot);
+    }
+  }
+}
+
+// ===== REFLEKSI =====
+function selectMood(mood, btn) {
+  selectedMood = mood;
+  document.querySelectorAll('#moodButtons button').forEach(b => { b.style.background = ''; b.style.transform = ''; });
+  btn.style.background = 'linear-gradient(135deg, var(--pink), var(--pink-deep))'; btn.style.color = 'white'; btn.style.transform = 'scale(1.1)';
+}
+
+// ===== INIT =====
+createDecorations();
+document.getElementById('prevBtn').disabled = true;
+</script>
+</body>
+</html>
