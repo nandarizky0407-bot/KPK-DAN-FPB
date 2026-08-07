@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misi Matematika: KPK & FPB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root {
+  --bg: #fef9f3;
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --accent: #f97316;
+  --accent-dark: #c2410c;
+  --green: #10b981;
+  --green-dark: #047857;
+  --yellow: #fbbf24;
+  --yellow-dark: #d97706;
+  --red: #ef4444;
+  --dark: #0f172a;
+  --gray: #64748b;
+  --card: #ffffff;
+  --border: #e2e8f0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.display-font { font-family: 'Fredoka', sans-serif; font-weight: 600; }
+
+.bg-pattern {
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(249, 115, 22, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.08) 0%, transparent 60%);
+}
+
+.slides-container { width: 100vw; height: 100vh; position: relative; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: none;
+  overflow-y: auto;
+  padding: 2rem 2rem 100px 2rem;
+}
+
+.slide.active {
+  display: block;
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Floating decorations */
+.deco {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.6;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+/* Navigation */
+.nav-bar {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--dark);
+  color: white;
+  padding: 0.6rem 1.25rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 100;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+
+.nav-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.3rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.nav-btn:hover:not(:disabled) {
+  transform: scale(1.1);
+  background: var(--accent-dark);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.slide-dots { display: flex; gap: 0.4rem; align-items: center; }
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.dot.active {
+  background: var(--yellow);
+  width: 2rem;
+  border-radius: 9999px;
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  border: 2px solid var(--border);
+  transition: all 0.3s;
+}
+
+.card-accent { border-color: var(--accent); }
+.card-primary { border-color: var(--primary); }
+.card-green { border-color: var(--green); }
+.card-yellow { border-color: var(--yellow); }
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+.btn-accent { background: var(--accent); color: white; }
+.btn-accent:hover { background: var(--accent-dark); transform: translateY(-2px); }
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover { background: var(--green-dark); transform: translateY(-2px); }
+.btn-yellow { background: var(--yellow); color: var(--dark); }
+.btn-yellow:hover { background: var(--yellow-dark); color: white; transform: translateY(-2px); }
+.btn-outline { background: transparent; border: 2px solid var(--dark); color: var(--dark); }
+.btn-outline:hover { background: var(--dark); color: white; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* Inputs */
+.input {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  width: 100%;
+  transition: border 0.2s;
+  background: white;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.input.correct { border-color: var(--green); background: #ecfdf5; }
+.input.wrong { border-color: var(--red); background: #fef2f2; }
+
+/* Helper Keys (Tombol Bantu) */
+.helper-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.helper-btn {
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.5rem;
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1rem;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.helper-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.helper-btn.accent {
+  background: #ffedd5;
+  color: var(--accent-dark);
+  border-color: var(--accent);
+}
+.helper-btn.accent:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* Flip cards */
+.flip-card {
+  perspective: 1200px;
+  height: 260px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 3px solid;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.flip-card-front {
+  background: white;
+  border-color: var(--primary);
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+  color: white;
+}
+
+.flip-card-back.kpk { background: linear-gradient(135deg, #2563eb, #1e40af); border-color: #1e40af; }
+.flip-card-back.fpb { background: linear-gradient(135deg, #f97316, #c2410c); border-color: #c2410c; }
+
+/* Factor tree */
+.factor-display {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 2px dashed var(--border);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.factor-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.1rem;
+}
+
+.chip-prime { background: var(--accent); color: white; }
+.chip-current { background: var(--primary); color: white; animation: pulse 1.5s infinite; }
+.chip-times { color: var(--gray); font-weight: 400; }
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.prime-btn {
+  padding: 0.6rem 1rem;
+  background: white;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 50px;
+}
+
+.prime-btn:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.step-dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.step-dot.active { background: var(--primary); color: white; }
+.step-dot.done { background: var(--green); color: white; }
+
+.step-line {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.step-line.done { background: var(--green); }
+
+/* Feedback */
+.feedback {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  display: none;
+}
+
+.feedback.show { display: block; animation: fadeIn 0.3s; }
+.feedback.success { background: #d1fae5; color: var(--green-dark); border: 1px solid var(--green); }
+.feedback.error { background: #fee2e2; color: #991b1b; border: 1px solid var(--red); }
+.feedback.info { background: #dbeafe; color: var(--primary-dark); border: 1px solid var(--primary); }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Option button (multiple choice) */
+.option-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: #eff6ff;
+  transform: translateX(4px);
+}
+
+.option-btn.selected {
+  background: #dbeafe;
+  border-color: var(--primary);
+  font-weight: 600;
+}
+
+.option-btn.correct {
+  background: #d1fae5;
+  border-color: var(--green);
+  color: var(--green-dark);
+  font-weight: 700;
+}
+
+.option-btn.wrong {
+  background: #fee2e2;
+  border-color: var(--red);
+  color: #991b1b;
+}
+
+.option-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--dark);
+  color: white;
+  font-weight: 700;
+  margin-right: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.option-btn.correct .option-letter { background: var(--green); }
+.option-btn.wrong .option-letter { background: var(--red); }
+
+/* Progress */
+.progress-bar {
+  height: 10px;
+  background: var(--border);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--yellow), var(--accent));
+  transition: width 0.4s;
+  border-radius: 5px;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confettiFall 3s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Scrollbar */
+.slide::-webkit-scrollbar { width: 8px; }
+.slide::-webkit-scrollbar-track { background: transparent; }
+.slide::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.slide::-webkit-scrollbar-thumb:hover { background: var(--gray); }
+
+/* Problem navigation */
+.problem-nav-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--border);
+  background: white;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  color: var(--gray);
+}
+
+.problem-nav-btn:hover { border-color: var(--primary); color: var(--primary); }
+.problem-nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.problem-nav-btn.done { background: var(--green); color: white; border-color: var(--green); }
+
+/* Tag */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tag-kpk { background: #dbeafe; color: var(--primary-dark); }
+.tag-fpb { background: #ffedd5; color: var(--accent-dark); }
+.tag-time { background: #fef3c7; color: var(--yellow-dark); }
+.tag-notime { background: #d1fae5; color: var(--green-dark); }
+.tag-sedang { background: #e0e7ff; color: #4338ca; }
+.tag-sulit { background: #fee2e2; color: #991b1b; }
+.tag-hots { background: #fce7f3; color: #9d174d; }
+
+/* Keyword highlight */
+.keyword-box {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 2px dashed var(--yellow-dark);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-top: 0.75rem;
+  display: none;
+}
+
+.keyword-box.show { display: block; animation: fadeIn 0.4s; }
+
+/* Discussion box */
+.discussion-box {
+  background: #ecfdf5;
+  border: 2px solid var(--green);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-top: 0.75rem;
+  display: none;
+}
+
+.discussion-box.show { display: block; animation: fadeIn 0.4s; }
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  background: var(--dark);
+  color: var(--yellow);
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slide { padding: 1rem 1rem 100px 1rem; }
+  .nav-bar { padding: 0.5rem 1rem; gap: 0.5rem; }
+  .nav-btn { width: 2rem; height: 2rem; font-size: 1.1rem; }
+}
+
+/* Hero number animation */
+.hero-num {
+  display: inline-block;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Slide 3 step section */
+.step-section {
+  display: none;
+  animation: fadeIn 0.4s;
+}
+
+.step-section.active { display: block; }
+
+/* Trick card */
+.trick-card {
+  background: linear-gradient(135deg, white, #f8fafc);
+  border: 3px solid;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.trick-card::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+
+.trick-kpk { border-color: var(--primary); }
+.trick-kpk::before { background: var(--primary); }
+.trick-fpb { border-color: var(--accent); }
+.trick-fpb::before { background: var(--accent); }
+
+/* Reflection textarea */
+.reflection-input {
+  width: 100%;
+  min-height: 120px;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  background: white;
+}
+
+.reflection-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+}
+
+.tree-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  font-weight: 700;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.1rem;
+  margin: 0 0.25rem;
+}
+
+.tree-prime { background: var(--accent); color: white; }
+.tree-composite { background: var(--primary); color: white; animation: pulse 1.5s infinite; }
+
+</style>
+</head>
+<body class="bg-pattern">
+
+<!-- Decorations -->
+<div class="deco" style="top: 5%; left: 3%; font-size: 4rem; color: var(--accent);">✦</div>
+<div class="deco" style="top: 15%; right: 5%; font-size: 3rem; color: var(--primary); animation-delay: 1s;">●</div>
+<div class="deco" style="bottom: 20%; left: 5%; font-size: 3.5rem; color: var(--green); animation-delay: 2s;">▲</div>
+<div class="deco" style="bottom: 10%; right: 8%; font-size: 4rem; color: var(--yellow); animation-delay: 0.5s;">★</div>
+
+<div class="slides-container">
+
+<!-- =================== SLIDE 1: COVER =================== -->
+<section class="slide active" id="slide1">
+  <div class="max-w-5xl mx-auto pt-8">
+    <div class="text-center mb-6">
+      <div class="badge mb-4">
+        <span>⚡</span> MISI MATEMATIKA HARI INI
+      </div>
+      <h1 class="display-font text-5xl md:text-7xl font-bold leading-tight mb-2" style="color: var(--dark);">
+        Petualangan<br>
+        <span style="color: var(--accent);">KPK</span> & <span style="color: var(--primary);">FPB</span>
+      </h1>
+      <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+        Belajar soal cerita KPK dan FPB lewat misi interaktif yang seru dan penuh teka-teki!
+      </p>
+    </div>
+
+    <!-- Hero number showcase -->
+    <div class="flex justify-center items-center gap-4 md:gap-8 my-8">
+      <div class="text-center">
+        <div class="hero-num text-6xl md:text-8xl" style="color: var(--accent);">12</div>
+        <div class="text-sm font-bold text-gray-500 mt-2">FPB</div>
+      </div>
+      <div class="text-4xl md:text-6xl text-gray-300 font-bold">×</div>
+      <div class="text-center">
+        <div class="hero-num text-6xl md:text-8xl" style="color: var(--primary); animation-delay: 0.5s;">72</div>
+        <div class="text-sm font-bold text-gray-500 mt-2">KPK</div>
+      </div>
+      <div class="text-4xl md:text-6xl text-gray-300 font-bold">=</div>
+      <div class="text-center">
+        <div class="hero-num text-6xl md:text-8xl" style="color: var(--green); animation-delay: 1s;">24</div>
+        <div class="text-sm font-bold text-gray-500 mt-2">FAKTOR</div>
+      </div>
+    </div>
+
+    <!-- Name input -->
+    <div class="card max-w-xl mx-auto" style="border-color: var(--accent); border-width: 3px;">
+      <label class="block text-lg font-bold mb-3 display-font flex items-center gap-2">
+        <span style="color: var(--accent);">●</span> Nama Peserta Misi
+      </label>
+      <input type="text" id="studentName" class="input text-lg" placeholder="Tulis namamu di sini, prajurit!" oninput="updateStartButton()">
+      <button id="startBtn" class="btn btn-accent w-full justify-center mt-4 text-lg" onclick="startAdventure()" disabled>
+        <span>MULAI PETUALANGAN</span> <span>→</span>
+      </button>
+      <p class="text-sm text-gray-500 mt-3 text-center">
+        Masukkan dulu namamu untuk memulai misi ini!
+      </p>
+    </div>
+
+    <!-- Info chips -->
+    <div class="flex flex-wrap justify-center gap-3 mt-8">
+      <div class="card flex items-center gap-2 px-4 py-2" style="border-color: var(--primary);">
+        <span class="text-2xl">📚</span>
+        <span class="font-semibold text-sm">6 Babak Misi</span>
+      </div>
+      <div class="card flex items-center gap-2 px-4 py-2" style="border-color: var(--green);">
+        <span class="text-2xl">🎯</span>
+        <span class="font-semibold text-sm">20 Latihan Faktorisasi</span>
+      </div>
+      <div class="card flex items-center gap-2 px-4 py-2" style="border-color: var(--accent);">
+        <span class="text-2xl">🃏</span>
+        <span class="font-semibold text-sm">20 Kartu Soal Cerita</span>
+      </div>
+      <div class="card flex items-center gap-2 px-4 py-2" style="border-color: var(--yellow);">
+        <span class="text-2xl">🏆</span>
+        <span class="font-semibold text-sm">10 Soal Pilihan Ganda</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SLIDE 2: TUJUAN =================== -->
+<section class="slide" id="slide2">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-8">
+      <div class="badge mb-3"><span>🎯</span> BABAK 2 — TUJUAN</div>
+      <h2 class="display-font text-4xl md:text-5xl font-bold mb-2">Misi apa yang harus diselesaikan?</h2>
+      <p class="text-gray-600 text-lg">Yuk, lihat 5 tujuan pembelajaran yang harus kamu capai hari ini!</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="card card-primary">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl">①</div>
+          <div>
+            <h3 class="display-font text-xl font-bold mb-1" style="color: var(--primary);">Paham Faktorisasi Prima</h3>
+            <p class="text-gray-600">Siswa mampu memfaktorkan bilangan menggunakan pohon faktor hingga bentuk pangkat.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-accent">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl">②</div>
+          <div>
+            <h3 class="display-font text-xl font-bold mb-1" style="color: var(--accent);">Mencari KPK & FPB</h3>
+            <p class="text-gray-600">Siswa mampu menentukan KPK dan FPB dari dua bilangan melalui faktorisasi prima.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-green">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl">③</div>
+          <div>
+            <h3 class="display-font text-xl font-bold mb-1" style="color: var(--green);">Mengingat Trik Cepat</h3>
+            <p class="text-gray-600">Siswa menguasai trik menghafal cara menentukan KPK (pangkat besar) dan FPB (pangkat kecil).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-yellow">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl">④</div>
+          <div>
+            <h3 class="display-font text-xl font-bold mb-1" style="color: var(--yellow-dark);">Mengenali Kata Kunci</h3>
+            <p class="text-gray-600">Siswa dapat mengenali kata kunci pada soal cerita untuk memilih KPK atau FPB.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-primary md:col-span-2">
+        <div class="flex items-start gap-4">
+          <div class="text-4xl">⑤</div>
+          <div>
+            <h3 class="display-font text-xl font-bold mb-1" style="color: var(--primary);">Menyelesaikan Soal Cerita</h3>
+            <p class="text-gray-600">Siswa mampu menyelesaikan 10 soal cerita pilihan ganda level sedang, sulit, dan HOTS dengan strategi yang tepat.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Motivation banner -->
+    <div class="mt-8 p-6 rounded-2xl text-white text-center" style="background: linear-gradient(135deg, var(--accent), var(--yellow));">
+      <div class="display-font text-2xl md:text-3xl font-bold mb-2">⚡ Siap Menjadi Jagoan KPK & FPB? ⚡</div>
+      <p class="opacity-90">Baca baik-baik tiap petunjuk di setiap babak. Jangan ragu mencoba ulang — kegagalan adalah bagian dari belajar!</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SLIDE 3: MATERI =================== -->
+<section class="slide" id="slide3">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-6">
+      <div class="badge mb-3"><span>📖</span> BABAK 3 — MATERI & LATIHAN</div>
+      <h2 class="display-font text-4xl md:text-5xl font-bold mb-2">Faktorisasi Prima: Senjata Utama</h2>
+      <p class="text-gray-600 text-lg">Cara ampuh mencari KPK & FPB dengan pohon faktor</p>
+    </div>
+
+    <!-- Materi explanation -->
+    <div class="grid md:grid-cols-2 gap-4 mb-6">
+      <div class="card card-primary">
+        <h3 class="display-font text-2xl font-bold mb-3" style="color: var(--primary);">Apa itu Faktorisasi Prima?</h3>
+        <p class="text-gray-700 mb-3">Faktorisasi prima adalah mengubah suatu bilangan menjadi perkalian bilangan-bilangan prima.</p>
+        <p class="text-gray-700 mb-2">Bilangan prima: <strong>2, 3, 5, 7, 11, 13, 17, 19, ...</strong></p>
+        <p class="text-gray-700">Ciri-cirinya: hanya bisa dibagi 1 dan dirinya sendiri.</p>
+      </div>
+
+      <div class="card card-accent">
+        <h3 class="display-font text-2xl font-bold mb-3" style="color: var(--accent);">Contoh: 24 dan 36</h3>
+        <div class="space-y-3">
+          <div>
+            <div class="font-bold text-gray-700">24 = 2 × 2 × 2 × 3 = 2³ × 3</div>
+            <div class="text-sm text-gray-500 mt-1">Pohon: 24 → 2 × 12 → 2 × 2 × 6 → 2 × 2 × 2 × 3</div>
+          </div>
+          <div>
+            <div class="font-bold text-gray-700">36 = 2 × 2 × 3 × 3 = 2² × 3²</div>
+            <div class="text-sm text-gray-500 mt-1">Pohon: 36 → 2 × 18 → 2 × 2 × 9 → 2 × 2 × 3 × 3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trick menghafal -->
+    <div class="trick-card trick-kpk mb-4">
+      <h3 class="display-font text-2xl font-bold mb-2" style="color: var(--primary);">🧠 TRIK MENGHAFAL: KPK</h3>
+      <div class="grid md:grid-cols-3 gap-3">
+        <div>
+          <div class="font-bold text-lg">KPK = "Kumpulkan Pangkat terbesar"</div>
+          <p class="text-sm text-gray-600 mt-1">Ambil pangkat <strong>TERBESAR</strong> dari setiap faktor prima yang muncul.</p>
+        </div>
+        <div>
+          <div class="font-bold text-lg">Ingat: "K" = Kuat = Besar</div>
+          <p class="text-sm text-gray-600 mt-1">KPK itu hasilnya KECIL, tapi pangkatnya BESAR. Berlawanan!</p>
+        </div>
+        <div class="bg-white/60 p-3 rounded-lg">
+          <div class="text-sm font-bold">Contoh: KPK(24, 36)</div>
+          <div class="text-sm">24 = 2³ × 3¹</div>
+          <div class="text-sm">36 = 2² × 3²</div>
+          <div class="text-sm mt-1 font-bold" style="color: var(--primary);">KPK = 2³ × 3² = 8 × 9 = 72</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trick-card trick-fpb mb-6">
+      <h3 class="display-font text-2xl font-bold mb-2" style="color: var(--accent);">🧠 TRIK MENGHAFAL: FPB</h3>
+      <div class="grid md:grid-cols-3 gap-3">
+        <div>
+          <div class="font-bold text-lg">FPB = "Fokus Pangkat terkecil"</div>
+          <p class="text-sm text-gray-600 mt-1">Ambil pangkat <strong>TERKECIL</strong> dari setiap faktor prima yang muncul.</p>
+        </div>
+        <div>
+          <div class="font-bold text-lg">Ingat: "F" = Fokus = Kecil</div>
+          <p class="text-sm text-gray-600 mt-1">FPB itu hasilnya BESAR, tapi pangkatnya KECIL. Berlawanan!</p>
+        </div>
+        <div class="bg-white/60 p-3 rounded-lg">
+          <div class="text-sm font-bold">Contoh: FPB(24, 36)</div>
+          <div class="text-sm">24 = 2³ × 3¹</div>
+          <div class="text-sm">36 = 2² × 3²</div>
+          <div class="text-sm mt-1 font-bold" style="color: var(--accent);">FPB = 2² × 3¹ = 4 × 3 = 12</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary rhyme -->
+    <div class="p-4 rounded-xl mb-6 text-white text-center" style="background: linear-gradient(135deg, var(--primary), var(--green));">
+      <div class="display-font text-lg md:text-xl font-bold">
+        🎵 "Hasil dan Pangkat selalu berlawanan: KPK ambil BESAR, FPB ambil KECIL!" 🎵
+      </div>
+    </div>
+
+    <!-- LATIHAN INTERAKTIF -->
+    <div class="card" style="border-color: var(--accent); border-width: 3px;">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+          <h3 class="display-font text-2xl font-bold" style="color: var(--accent);">🎮 LATIHAN INTERAKTIF</h3>
+          <p class="text-gray-600 text-sm">Selesaikan 5 langkah untuk setiap soal. Kerjakan minimal 5 soal untuk lulus!</p>
+        </div>
+        <div class="text-right">
+          <div class="text-sm text-gray-500">Progress</div>
+          <div class="display-font text-2xl font-bold" id="slide3ProgressText">0/20</div>
+        </div>
+      </div>
+
+      <!-- Problem selector -->
+      <div class="mb-4">
+        <div class="text-sm font-bold text-gray-700 mb-2">Pilih Soal:</div>
+        <div class="flex flex-wrap gap-1.5" id="problemNav"></div>
+      </div>
+
+      <!-- Current problem display -->
+      <div id="problemDisplay"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SLIDE 4: KATA KUNCI =================== -->
+<section class="slide" id="slide4">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-6">
+      <div class="badge mb-3"><span>🔑</span> BABAK 4 — KATA KUNCI SOAL CERITA</div>
+      <h2 class="display-font text-4xl md:text-5xl font-bold mb-2">Mengenal Jejak Musuh</h2>
+      <p class="text-gray-600 text-lg">Kata kunci apa yang menunjukkan soal KPK atau FPB?</p>
+    </div>
+
+    <!-- Keyword tables -->
+    <div class="grid md:grid-cols-2 gap-4 mb-6">
+      <div class="card card-primary">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="display-font text-4xl font-bold" style="color: var(--primary);">KPK</div>
+          <div class="text-sm text-gray-500">Kelipatan Persekutuan Kecil</div>
+        </div>
+        <div class="text-sm font-bold text-gray-700 mb-2">Kata kunci yang sering muncul:</div>
+        <div class="flex flex-wrap gap-2">
+          <span class="tag tag-kpk">"setiap ... hari"</span>
+          <span class="tag tag-kpk">"setiap ... sekali"</span>
+          <span class="tag tag-kpk">"bersama-sama"</span>
+          <span class="tag tag-kpk">"bertemu lagi"</span>
+          <span class="tag tag-kpk">"menyala bersamaan"</span>
+          <span class="tag tag-kpk">"pada saat yang sama"</span>
+          <span class="tag tag-kpk">"kalinya"</span>
+          <span class="tag tag-kpk">"terkecil yang habis dibagi"</span>
+          <span class="tag tag-kpk">"paling sedikit (untuk kelipatan)"</span>
+          <span class="tag tag-kpk">"berdekatan"</span>
+        </div>
+        <div class="mt-3 p-3 bg-blue-50 rounded-lg text-sm">
+          <strong>Inti:</strong> Mencari sesuatu yang berulang/ber siklus dan bertemu bersama.
+        </div>
+      </div>
+
+      <div class="card card-accent">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="display-font text-4xl font-bold" style="color: var(--accent);">FPB</div>
+          <div class="text-sm text-gray-500">Faktor Persekutuan Besar</div>
+        </div>
+        <div class="text-sm font-bold text-gray-700 mb-2">Kata kunci yang sering muncul:</div>
+        <div class="flex flex-wrap gap-2">
+          <span class="tag tag-fpb">"membagikan sama rata"</span>
+          <span class="tag tag-fpb">"paket terbanyak"</span>
+          <span class="tag tag-fpb">"kelompok terbanyak"</span>
+          <span class="tag tag-fpb">"potongan terbesar"</span>
+          <span class="tag tag-fpb">"ukuran terbesar"</span>
+          <span class="tag tag-fpb">"jarak terjauh"</span>
+          <span class="tag tag-fpb">"tanpa sisa"</span>
+          <span class="tag tag-fpb">"dibagi habis"</span>
+          <span class="tag tag-fpb">"sebagaimaksimal mungkin"</span>
+          <span class="tag tag-fpb">"tiap sudut"</span>
+        </div>
+        <div class="mt-3 p-3 bg-orange-50 rounded-lg text-sm">
+          <strong>Inti:</strong> Membagi/memecah sesuatu jadi bagian terbesar yang sama.
+        </div>
+      </div>
+    </div>
+
+    <!-- KPK non-waktu -->
+    <div class="card card-green mb-6">
+      <h3 class="display-font text-2xl font-bold mb-3" style="color: var(--green);">⚠️ Hati-hati! KPK Bukan Hanya Soal Waktu</h3>
+      <p class="text-gray-700 mb-3">Banyak yang mengira KPK selalu soal "setiap berapa hari". Padahal KPK juga muncul di:</p>
+      <div class="grid md:grid-cols-3 gap-3">
+        <div class="bg-white/60 p-3 rounded-lg">
+          <div class="font-bold display-font" style="color: var(--green);">⚙️ Roda Gigi</div>
+          <div class="text-sm">Berapa putaran sampai tanda bertemu lagi? (berdasarkan jumlah gigi)</div>
+        </div>
+        <div class="bg-white/60 p-3 rounded-lg">
+          <div class="font-bold display-font" style="color: var(--green);">📦 Tumpukan Sejajar</div>
+          <div class="text-sm">Kapan tinggi tumpukan A dan B sama? (berdasarkan tinggi kotak)</div>
+        </div>
+        <div class="bg-white/60 p-3 rounded-lg">
+          <div class="font-bold display-font" style="color: var(--green);">📍 Jarak Titik Temu</div>
+          <div class="text-sm">Di km berapa tiang lampu & tiang telepon bareng? (berdasarkan kelipatan jarak)</div>
+        </div>
+      </div>
+      <div class="mt-3 p-3 bg-green-50 rounded-lg text-sm">
+        <strong>Pola KPK non-waktu:</strong> "Mencari kapan dua hal yang berulang dengan periode berbeda akan bertemu/kembali sejajar."
+      </div>
+    </div>
+
+    <!-- Flip cards -->
+    <h3 class="display-font text-2xl font-bold mb-3 text-center">🃏 KARTU TEBAK: KPK atau FPB?</h3>
+    <p class="text-center text-gray-600 text-sm mb-4">Klik kartu untuk membalik dan melihat jawabannya. Baca cepat — pilih KPK atau FPB sebelum membalik!</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="flipCardsGrid"></div>
+
+    <div class="mt-6 p-4 rounded-xl text-white text-center" style="background: linear-gradient(135deg, var(--accent), var(--red));">
+      <div class="display-font text-lg font-bold">💡 Tip: Baca soal dengan teliti, garis bawahi kata kuncinya!</div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== SLIDE 5: SOAL CERITA =================== -->
+<section class="slide" id="slide5">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-6">
+      <div class="badge mb-3"><span>🏆</span> BABAK 5 — LATIHAN SOAL CERITA</div>
+      <h2 class="display-font text-4xl md:text-5xl font-bold mb-2">Misi Akhir: Soal Pilihan Ganda</h2>
+      <p class="text-gray-600 text-lg">10 soal level sedang, sulit, dan HOTS. Baca kata kunci, cek jawaban, lalu lihat pembahasan!</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="card mb-6">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-bold text-gray-700">Skor Misi:</span>
+        <span class="display-font text-2xl font-bold" id="slide5Score">0 / 10</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="slide5Progress" style="width: 0%;"></div></div>
+    </div>
+
+    <div id="slide5Problems"></div>
+  </div>
+</section>
+
+<!-- =================== SLIDE 6: KESIMPULAN =================== -->
+<section class="slide" id="slide6">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-8">
+      <div class="badge mb-3"><span>🎓</span> BABAK 6 — KESIMPULAN</div>
+      <h2 class="display-font text-4xl md:text-5xl font-bold mb-2">Misi Selesai!</h2>
+      <p class="text-gray-600 text-lg">Mari kita rangkum apa yang sudah kamu pelajari hari ini</p>
+    </div>
+
+    <!-- Conclusion -->
+    <div class="grid md:grid-cols-2 gap-4 mb-6">
+      <div class="card card-primary">
+        <h3 class="display-font text-xl font-bold mb-2" style="color: var(--primary);">📌 Yang Sudah Dipelajari</h3>
+        <ul class="space-y-2 text-gray-700">
+          <li class="flex gap-2"><span style="color: var(--green);">✓</span> Faktorisasi prima dengan pohon faktor</li>
+          <li class="flex gap-2"><span style="color: var(--green);">✓</span> Mengubah ke bentuk perkalian dan pangkat</li>
+          <li class="flex gap-2"><span style="color: var(--green);">✓</span> KPK = pangkat terbesar, FPB = pangkat terkecil</li>
+          <li class="flex gap-2"><span style="color: var(--green);">✓</span> Kata kunci soal cerita KPK & FPB</li>
+          <li class="flex gap-2"><span style="color: var(--green);">✓</span> KPK bukan hanya soal waktu (roda gigi, tumpukan, jarak)</li>
+        </ul>
+      </div>
+
+      <div class="card card-accent">
+        <h3 class="display-font text-xl font-bold mb-2" style="color: var(--accent);">⚡ Trik Cepat</h3>
+        <ul class="space-y-2 text-gray-700">
+          <li class="flex gap-2"><span>🎵</span> <strong>"KPK ambil BESAR, FPB ambil KECIL"</strong></li>
+          <li class="flex gap-2"><span>🔑</span> KPK = siklus/berulang/bertemu bareng</li>
+          <li class="flex gap-2"><span>🔑</span> FPB = bagi rata/terbanyak/terbesar</li>
+          <li class="flex gap-2"><span>⚙️</span> HOTS: gunakan FPB dulu untuk cari ukuran, lalu hitung jumlahnya</li>
+          <li class="flex gap-2"><span>⏰</span> Hati-hati tahun kabisat (Februari 29 hari)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Reflection -->
+    <div class="card card-yellow mb-6">
+      <h3 class="display-font text-2xl font-bold mb-3" style="color: var(--yellow-dark);">✍️ Refleksi Diri</h3>
+      <p class="text-gray-700 mb-3">Jawab pertanyaan berikut dengan jujur untuk mengenal cara belajarmu lebih baik:</p>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block font-bold text-gray-700 mb-2">1. Bagian mana yang paling kamu sukai dari misi hari ini? Kenapa?</label>
+          <textarea class="reflection-input" placeholder="Tulis jawabanmu..." oninput="updateReflection()"></textarea>
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-2">2. Bagian mana yang masih kamu rasakan sulit? Apa rencanamu untuk menguasainya?</label>
+          <textarea class="reflection-input" placeholder="Tulis jawabanmu..." oninput="updateReflection()"></textarea>
+        </div>
+        <div>
+          <label class="block font-bold text-gray-700 mb-2">3. Tulis 1 trik yang akan kamu ingat untuk soal KPK/FPB!</label>
+          <textarea class="reflection-input" placeholder="Tulis jawabanmu..." oninput="updateReflection()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thank you -->
+    <div class="text-center p-8 rounded-3xl text-white" style="background: linear-gradient(135deg, var(--primary), var(--accent), var(--yellow));">
+      <div class="text-6xl mb-3">🎉</div>
+      <h2 class="display-font text-3xl md:text-5xl font-bold mb-3">Thank You for Today!</h2>
+      <p class="text-lg md:text-xl opacity-95 mb-4">
+        <span id="thankYouName">Sobat Jagoan</span>, kamu sudah menyelesaikan misi dengan luar biasa!
+      </p>
+      <div class="inline-block bg-white/20 backdrop-blur px-6 py-3 rounded-full font-bold">
+        🌟 Terus berlatih, dan kamu akan jadi master KPK & FPB! 🌟
+      </div>
+      <div class="mt-6 text-sm opacity-80">
+        "Matematika itu seperti olahraga — makin sering berlatih, makin kuat kamu." 💪
+      </div>
+    </div>
+
+    <!-- Final stats summary -->
+    <div class="grid grid-cols-3 gap-3 mt-6">
+      <div class="card text-center card-primary">
+        <div class="text-3xl display-font font-bold" style="color: var(--primary);" id="finalSlide3">0</div>
+        <div class="text-xs text-gray-500 font-bold">FAKTORISASI SELESAI</div>
+      </div>
+      <div class="card text-center card-accent">
+        <div class="text-3xl display-font font-bold" style="color: var(--accent);" id="finalSlide5">0</div>
+        <div class="text-xs text-gray-500 font-bold">SOAL PG BENAR</div>
+      </div>
+      <div class="card text-center card-green">
+        <div class="text-3xl display-font font-bold" style="color: var(--green);" id="finalReflection">0</div>
+        <div class="text-xs text-gray-500 font-bold">REFLEKSI DIISI</div>
+      </div>
+    </div>
+
+    <div class="text-center mt-6">
+      <button class="btn btn-outline" onclick="restartAdventure()">🔄 Ulangi Petualangan</button>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- Navigation bar -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>‹</button>
+  <div class="slide-dots" id="slideDots"></div>
+  <button class="nav-btn" id="nextBtn" onclick="nextSlide()">›</button>
+</div>
+
+<script>
+// =============== STATE ===============
+let currentSlide = 0;
+let studentName = '';
+const totalSlides = 6;
+const slide3Progress = {};
+const slide5Answers = {};
+const slide5Checked = {};
+let currentSlide3Problem = 0;
+
+// =============== DATA ===============
+const slide3Problems = [
+  {a: 24, b: 36}, {a: 48, b: 60}, {a: 72, b: 90}, {a: 56, b: 84}, {a: 64, b: 80},
+  {a: 75, b: 100}, {a: 90, b: 120}, {a: 108, b: 144}, {a: 84, b: 126}, {a: 96, b: 144},
+  {a: 120, b: 168}, {a: 150, b: 200}, {a: 180, b: 240}, {a: 135, b: 180}, {a: 168, b: 210},
+  {a: 144, b: 216}, {a: 200, b: 280}, {a: 225, b: 300}, {a: 156, b: 234}, {a: 192, b: 288}
+];
+
+const slide4Cards = [
+  {q: "Andi berenang tiap 4 hari, Budi tiap 6 hari. Kapan mereka bareng lagi?", a: "KPK", type: "kpk", note: "Kata kunci: 'tiap ... hari' & 'bareng lagi' → siklus waktu"},
+  {q: "Pak Budi bagi 60 buku & 84 pensil ke paket sama rata terbanyak.", a: "FPB", type: "fpb", note: "Kata kunci: 'sama rata' & 'terbanyak'"},
+  {q: "Roda gigi 16 & 24 gigi bertemu lagi. Berapa putaran roda P?", a: "KPK", type: "kpk", note: "KPK non-waktu: siklus putaran roda"},
+  {q: "Kain 120×90 dipotong persegi terbesar tanpa sisa. Berapa potong?", a: "FPB", type: "fpb", note: "Cari FPB dulu untuk ukuran, lalu hitung jumlah"},
+  {q: "Tumpukan kotak 15cm & 25cm. Kapan tingginya sejajar pertama kali?", a: "KPK", type: "kpk", note: "KPK non-waktu: ketinggian tumpukan"},
+  {q: "120 kg daging, 96 kg kambing, 144 kg beras dibagi rata ke paket maksimal.", a: "FPB", type: "fpb", note: "'dibagi rata' & 'maksimal' → FPB"},
+  {q: "Barisan 12, 15, 18 orang sisa 7. Minim pramuka?", a: "KPK", type: "kpk", note: "KPK + sisa: cari KPK lalu tambah sisa"},
+  {q: "Taman 64×48, pohon di keliling jarak terjauh & tiap sudut.", a: "FPB", type: "fpb", note: "Jarak terjauh = FPB, lalu hitung keliling"},
+  {q: "Lampu 15, 20, 25 detik menyala bersama. Kapan bersama ke-5 kalinya?", a: "KPK", type: "kpk", note: "Siklus waktu, kalikan dengan urutan pertemuan"},
+  {q: "Tiang lampu tiap 4 km, telepon tiap 10 km, titik temu ke-4?", a: "KPK", type: "kpk", note: "KPK jarak, lalu kalikan dengan urutan"},
+  {q: "Bus tiap 15 menit, angkot tiap 20 menit. Kapan berangkat bareng?", a: "KPK", type: "kpk", note: "'tiap ... menit' & 'bareng'"},
+  {q: "48 permen & 72 coklat dibagi sama rata ke anak maksimal.", a: "FPB", type: "fpb", note: "'sama rata' & 'maksimal'"},
+  {q: "Bel berbunyi tiap 6, 8, 12 menit. Kapan bunyi bersama?", a: "KPK", type: "kpk", note: "Siklus waktu → KPK"},
+  {q: "24 mangga & 36 apel dibuat paket sama. Maksimal paket?", a: "FPB", type: "fpb", note: "'paket sama' & 'maksimal'"},
+  {q: "3 lampu menyala 9, 12, 15 detik. Kapan bersama ke-3 kalinya?", a: "KPK", type: "kpk", note: "Siklus + urutan pertemuan"},
+  {q: "Tali 80m & 120m dipotong sama panjang maksimal.", a: "FPB", type: "fpb", note: "'sama panjang' & 'maksimal'"},
+  {q: "Kotak 18cm & 24cm tingginya. Kapan sejajar pertama kali?", a: "KPK", type: "kpk", note: "KPK non-waktu: ketinggian"},
+  {q: "120 siswa kelas A & 96 kelas B dibagi kelompok sama. Maksimal kelompok?", a: "FPB", type: "fpb", note: "'sama' & 'maksimal'"},
+  {q: "Planet A 8 hari, planet B 12 hari. Kapan selaras lagi?", a: "KPK", type: "kpk", note: "Siklus waktu → KPK"},
+  {q: "Kayu 100cm & 150cm dipotong sama panjang terpanjang.", a: "FPB", type: "fpb", note: "'sama panjang' & 'terpanjang'"}
+];
+
+const slide5Problems = [
+  {
+    q: "Pak Budi memiliki 60 buku tulis dan 84 pensil. Ia ingin membagikan barang-barang tersebut kepada anak-anak panti asuhan dengan jumlah buku dan pensil yang sama banyak tiap paketnya. Berapa jumlah paket terbanyak yang dapat dibuat oleh Pak Budi?",
+    opts: ["6 paket", "12 paket", "14 paket", "24 paket"],
+    correct: 1,
+    type: "FPB",
+    level: "Sedang",
+    keyword: "'sama banyak tiap paketnya' & 'paket terbanyak' → FPB. Mencari pembagi terbesar dari 60 dan 84.",
+    discussion: "Karena membagikan barang menjadi kelompok sama banyak, kita mencari FPB dari 60 dan 84. Faktorisasi 60 = 2² × 3 × 5, 84 = 2² × 3 × 7. FPB = 2² × 3 = 12. Maka jumlah paket terbanyak adalah 12 paket."
+  },
+  {
+    q: "Sebuah pabrik mesin merakit dua buah roda gigi yang saling bersinggungan. Roda gigi P memiliki 16 gigi dan roda gigi Q memiliki 24 gigi. Terdapat tanda titik merah pada satu gigi di setiap roda gigi yang saat ini saling bertemu sempurna. Berapa kali putaran penuh yang harus dilakukan roda gigi P agar kedua tanda merah tersebut bertemu kembali untuk pertama kalinya?",
+    opts: ["2 putaran", "3 putaran", "4 putaran", "6 putaran"],
+    correct: 1,
+    type: "KPK",
+    level: "Sulit",
+    keyword: "'bertemu kembali' → KPK. Tapi ini KPK non-waktu (berdasarkan jumlah gigi), bukan waktu.",
+    discussion: "Ini masalah siklus (KPK) yang tidak berkaitan dengan waktu, melainkan jumlah gigi. KPK(16, 24): 16 = 2⁴, 24 = 2³ × 3. KPK = 2⁴ × 3 = 48 gigi. Mereka bertemu lagi setelah 48 gigi berputar. Putaran roda P (16 gigi) = 48 ÷ 16 = 3 putaran."
+  },
+  {
+    q: "Andi berlatih renang setiap 4 hari sekali, Budi setiap 6 hari sekali, dan Candra setiap 8 hari sekali. Jika mereka bertiga berlatih bersama-sama di kolam yang sama pada tanggal 2 Februari 2024, pada tanggal berapakah mereka akan berlatih bersama lagi untuk yang kedua kalinya? (Catatan: Tahun 2024 adalah tahun kabisat).",
+    opts: ["24 Februari 2024", "25 Februari 2024", "26 Februari 2024", "27 Februari 2024"],
+    correct: 2,
+    type: "KPK",
+    level: "Sedang",
+    keyword: "'setiap ... hari sekali' & 'bersama-sama' → KPK. Cari KPK(4, 6, 8).",
+    discussion: "KPK(4, 6, 8) = 24 hari. Mereka bertemu tanggal 2 Februari 2024. Bertemu lagi (kedua kalinya) = 2 + 24 = 26 Februari 2024. Tahun kabisat 2024 punya 29 hari di Februari, sehingga tanggal 26 valid."
+  },
+  {
+    q: "Bu Rina memiliki selembar kain perca berbentuk persegi panjang berukuran 120 cm × 90 cm. Ia ingin memotong kain tersebut menjadi potongan-potongan berbentuk persegi dengan ukuran sama besar tanpa ada sisa kain sedikitpun. Berapakah jumlah potongan kain persegi paling sedikit yang bisa diperoleh Bu Rina?",
+    opts: ["12 potongan", "30 potongan", "108 potongan", "120 potongan"],
+    correct: 0,
+    type: "FPB",
+    level: "HOTS",
+    keyword: "'ukuran sama besar' & 'tanpa sisa' → FPB (untuk cari ukuran persegi terbesar). Lalu hitung jumlah potongan.",
+    discussion: "HOTS! Langkah 1: Cari ukuran persegi terbesar = FPB(120, 90) = 30 cm. Jadi ukuran 1 persegi adalah 30×30 cm. Langkah 2: Potongan memanjang = 120 ÷ 30 = 4. Potongan melebar = 90 ÷ 30 = 3. Total = 4 × 3 = 12 potongan."
+  },
+  {
+    q: "Di sebuah gudang, Dito sedang menyusun tumpukan kotak A yang masing-masing tingginya 15 cm. Di sebelahnya, Eko menyusun tumpukan kotak B yang masing-masing tingginya 25 cm. Keduanya terus menumpuk kotak ke atas hingga bagian atas kedua tumpukan tersebut berada pada ketinggian yang sejajar/sama untuk pertama kalinya. Berapa banyak total kotak (gabungan jumlah kotak A dan kotak B) yang ada pada kedua tumpukan tersebut?",
+    opts: ["5 kotak", "8 kotak", "75 kotak", "150 kotak"],
+    correct: 1,
+    type: "KPK",
+    level: "Sulit",
+    keyword: "'ketinggian sejajar/sama' & 'pertama kalinya' → KPK non-waktu (ketinggian).",
+    discussion: "KPK tanpa elemen waktu. Tumpukan sejajar saat tingginya kelipatan 15 dan 25. KPK(15, 25) = 75 cm. Banyak kotak A = 75 ÷ 15 = 5. Banyak kotak B = 75 ÷ 25 = 3. Total = 5 + 3 = 8 kotak."
+  },
+  {
+    q: "Sebuah panitia bakti sosial memiliki 120 kg daging sapi, 96 kg daging kambing, dan 144 kg beras yang akan dibagikan ke masyarakat. Setiap paket bantuan akan berisi ketiga bahan tersebut dengan jumlah yang sama rata antar paketnya. Jika panitia berhasil membuat paket sebanyak-banyaknya, berapakah jumlah beras yang ada di dalam setiap paket?",
+    opts: ["6 kg", "24 kg", "5 kg", "4 kg"],
+    correct: 0,
+    type: "FPB",
+    level: "Sedang",
+    keyword: "'sama rata' & 'sebanyak-banyaknya' → FPB(120, 96, 144) untuk cari jumlah paket. Lalu bagi beras dengan jumlah paket.",
+    discussion: "Cari FPB(120, 96, 144): 120 = 2³ × 3 × 5; 96 = 2⁵ × 3; 144 = 2⁴ × 3². FPB = 2³ × 3 = 24 paket. Beras per paket = Total beras ÷ Jumlah paket = 144 ÷ 24 = 6 kg."
+  },
+  {
+    q: "Seorang komandan ingin mengatur formasi barisan anggota pramukanya. Jika anggota dibagi ke dalam kelompok yang terdiri dari 12 orang, tersisa 7 orang. Jika dibagi dalam 15 orang, tersisa 7 orang. Jika dibagi dalam kelompok 18 orang, juga tersisa 7 orang. Berapakah kemungkinan jumlah minimal anggota pramuka tersebut?",
+    opts: ["180 orang", "187 orang", "173 orang", "367 orang"],
+    correct: 1,
+    type: "KPK",
+    level: "HOTS",
+    keyword: "Pola sisa sama (7) di semua kelompok → KPK(12, 15, 18) + sisa. Trik: sisa sama, langsung tambah!",
+    discussion: "Cari KPK(12, 15, 18): 12 = 2² × 3; 15 = 3 × 5; 18 = 2 × 3². KPK = 2² × 3² × 5 = 180. Karena sisa selalu 7, jumlah pramuka = 180 + 7 = 187 orang."
+  },
+  {
+    q: "Pak Darmo memiliki sebuah taman berbentuk persegi panjang dengan ukuran panjang 64 meter dan lebar 48 meter. Ia ingin menanam pohon palem di sekeliling taman tersebut dengan jarak antar pohon yang sama. Jarak antar pohon harus dibuat sejauh mungkin, dan di setiap sudut taman dipastikan harus ditanami pohon. Berapakah banyak pohon palem yang dibutuhkan Pak Darmo?",
+    opts: ["14 pohon", "16 pohon", "28 pohon", "32 pohon"],
+    correct: 0,
+    type: "FPB",
+    level: "Sulit",
+    keyword: "'jarak sama' & 'sejauh mungkin' → FPB(64, 48) untuk cari jarak. Lalu pakai rumus keliling ÷ jarak.",
+    discussion: "Langkah 1: Jarak pohon terlebar = FPB(64, 48) = 16 meter. Langkah 2: Keliling = 2 × (64 + 48) = 2 × 112 = 224 meter. Langkah 3: Banyak pohon = Keliling ÷ Jarak = 224 ÷ 16 = 14 pohon."
+  },
+  {
+    q: "Tiga buah lampu mercusuar menyala dengan interval waktu yang berbeda. Lampu merah menyala setiap 15 detik, biru setiap 20 detik, dan hijau setiap 25 detik. Pada pukul 19.00.00 ketiga lampu tersebut menyala secara bersamaan. Pada pukul berapakah ketiga lampu tersebut akan menyala bersama-sama untuk yang kelima kalinya setelah pukul 19.00.00?",
+    opts: ["19.05.00", "19.15.00", "19.20.00", "19.25.00"],
+    correct: 3,
+    type: "KPK",
+    level: "HOTS",
+    keyword: "'interval' & 'menyala bersama' → KPK(15, 20, 25). 'Kelima kalinya' = 5 siklus setelah awal.",
+    discussion: "KPK(15, 20, 25) = 300 detik = 5 menit. Mereka menyala bersama kelima kalinya setelah pukul 19.00.00, artinya 5 siklus berlalu. Waktu berlalu = 5 × 5 menit = 25 menit. Waktu = 19.00.00 + 25 menit = 19.25.00."
+  },
+  {
+    q: "Sebuah jalan tol sepanjang 150 km dipasangi tiang lampu penerangan setiap 4 km yang dihitung dari gerbang awal (titik km 0). Selain itu, di sisi yang sama dipasang juga telepon darurat setiap 10 km dari titik awal yang sama. Di titik kilometer berapakah dari gerbang awal, tiang lampu dan telepon darurat akan berdiri berdekatan (di titik km yang sama) untuk keempat kalinya? (Tidak termasuk di titik km 0).",
+    opts: ["20 km", "40 km", "60 km", "80 km"],
+    correct: 3,
+    type: "KPK",
+    level: "Sedang",
+    keyword: "'setiap ... km' & 'berdekatan' → KPK(4, 10). 'Keempat kalinya' = 4 kelipatan.",
+    discussion: "KPK(4, 10) = 20 km. Tiang & telepon berdekatan setiap 20 km. Titik pertemuan ke-1: 20 km, ke-2: 40 km, ke-3: 60 km, ke-4: 80 km."
+  }
+];
+
+// =============== UTILITIES ===============
+function primeFactorize(n) {
+  const factors = [];
+  let d = 2;
+  let num = n;
+  while (num > 1) {
+    while (num % d === 0) {
+      factors.push(d);
+      num /= d;
+    }
+    d++;
+    if (d * d > num && num > 1) {
+      factors.push(num);
+      break;
+    }
+  }
+  return factors;
+}
+
+function factorsToExpString(factors) {
+  const counts = {};
+  factors.forEach(f => counts[f] = (counts[f] || 0) + 1);
+  return Object.entries(counts).map(([p, e]) => e === 1 ? `${p}` : `${p}^${e}`).join('*');
+}
+
+function factorsToExpDisplay(factors) {
+  const counts = {};
+  factors.forEach(f => counts[f] = (counts[f] || 0) + 1);
+  const sup = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+  return Object.entries(counts).map(([p, e]) => {
+    const expStr = e.toString().split('').map(c => sup[c]).join('');
+    return e === 1 ? p : `${p}${expStr}`;
+  }).join(' × ');
+}
+
+function factorsToMultDisplay(factors) {
+  return factors.join(' × ');
+}
+
+function computeKPK(a, b) {
+  const fa = primeFactorize(a);
+  const fb = primeFactorize(b);
+  const ca = {}, cb = {};
+  fa.forEach(f => ca[f] = (ca[f] || 0) + 1);
+  fb.forEach(f => cb[f] = (cb[f] || 0) + 1);
+  const primes = new Set([...Object.keys(ca), ...Object.keys(cb)]);
+  let kpk = 1;
+  primes.forEach(p => {
+    const maxE = Math.max(ca[p] || 0, cb[p] || 0);
+    kpk *= Math.pow(parseInt(p), maxE);
+  });
+  return kpk;
+}
+
+function computeFPB(a, b) {
+  const fa = primeFactorize(a);
+  const fb = primeFactorize(b);
+  const ca = {}, cb = {};
+  fa.forEach(f => ca[f] = (ca[f] || 0) + 1);
+  fb.forEach(f => cb[f] = (cb[f] || 0) + 1);
+  const primes = new Set([...Object.keys(ca), ...Object.keys(cb)]);
+  let fpb = 1;
+  primes.forEach(p => {
+    const minE = Math.min(ca[p] || 0, cb[p] || 0);
+    if (minE > 0) fpb *= Math.pow(parseInt(p), minE);
+  });
+  return fpb;
+}
+
+function normalizeInput(s) {
+  return s.toString()
+    .replace(/×/g, '*')
+    .replace(/\s/g, '')
+    .replace(/²/g, '^2')
+    .replace(/³/g, '^3')
+    .replace(/⁴/g, '^4')
+    .replace(/⁵/g, '^5')
+    .replace(/⁶/g, '^6')
+    .replace(/⁷/g, '^7')
+    .replace(/⁸/g, '^8')
+    .replace(/⁹/g, '^9')
+    .replace(/¹/g, '^1')
+    .replace(/⁰/g, '^0')
+    .toLowerCase();
+}
+
+// Helper functions for input buttons
+function insertSymbol(inputId, symbol) {
+  const input = document.getElementById(inputId);
+  if (input) {
+    input.value += symbol;
+    input.focus();
+  }
+}
+
+function backspaceInput(inputId) {
+  const input = document.getElementById(inputId);
+  if (input) {
+    input.value = input.value.slice(0, -1);
+    input.focus();
+  }
+}
+
+// =============== NAVIGATION ===============
+function initDots() {
+  const dotsContainer = document.getElementById('slideDots');
+  dotsContainer.innerHTML = '';
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  }
+}
+
+function goToSlide(idx) {
+  if (idx < 0 || idx >= totalSlides) return;
+  // Validate slide 1 -> 2 requires name
+  if (currentSlide === 0 && idx > 0 && !studentName.trim()) {
+    alert('Isi dulu namamu untuk memulai petualangan!');
+    document.getElementById('studentName').focus();
+    return;
+  }
+  
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.getElementById('slide' + (idx + 1)).classList.add('active');
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  currentSlide = idx;
+  
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === totalSlides - 1;
+  
+  // Update final stats on slide 6
+  if (idx === 5) updateFinalStats();
+  
+  window.scrollTo(0, 0);
+  document.getElementById('slide' + (idx + 1)).scrollTop = 0;
+}
+
+function nextSlide() { goToSlide(currentSlide + 1); }
+function prevSlide() { goToSlide(currentSlide - 1); }
+
+// =============== SLIDE 1: COVER ===============
+function updateStartButton() {
+  const name = document.getElementById('studentName').value.trim();
+  document.getElementById('startBtn').disabled = name.length < 2;
+}
+
+function startAdventure() {
+  studentName = document.getElementById('studentName').value.trim();
+  if (studentName.length < 2) return;
+  document.getElementById('thankYouName').textContent = studentName;
+  goToSlide(1);
+  launchConfetti();
+}
+
+// =============== SLIDE 3: INTERACTIVE PROBLEMS ===============
+function initSlide3() {
+  // Init progress for all problems
+  slide3Problems.forEach((_, i) => {
+    slide3Progress[i] = { step1: false, step2: false, step3: false, step4: false, step5: false, currentStep: 1, factorState: { a: { remaining: 0, factors: [] }, b: { remaining: 0, factors: [] } } };
+  });
+  renderProblemNav();
+  renderCurrentProblem();
+}
+
+function renderProblemNav() {
+  const nav = document.getElementById('problemNav');
+  nav.innerHTML = '';
+  slide3Problems.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'problem-nav-btn';
+    if (i === currentSlide3Problem) btn.classList.add('active');
+    if (isProblemDone(i)) btn.classList.add('done');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentSlide3Problem = i; renderProblemNav(); renderCurrentProblem(); };
+    nav.appendChild(btn);
+  });
+}
+
+function isProblemDone(i) {
+  const p = slide3Progress[i];
+  return p.step1 && p.step2 && p.step3 && p.step4 && p.step5;
+}
+
+function renderCurrentProblem() {
+  const p = slide3Problems[currentSlide3Problem];
+  const progress = slide3Progress[currentSlide3Problem];
+  
+  // Reset factor state if just starting
+  if (progress.factorState.a.remaining === 0 && progress.factorState.a.factors.length === 0) {
+    progress.factorState.a = { remaining: p.a, factors: [] };
+    progress.factorState.b = { remaining: p.b, factors: [] };
+  }
+  
+  const expectedFa = primeFactorize(p.a);
+  const expectedFb = primeFactorize(p.b);
+  const expA = factorsToExpDisplay(expectedFa);
+  const expB = factorsToExpDisplay(expectedFb);
+  const kpk = computeKPK(p.a, p.b);
+  const fpb = computeFPB(p.a, p.b);
+  
+  const container = document.getElementById('problemDisplay');
+  container.innerHTML = `
+    <div class="bg-gradient-to-r from-blue-50 to-orange-50 p-4 rounded-xl mb-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <div class="text-sm text-gray-500 font-bold">SOAL ${currentSlide3Problem + 1} dari 20</div>
+          <div class="display-font text-2xl font-bold">Tentukan KPK dan FPB dari <span style="color: var(--primary);">${p.a}</span> dan <span style="color: var(--accent);">${p.b}</span></div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs text-gray-500">Tingkat</div>
+          <div class="font-bold text-sm">${currentSlide3Problem < 7 ? 'Sedang' : currentSlide3Problem < 14 ? 'Sulit' : 'HOTS'}</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Step indicator -->
+    <div class="step-indicator">
+      <div class="step-dot ${progress.step1 ? 'done' : 'active'}" id="stepDot1">1</div>
+      <div class="step-line ${progress.step1 ? 'done' : ''}"></div>
+      <div class="step-dot ${progress.step2 ? 'done' : progress.step1 ? 'active' : ''}" id="stepDot2">2</div>
+      <div class="step-line ${progress.step2 ? 'done' : ''}"></div>
+      <div class="step-dot ${progress.step3 ? 'done' : progress.step2 ? 'active' : ''}" id="stepDot3">3</div>
+      <div class="step-line ${progress.step3 ? 'done' : ''}"></div>
+      <div class="step-dot ${progress.step4 ? 'done' : progress.step3 ? 'active' : ''}" id="stepDot4">4</div>
+      <div class="step-line ${progress.step4 ? 'done' : ''}"></div>
+      <div class="step-dot ${progress.step5 ? 'done' : progress.step4 ? 'active' : ''}" id="stepDot5">5</div>
+    </div>
+    
+    <!-- Step 1: Factor Tree -->
+    <div class="step-section ${progress.currentStep === 1 ? 'active' : ''}" id="stepSection1">
+      <h4 class="display-font text-lg font-bold mb-2" style="color: var(--primary);">LANGKAH 1: Pohon Faktor</h4>
+      <p class="text-sm text-gray-600 mb-3">Klik bilangan prima untuk memfaktorkan. Mulai dari yang terkecil!</p>
+      
+      <div class="grid md:grid-cols-2 gap-4 mb-3">
+        <div class="card card-primary">
+          <div class="font-bold mb-2 display-font" style="color: var(--primary);">Faktorkan ${p.a}</div>
+          <div class="factor-display" id="factorDisplayA"></div>
+          <div class="flex flex-wrap gap-1.5 mt-3" id="primeBtnsA"></div>
+          <div class="feedback" id="feedbackA1"></div>
+        </div>
+        <div class="card card-accent">
+          <div class="font-bold mb-2 display-font" style="color: var(--accent);">Faktorkan ${p.b}</div>
+          <div class="factor-display" id="factorDisplayB"></div>
+          <div class="flex flex-wrap gap-1.5 mt-3" id="primeBtnsB"></div>
+          <div class="feedback" id="feedbackB1"></div>
+        </div>
+      </div>
+      
+      <div class="flex gap-2">
+        <button class="btn btn-outline" onclick="resetFactorTree()">🔄 Ulang</button>
+        <button class="btn btn-green" onclick="checkStep1()" id="checkStep1Btn">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="feedbackStep1"></div>
+    </div>
+    
+    <!-- Step 2: Multiplication Form -->
+    <div class="step-section ${progress.currentStep === 2 ? 'active' : ''}" id="stepSection2">
+      <h4 class="display-font text-lg font-bold mb-2" style="color: var(--accent);">LANGKAH 2: Bentuk Perkalian</h4>
+      <p class="text-sm text-gray-600 mb-3">Tulis bentuk perkalian dari faktorisasi. Gunakan tombol di bawah untuk memudahkan!</p>
+      
+      <div class="grid md:grid-cols-2 gap-4 mb-3">
+        <div class="card card-primary">
+          <div class="font-bold mb-2">${p.a} = <span class="text-gray-400 text-sm">(contoh: 2 × 2 × 2 × 3)</span></div>
+          <input type="text" class="input" id="multInputA" value="${progress.multA || ''}" placeholder="Tulis bentuk perkalian ${p.a}">
+          <div class="helper-keys mt-2">
+            <button class="helper-btn" onclick="insertSymbol('multInputA', '2')">2</button>
+            <button class="helper-btn" onclick="insertSymbol('multInputA', '3')">3</button>
+            <button class="helper-btn" onclick="insertSymbol('multInputA', '5')">5</button>
+            <button class="helper-btn" onclick="insertSymbol('multInputA', '7')">7</button>
+            <button class="helper-btn" onclick="insertSymbol('multInputA', '11')">11</button>
+            <button class="helper-btn accent" onclick="insertSymbol('multInputA', ' × ')">×</button>
+            <button class="helper-btn" onclick="backspaceInput('multInputA')">⌫</button>
+          </div>
+          <div class="text-xs text-gray-500 mt-2">Faktor: ${factorsToMultDisplay(expectedFa)}</div>
+          <div class="feedback" id="feedbackMultA"></div>
+        </div>
+        <div class="card card-accent">
+          <div class="font-bold mb-2">${p.b} = <span class="text-gray-400 text-sm">(contoh: 2 × 2 × 3 × 3)</span></div>
+          <input type="text" class="input" id="multInputB" value="${progress.multB || ''}" placeholder="Tulis bentuk perkalian ${p.b}">
+          <div class="helper-keys mt-2">
+            <button class="helper-btn" onclick="insertSymbol('multInputB', '2')">2</button>
+            <button class="helper-btn" onclick="insertSymbol('multInputB', '3')">3</button>
+            <button class="helper-btn" onclick="insertSymbol('multInputB', '5')">5</button>
+            <button class="helper-btn" onclick="insertSymbol('multInputB', '7')">7</button>
+            <button class="helper-btn" onclick="insertSymbol('multInputB', '11')">11</button>
+            <button class="helper-btn accent" onclick="insertSymbol('multInputB', ' × ')">×</button>
+            <button class="helper-btn" onclick="backspaceInput('multInputB')">⌫</button>
+          </div>
+          <div class="text-xs text-gray-500 mt-2">Faktor: ${factorsToMultDisplay(expectedFb)}</div>
+          <div class="feedback" id="feedbackMultB"></div>
+        </div>
+      </div>
+      
+      <button class="btn btn-green" onclick="checkStep2()">Cek Jawaban</button>
+      <div class="feedback" id="feedbackStep2"></div>
+    </div>
+    
+    <!-- Step 3: Exponent Form -->
+    <div class="step-section ${progress.currentStep === 3 ? 'active' : ''}" id="stepSection3">
+      <h4 class="display-font text-lg font-bold mb-2" style="color: var(--green);">LANGKAH 3: Bentuk Pangkat</h4>
+      <p class="text-sm text-gray-600 mb-3">Tulis bentuk pangkat. Gunakan tombol ^ untuk pangkat (contoh: 2^3 × 3)</p>
+      
+      <div class="grid md:grid-cols-2 gap-4 mb-3">
+        <div class="card card-primary">
+          <div class="font-bold mb-2">${p.a} = <span class="text-gray-400 text-sm">(contoh: 2^3 × 3)</span></div>
+          <input type="text" class="input" id="expInputA" value="${progress.expA || ''}" placeholder="Tulis bentuk pangkat ${p.a}">
+          <div class="helper-keys mt-2">
+            <button class="helper-btn" onclick="insertSymbol('expInputA', '2')">2</button>
+            <button class="helper-btn" onclick="insertSymbol('expInputA', '3')">3</button>
+            <button class="helper-btn" onclick="insertSymbol('expInputA', '5')">5</button>
+            <button class="helper-btn" onclick="insertSymbol('expInputA', '7')">7</button>
+            <button class="helper-btn accent" onclick="insertSymbol('expInputA', '^')">^</button>
+            <button class="helper-btn accent" onclick="insertSymbol('expInputA', ' × ')">×</button>
+            <button class="helper-btn" onclick="backspaceInput('expInputA')">⌫</button>
+          </div>
+          <div class="text-xs text-gray-500 mt-2">Bentuk pangkat: ${expA}</div>
+          <div class="feedback" id="feedbackExpA"></div>
+        </div>
+        <div class="card card-accent">
+          <div class="font-bold mb-2">${p.b} = <span class="text-gray-400 text-sm">(contoh: 2^2 × 3^2)</span></div>
+          <input type="text" class="input" id="expInputB" value="${progress.expB || ''}" placeholder="Tulis bentuk pangkat ${p.b}">
+          <div class="helper-keys mt-2">
+            <button class="helper-btn" onclick="insertSymbol('expInputB', '2')">2</button>
+            <button class="helper-btn" onclick="insertSymbol('expInputB', '3')">3</button>
+            <button class="helper-btn" onclick="insertSymbol('expInputB', '5')">5</button>
+            <button class="helper-btn" onclick="insertSymbol('expInputB', '7')">7</button>
+            <button class="helper-btn accent" onclick="insertSymbol('expInputB', '^')">^</button>
+            <button class="helper-btn accent" onclick="insertSymbol('expInputB', ' × ')">×</button>
+            <button class="helper-btn" onclick="backspaceInput('expInputB')">⌫</button>
+          </div>
+          <div class="text-xs text-gray-500 mt-2">Bentuk pangkat: ${expB}</div>
+          <div class="feedback" id="feedbackExpB"></div>
+        </div>
+      </div>
+      
+      <button class="btn btn-green" onclick="checkStep3()">Cek Jawaban</button>
+      <div class="feedback" id="feedbackStep3"></div>
+    </div>
+    
+    <!-- Step 4: KPK/FPB selection -->
+    <div class="step-section ${progress.currentStep === 4 ? 'active' : ''}" id="stepSection4">
+      <h4 class="display-font text-lg font-bold mb-2" style="color: var(--yellow-dark);">LANGKAH 4: Tentukan KPK & FPB</h4>
+      <p class="text-sm text-gray-600 mb-3">Pilih pangkat yang benar untuk KPK (terbesar) dan FPB (terkecil) dengan mengklik!</p>
+      
+      <div class="card mb-3">
+        <div class="grid md:grid-cols-2 gap-3 text-center">
+          <div>
+            <div class="font-bold text-lg display-font" style="color: var(--primary);">${p.a}</div>
+            <div class="text-2xl font-bold">${expA}</div>
+          </div>
+          <div>
+            <div class="font-bold text-lg display-font" style="color: var(--accent);">${p.b}</div>
+            <div class="text-2xl font-bold">${expB}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-3">
+        <div class="card card-primary">
+          <h5 class="font-bold mb-2 display-font" style="color: var(--primary);">KPK (pangkat terbesar)</h5>
+          <div id="kpkSelection"></div>
+          <div class="feedback" id="feedbackKPK"></div>
+        </div>
+        <div class="card card-accent">
+          <h5 class="font-bold mb-2 display-font" style="color: var(--accent);">FPB (pangkat terkecil)</h5>
+          <div id="fpbSelection"></div>
+          <div class="feedback" id="feedbackFPB"></div>
+        </div>
+      </div>
+      
+      <button class="btn btn-green mt-3" onclick="checkStep4()">Cek Jawaban</button>
+      <div class="feedback" id="feedbackStep4"></div>
+    </div>
+    
+    <!-- Step 5: Final Answer -->
+    <div class="step-section ${progress.currentStep === 5 ? 'active' : ''}" id="stepSection5">
+      <h4 class="display-font text-lg font-bold mb-2" style="color: var(--red);">LANGKAH 5: Hasil Akhir</h4>
+      <p class="text-sm text-gray-600 mb-3">Hitung dan tulis hasil akhirnya!</p>
+      
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="card card-primary">
+          <div class="font-bold mb-2">KPK(${p.a}, ${p.b}) = ?</div>
+          <input type="number" class="input" id="kpkAnswer" value="${progress.kpkAnswer || ''}" placeholder="Hasil KPK">
+          <div class="text-xs text-gray-500 mt-2">Hint: ${expA} atau ${expB}, ambil pangkat terbesar lalu kalikan!</div>
+          <div class="feedback" id="feedbackKPKAns"></div>
+        </div>
+        <div class="card card-accent">
+          <div class="font-bold mb-2">FPB(${p.a}, ${p.b}) = ?</div>
+          <input type="number" class="input" id="fpbAnswer" value="${progress.fpbAnswer || ''}" placeholder="Hasil FPB">
+          <div class="text-xs text-gray-500 mt-2">Hint: ${expA} atau ${expB}, ambil pangkat terkecil lalu kalikan!</div>
+          <div class="feedback" id="feedbackFPBAns"></div>
+        </div>
+      </div>
+      
+      <button class="btn btn-green mt-3" onclick="checkStep5()">Cek Jawaban</button>
+      <div class="feedback" id="feedbackStep5"></div>
+    </div>
+    
+    <!-- Completed message -->
+    <div class="step-section ${isProblemDone(currentSlide3Problem) ? 'active' : ''}" id="stepSectionDone" style="display: ${isProblemDone(currentSlide3Problem) ? 'block' : 'none'};">
+      <div class="p-6 rounded-xl text-center" style="background: linear-gradient(135deg, var(--green), var(--yellow));">
+        <div class="text-5xl mb-2">🏆</div>
+        <div class="display-font text-2xl font-bold text-white mb-2">Selamat! Soal ${currentSlide3Problem + 1} Selesai!</div>
+        <div class="text-white text-lg mb-4">KPK(${p.a}, ${p.b}) = <strong>${kpk}</strong> | FPB(${p.a}, ${p.b}) = <strong>${fpb}</strong></div>
+        <div class="flex gap-2 justify-center flex-wrap">
+          ${currentSlide3Problem < 19 ? `<button class="btn btn-accent" onclick="nextProblem()">Soal Berikutnya →</button>` : ''}
+          <button class="btn btn-outline" onclick="reviewProblem()">📖 Lihat Ulang</button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  if (progress.currentStep === 1) {
+    renderFactorTree();
+  }
+  if (progress.currentStep === 4) {
+    renderKPKFPBSelection();
+  }
+  
+  updateSlide3ProgressText();
+}
+
+function renderFactorTree() {
+  const p = slide3Problems[currentSlide3Problem];
+  const progress = slide3Progress[currentSlide3Problem];
+  
+  ['a', 'b'].forEach(key => {
+    const state = progress.factorState[key];
+    const num = key === 'a' ? p.a : p.b;
+    const display = document.getElementById('factorDisplay' + key.toUpperCase());
+    const btnsContainer = document.getElementById('primeBtns' + key.toUpperCase());
+    
+    // Render display
+    let html = '';
+    if (state.factors.length === 0) {
+      html = `<span class="tree-node tree-composite">${state.remaining}</span>`;
+    } else {
+      state.factors.forEach(f => {
+        html += `<span class="tree-node tree-prime">${f}</span><span class="chip-times">×</span>`;
+      });
+      if (state.remaining > 1) {
+        html += `<span class="tree-node tree-composite">${state.remaining}</span>`;
+      } else {
+        html = html.replace(/<span class="chip-times">×<\/span>$/, '');
+        html += `<span class="text-green-600 font-bold ml-2">✓</span>`;
+      }
+    }
+    display.innerHTML = html;
+    
+    // Render prime buttons
+    const primes = [2, 3, 5, 7, 11, 13, 17];
+    btnsContainer.innerHTML = '';
+    if (state.remaining > 1) {
+      primes.forEach(prime => {
+        const btn = document.createElement('button');
+        btn.className = 'prime-btn';
+        btn.textContent = prime;
+        btn.onclick = () => handlePrimeClick(key, prime);
+        if (state.remaining % prime !== 0) {
+          btn.style.opacity = '0.4';
+          btn.style.cursor = 'not-allowed';
+        }
+        btnsContainer.appendChild(btn);
+      });
+    } else {
+      btnsContainer.innerHTML = '<div class="text-green-600 font-bold text-sm">✓ Selesai difaktorkan!</div>';
+    }
+  });
+}
+
+function handlePrimeClick(key, prime) {
+  const progress = slide3Progress[currentSlide3Problem];
+  const state = progress.factorState[key];
+  if (state.remaining % prime !== 0) {
+    showFeedback('feedback' + key.toUpperCase() + '1', `${prime} tidak bisa membagi ${state.remaining}. Coba bilangan prima lain!`, 'error');
+    return;
+  }
+  state.remaining = state.remaining / prime;
+  state.factors.push(prime);
+  showFeedback('feedback' + key.toUpperCase() + '1', `Hebat! ${prime} membagi habis. Sisa: ${state.remaining}`, 'success');
+  renderFactorTree();
+  
+  // Auto-check step 1
+  if (progress.factorState.a.remaining === 1 && progress.factorState.b.remaining === 1) {
+    setTimeout(() => checkStep1(true), 500);
+  }
+}
+
+function resetFactorTree() {
+  const p = slide3Problems[currentSlide3Problem];
+  slide3Progress[currentSlide3Problem].factorState = {
+    a: { remaining: p.a, factors: [] },
+    b: { remaining: p.b, factors: [] }
+  };
+  showFeedback('feedbackStep1', 'Pohon faktor direset. Mulai lagi dari awal!', 'info');
+  renderFactorTree();
+}
+
+function checkStep1(auto = false) {
+  const progress = slide3Progress[currentSlide3Problem];
+  if (progress.factorState.a.remaining === 1 && progress.factorState.b.remaining === 1) {
+    progress.step1 = true;
+    progress.currentStep = 2;
+    showFeedback('feedbackStep1', '🎉 Sempurna! Pohon faktor selesai. Lanjut ke bentuk perkalian.', 'success');
+    setTimeout(() => renderCurrentProblem(), 800);
+  } else {
+    showFeedback('feedbackStep1', 'Belum selesai. Faktorkan kedua bilangan sampai habis (menjadi 1)!', 'error');
+  }
+}
+
+function checkStep2() {
+  const p = slide3Problems[currentSlide3Problem];
+  const progress = slide3Progress[currentSlide3Problem];
+  const inputA = document.getElementById('multInputA').value;
+  const inputB = document.getElementById('multInputB').value;
+  
+  const expectedA = primeFactorize(p.a).join('*');
+  const expectedB = primeFactorize(p.b).join('*');
+  
+  const normA = normalizeInput(inputA);
+  const normB = normalizeInput(inputB);
+  
+  // Allow any order
+  const factorsA = normA.split('*').filter(x => x).sort().join('*');
+  const factorsB = normB.split('*').filter(x => x).sort().join('*');
+  const expSortedA = expectedA.split('*').sort().join('*');
+  const expSortedB = expectedB.split('*').sort().join('*');
+  
+  let okA = factorsA === expSortedA;
+  let okB = factorsB === expSortedB;
+  
+  showFeedback('feedbackMultA', okA ? '✓ Benar!' : `✗ Salah. Faktor yang benar: ${factorsToMultDisplay(primeFactorize(p.a))}`, okA ? 'success' : 'error');
+  showFeedback('feedbackMultB', okB ? '✓ Benar!' : `✗ Salah. Faktor yang benar: ${factorsToMultDisplay(primeFactorize(p.b))}`, okB ? 'success' : 'error');
+  
+  if (okA && okB) {
+    progress.step2 = true;
+    progress.multA = inputA;
+    progress.multB = inputB;
+    progress.currentStep = 3;
+    showFeedback('feedbackStep2', '🎉 Bentuk perkalian benar! Lanjut ke bentuk pangkat.', 'success');
+    setTimeout(() => renderCurrentProblem(), 1000);
+  } else {
+    showFeedback('feedbackStep2', 'Cek lagi bentuk perkalianmu. Pastikan semua faktor prima tertera!', 'error');
+  }
+}
+
+function checkStep3() {
+  const p = slide3Problems[currentSlide3Problem];
+  const progress = slide3Progress[currentSlide3Problem];
+  const inputA = document.getElementById('expInputA').value;
+  const inputB = document.getElementById('expInputB').value;
+  
+  const expectedA = factorsToExpString(primeFactorize(p.a));
+  const expectedB = factorsToExpString(primeFactorize(p.b));
+  
+  const okA = normalizeInput(inputA) === expectedA;
+  const okB = normalizeInput(inputB) === expectedB;
+  
+  showFeedback('feedbackExpA', okA ? '✓ Benar!' : `✗ Salah. Bentuk pangkat: ${factorsToExpDisplay(primeFactorize(p.a))}`, okA ? 'success' : 'error');
+  showFeedback('feedbackExpB', okB ? '✓ Benar!' : `✗ Salah. Bentuk pangkat: ${factorsToExpDisplay(primeFactorize(p.b))}`, okB ? 'success' : 'error');
+  
+  if (okA && okB) {
+    progress.step3 = true;
+    progress.expA = inputA;
+    progress.expB = inputB;
+    progress.currentStep = 4;
+    showFeedback('feedbackStep3', '🎉 Bentuk pangkat benar! Lanjut pilih pangkat untuk KPK dan FPB.', 'success');
+    setTimeout(() => renderCurrentProblem(), 1000);
+  } else {
+    showFeedback('feedbackStep3', 'Format: gunakan ^ untuk pangkat. Contoh: 2^3 × 3', 'error');
+  }
+}
+
+function renderKPKFPBSelection() {
+  const p = slide3Problems[currentSlide3Problem];
+  const fa = primeFactorize(p.a);
+  const fb = primeFactorize(p.b);
+  const ca = {}, cb = {};
+  fa.forEach(f => ca[f] = (ca[f] || 0) + 1);
+  fb.forEach(f => cb[f] = (cb[f] || 0) + 1);
+  const primes = [...new Set([...fa, ...fb])].sort((a, b) => a - b);
+  
+  const progress = slide3Progress[currentSlide3Problem];
+  if (!progress.kpkSelection) progress.kpkSelection = {};
+  if (!progress.fpbSelection) progress.fpbSelection = {};
+  
+  ['kpk', 'fpb'].forEach(type => {
+    const container = document.getElementById(type + 'Selection');
+    container.innerHTML = '';
+    const sup = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+    primes.forEach(prime => {
+      const expA = ca[prime] || 0;
+      const expB = cb[prime] || 0;
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-2 mb-2';
+      div.innerHTML = `
+        <div class="text-sm font-bold w-12">Prima ${prime}:</div>
+        <button class="prime-btn prime-opt" data-prime="${prime}" data-exp="${expA}" data-type="${type}" style="min-width: auto; padding: 0.4rem 0.8rem; font-size: 0.95rem;">
+          ${prime}${expA > 1 ? sup[expA.toString()] || '^' + expA : ''}
+          <span class="text-xs block opacity-80">dari ${p.a}</span>
+        </button>
+        <button class="prime-btn prime-opt" data-prime="${prime}" data-exp="${expB}" data-type="${type}" style="min-width: auto; padding: 0.4rem 0.8rem; font-size: 0.95rem;">
+          ${prime}${expB > 1 ? sup[expB.toString()] || '^' + expB : ''}
+          <span class="text-xs block opacity-80">dari ${p.b}</span>
+        </button>
+      `;
+      container.appendChild(div);
+    });
+    
+    container.querySelectorAll('.prime-opt').forEach(btn => {
+      btn.onclick = () => {
+        const prime = btn.dataset.prime;
+        const exp = parseInt(btn.dataset.exp);
+        const t = btn.dataset.type;
+        // Toggle within same prime
+        container.querySelectorAll(`.prime-opt[data-prime="${prime}"][data-type="${t}"]`).forEach(b => {
+          b.style.background = '';
+          b.style.color = '';
+        });
+        if (progress[t + 'Selection'][prime] === exp) {
+          delete progress[t + 'Selection'][prime];
+        } else {
+          progress[t + 'Selection'][prime] = exp;
+          btn.style.background = t === 'kpk' ? 'var(--primary)' : 'var(--accent)';
+          btn.style.color = 'white';
+        }
+      };
+    });
+  });
+}
+
+function checkStep4() {
+  const p = slide3Problems[currentSlide3Problem];
+  const fa = primeFactorize(p.a);
+  const fb = primeFactorize(p.b);
+  const ca = {}, cb = {};
+  fa.forEach(f => ca[f] = (ca[f] || 0) + 1);
+  fb.forEach(f => cb[f] = (cb[f] || 0) + 1);
+  const primes = [...new Set([...fa, ...fb])].sort((a, b) => a - b);
+  
+  const progress = slide3Progress[currentSlide3Problem];
+  
+  let kpkOk = true, fpbOk = true;
+  let kpkMsg = [], fpbMsg = [];
+  
+  primes.forEach(prime => {
+    const maxE = Math.max(ca[prime] || 0, cb[prime] || 0);
+    const minE = Math.min(ca[prime] || 0, cb[prime] || 0);
+    
+    const kpkSel = progress.kpkSelection[prime];
+    const fpbSel = progress.fpbSelection[prime];
+    
+    if (kpkSel !== maxE) {
+      kpkOk = false;
+      kpkMsg.push(`Prima ${prime}: ambil ${maxE} (terbesar)`);
+    }
+    if (fpbSel !== minE) {
+      fpbOk = false;
+      fpbMsg.push(`Prima ${prime}: ambil ${minE} (terkecil)${minE === 0 ? ' (tidak dipakai)' : ''}`);
+    }
+  });
+  
+  showFeedback('feedbackKPK', kpkOk ? '✓ Benar! KPK ambil pangkat terbesar.' : '✗ ' + kpkMsg.join(', '), kpkOk ? 'success' : 'error');
+  showFeedback('feedbackFPB', fpbOk ? '✓ Benar! FPB ambil pangkat terkecil.' : '✗ ' + fpbMsg.join(', '), fpbOk ? 'success' : 'error');
+  
+  if (kpkOk && fpbOk) {
+    progress.step4 = true;
+    progress.currentStep = 5;
+    showFeedback('feedbackStep4', '🎉 Pilihan benar! Sekarang hitung hasil akhirnya.', 'success');
+    setTimeout(() => renderCurrentProblem(), 1200);
+  } else {
+    showFeedback('feedbackStep4', 'Ingat: KPK = pangkat TERBESAR, FPB = pangkat TERKECIL!', 'error');
+  }
+}
+
+function checkStep5() {
+  const p = slide3Problems[currentSlide3Problem];
+  const progress = slide3Progress[currentSlide3Problem];
+  const kpkAns = parseInt(document.getElementById('kpkAnswer').value);
+  const fpbAns = parseInt(document.getElementById('fpbAnswer').value);
+  
+  const expectedKPK = computeKPK(p.a, p.b);
+  const expectedFPB = computeFPB(p.a, p.b);
+  
+  const kpkOk = kpkAns === expectedKPK;
+  const fpbOk = fpbAns === expectedFPB;
+  
+  showFeedback('feedbackKPKAns', kpkOk ? '✓ Benar!' : `✗ Salah. KPK = ${expectedKPK}`, kpkOk ? 'success' : 'error');
+  showFeedback('feedbackFPBAns', fpbOk ? '✓ Benar!' : `✗ Salah. FPB = ${expectedFPB}`, fpbOk ? 'success' : 'error');
+  
+  if (kpkOk && fpbOk) {
+    progress.step5 = true;
+    progress.kpkAnswer = kpkAns;
+    progress.fpbAnswer = fpbAns;
+    showFeedback('feedbackStep5', '🎉 Misi soal ' + (currentSlide3Problem + 1) + ' selesai dengan sempurna!', 'success');
+    renderProblemNav();
+    launchConfetti();
+    setTimeout(() => {
+      renderCurrentProblem();
+    }, 1000);
+  } else {
+    showFeedback('feedbackStep5', 'Cek perhitunganmu. Kalikan hasil pangkat yang dipilih di langkah 4!', 'error');
+  }
+}
+
+function nextProblem() {
+  if (currentSlide3Problem < 19) {
+    currentSlide3Problem++;
+    renderProblemNav();
+    renderCurrentProblem();
+  }
+}
+
+function reviewProblem() {
+  const progress = slide3Progress[currentSlide3Problem];
+  progress.currentStep = 1;
+  renderCurrentProblem();
+}
+
+function showFeedback(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'feedback show ' + type;
+}
+
+function updateSlide3ProgressText() {
+  let done = 0;
+  for (let i = 0; i < slide3Problems.length; i++) {
+    if (isProblemDone(i)) done++;
+  }
+  document.getElementById('slide3ProgressText').textContent = done + '/20';
+}
+
+// =============== SLIDE 4: FLIP CARDS ===============
+function renderSlide4Cards() {
+  const grid = document.getElementById('flipCardsGrid');
+  grid.innerHTML = '';
+  slide4Cards.forEach((card, i) => {
+    const div = document.createElement('div');
+    div.className = 'flip-card';
+    div.onclick = () => div.classList.toggle('flipped');
+    div.innerHTML = `
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="text-xs font-bold text-gray-400 mb-2">KARTU ${i + 1}/20</div>
+          <div class="font-semibold text-gray-800 text-sm mb-3">${card.q}</div>
+          <div class="text-xs text-gray-500 mt-auto">Klik untuk lihat jawaban →</div>
+        </div>
+        <div class="flip-card-back ${card.type}">
+          <div class="display-font text-3xl font-bold mb-1">${card.a}</div>
+          <div class="text-xs opacity-90 mb-2">${card.note}</div>
+          <div class="text-xs opacity-75 mt-auto">Klik untuk balik lagi ←</div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+// =============== SLIDE 5: MULTIPLE CHOICE ===============
+function renderSlide5Problems() {
+  const container = document.getElementById('slide5Problems');
+  container.innerHTML = '';
+  slide5Problems.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'card mb-4';
+    div.id = 'problem5_' + i;
+    
+    const typeTag = p.type === 'KPK' ? 'tag-kpk' : 'tag-fpb';
+    const levelTag = p.level === 'Sedang' ? 'tag-sedang' : p.level === 'Sulit' ? 'tag-sulit' : 'tag-hots';
+    
+    div.innerHTML = `
+      <div class="flex flex-wrap gap-2 mb-3">
+        <span class="tag ${typeTag}">${p.type}</span>
+        <span class="tag ${levelTag}">${p.level}</span>
+        <span class="tag bg-gray-100 text-gray-600">Soal ${i + 1}</span>
+      </div>
+      <p class="font-semibold mb-4 leading-relaxed">${p.q}</p>
+      
+      <div class="space-y-2 mb-3" id="opts${i}">
+        ${p.opts.map((opt, j) => `
+          <button class="option-btn" onclick="selectOption(${i}, ${j})" id="opt${i}_${j}">
+            <span class="option-letter">${String.fromCharCode(65 + j)}</span>
+            <span>${opt}</span>
+          </button>
+        `).join('')}
+      </div>
+      
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button class="btn btn-yellow" onclick="showKeyword(${i})">🔑 Kata Kunci</button>
+        <button class="btn btn-green" onclick="checkSlide5(${i})" id="checkBtn${i}" ${slide5Answers[i] === undefined ? 'disabled' : ''}>✓ Cek Jawaban</button>
+        <button class="btn btn-accent" onclick="showDiscussion(${i})" id="discBtn${i}" ${!slide5Checked[i] ? 'disabled' : ''}>📖 Pembahasan</button>
+      </div>
+      
+      <div class="keyword-box" id="keyword${i}">
+        <div class="font-bold mb-1">🔑 Kata Kunci:</div>
+        <div class="text-sm">${p.keyword}</div>
+      </div>
+      
+      <div class="discussion-box" id="discussion${i}">
+        <div class="font-bold mb-2 display-font" style="color: var(--green-dark);">📖 Pembahasan:</div>
+        <div class="text-sm leading-relaxed">${p.discussion}</div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+  updateSlide5Stats();
+}
+
+function selectOption(qIdx, optIdx) {
+  if (slide5Checked[qIdx]) return; // Locked after check
+  slide5Answers[qIdx] = optIdx;
+  // Update UI
+  for (let j = 0; j < 4; j++) {
+    const btn = document.getElementById('opt' + qIdx + '_' + j);
+    if (btn) {
+      btn.classList.remove('selected');
+      if (j === optIdx) btn.classList.add('selected');
+    }
+  }
+  document.getElementById('checkBtn' + qIdx).disabled = false;
+}
+
+function showKeyword(i) {
+  const el = document.getElementById('keyword' + i);
+  el.classList.toggle('show');
+}
+
+function checkSlide5(i) {
+  if (slide5Answers[i] === undefined) return;
+  slide5Checked[i] = true;
+  const p = slide5Problems[i];
+  const correct = slide5Answers[i] === p.correct;
+  
+  // Mark options
+  for (let j = 0; j < 4; j++) {
+    const btn = document.getElementById('opt' + i + '_' + j);
+    if (btn) {
+      btn.disabled = true;
+      btn.classList.remove('selected');
+      if (j === p.correct) {
+        btn.classList.add('correct');
+      } else if (j === slide5Answers[i] && !correct) {
+        btn.classList.add('wrong');
+      }
+    }
+  }
+  
+  document.getElementById('checkBtn' + i).disabled = true;
+  document.getElementById('discBtn' + i).disabled = false;
+  
+  if (correct) {
+    launchConfetti();
+  }
+  
+  updateSlide5Stats();
+}
+
+function showDiscussion(i) {
+  if (!slide5Checked[i]) return;
+  document.getElementById('discussion' + i).classList.add('show');
+}
+
+function updateSlide5Stats() {
+  let correct = 0;
+  let answered = 0;
+  slide5Problems.forEach((p, i) => {
+    if (slide5Checked[i]) {
+      answered++;
+      if (slide5Answers[i] === p.correct) correct++;
+    }
+  });
+  document.getElementById('slide5Score').textContent = correct + ' / 10';
+  document.getElementById('slide5Progress').style.width = (answered * 10) + '%';
+}
+
+// =============== REFLECTION ===============
+let reflectionFilled = 0;
+function updateReflection() {
+  const textareas = document.querySelectorAll('.reflection-input');
+  let filled = 0;
+  textareas.forEach(t => { if (t.value.trim().length > 10) filled++; });
+  reflectionFilled = filled;
+}
+
+function updateFinalStats() {
+  let slide3Done = 0;
+  for (let i = 0; i < slide3Problems.length; i++) {
+    if (isProblemDone(i)) slide3Done++;
+  }
+  let slide5Correct = 0;
+  slide5Problems.forEach((p, i) => {
+    if (slide5Checked[i] && slide5Answers[i] === p.correct) slide5Correct++;
+  });
+  document.getElementById('finalSlide3').textContent = slide3Done;
+  document.getElementById('finalSlide5').textContent = slide5Correct;
+  document.getElementById('finalReflection').textContent = reflectionFilled;
+}
+
+function restartAdventure() {
+  if (!confirm('Yakin ingin mengulang petualangan? Semua progress akan hilang.')) return;
+  currentSlide = 0;
+  currentSlide3Problem = 0;
+  Object.keys(slide3Progress).forEach(k => delete slide3Progress[k]);
+  Object.keys(slide5Answers).forEach(k => delete slide5Answers[k]);
+  Object.keys(slide5Checked).forEach(k => delete slide5Checked[k]);
+  reflectionFilled = 0;
+  document.querySelectorAll('.reflection-input').forEach(t => t.value = '');
+  document.getElementById('studentName').value = '';
+  updateStartButton();
+  initSlide3();
+  renderSlide5Problems();
+  goToSlide(0);
+}
+
+// =============== CONFETTI ===============
+function launchConfetti() {
+  const colors = ['#2563eb', '#f97316', '#10b981', '#fbbf24', '#ef4444'];
+  for (let i = 0; i < 40; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      c.style.animationDuration = (2 + Math.random() * 2) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4000);
+    }, i * 30);
+  }
+}
+
+// =============== INIT ===============
+window.addEventListener('DOMContentLoaded', () => {
+  initDots();
+  initSlide3();
+  renderSlide4Cards();
+  renderSlide5Problems();
+  
+  // Enter key on name input
+  document.getElementById('studentName').addEventListener('keypress', e => {
+    if (e.key === 'Enter') startAdventure();
+  });
+});
+</script>
+
+</body>
+</html>
