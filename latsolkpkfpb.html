@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Matematika: KPK & FPB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFF8E7;
+  --bg-2: #FFE5B4;
+  --primary: #FF6B35;
+  --primary-dark: #E5511A;
+  --secondary: #06A77D;
+  --secondary-dark: #04835F;
+  --accent: #FFD23F;
+  --dark: #1A1A2E;
+  --light: #FFFFFF;
+  --border: #FFD89B;
+  --danger: #FF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Outfit', sans-serif;
+  color: var(--dark);
+  overflow: hidden;
+}
+
+body {
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(255, 210, 63, 0.3), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(6, 167, 125, 0.25), transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(255, 107, 53, 0.12), transparent 60%),
+    linear-gradient(135deg, #FFF8E7 0%, #FFE5B4 100%);
+  background-attachment: fixed;
+}
+
+.bg-shapes { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.bg-shape { position: absolute; border-radius: 50%; opacity: 0.15; animation: floatShape 20s infinite ease-in-out; }
+.bg-shape.s1 { width: 300px; height: 300px; background: var(--primary); top: -100px; left: -100px; }
+.bg-shape.s2 { width: 400px; height: 400px; background: var(--secondary); bottom: -150px; right: -150px; animation-delay: -10s; }
+.bg-shape.s3 { width: 200px; height: 200px; background: var(--accent); top: 40%; left: 60%; animation-delay: -5s; }
+
+@keyframes floatShape {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 30px) scale(1.1); }
+}
+
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; height: 60px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--border);
+  display: flex; align-items: center; padding: 0 24px; z-index: 100; gap: 16px;
+}
+
+.logo { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--primary); display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.progress-container { flex: 1; height: 8px; background: rgba(255, 107, 53, 0.15); border-radius: 4px; overflow: hidden; max-width: 500px; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 4px; transition: width 0.5s ease; width: 16.67%; }
+.student-info { font-size: 0.9rem; color: var(--dark); font-weight: 500; white-space: nowrap; }
+.student-info .name { color: var(--primary); font-weight: 700; }
+
+.slides-wrap { position: relative; width: 100%; height: 100vh; }
+
+.slide {
+  position: absolute; top: 80px; left: 24px; right: 24px; bottom: 90px;
+  padding: 20px 24px; opacity: 0; transform: translateX(50px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; overflow-y: auto;
+}
+
+.slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+.slide.prev { transform: translateX(-50px); }
+.slide::-webkit-scrollbar { width: 8px; }
+.slide::-webkit-scrollbar-track { background: rgba(255, 107, 53, 0.08); border-radius: 4px; }
+.slide::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+.navbar {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-top: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; z-index: 100; gap: 16px;
+}
+
+.nav-btn {
+  background: var(--primary); color: white; border: 2px solid var(--dark);
+  padding: 12px 24px; border-radius: 12px; font-family: 'Outfit', sans-serif;
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px; box-shadow: 3px 3px 0 var(--dark); font-size: 0.95rem;
+}
+.nav-btn:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--dark); }
+.nav-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--dark); }
+.nav-btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: 2px 2px 0 #999; border-color: #999; }
+.nav-btn.secondary { background: var(--secondary); }
+
+.slide-dots { display: flex; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 107, 53, 0.3); cursor: pointer; transition: all 0.3s; }
+.dot:hover { background: var(--primary); }
+.dot.active { background: var(--primary); transform: scale(1.4); }
+
+.cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 100%; position: relative; }
+.cover-badge { background: var(--accent); color: var(--dark); padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 16px; border: 2px solid var(--dark); box-shadow: 3px 3px 0 var(--dark); animation: bounce 2s ease-in-out infinite; }
+.hero-shapes { position: relative; height: 70px; width: 100%; max-width: 600px; margin-bottom: 16px; }
+.hero-shape { position: absolute; font-family: 'Fredoka', sans-serif; font-weight: 700; padding: 6px 16px; border-radius: 50%; border: 2px solid var(--dark); box-shadow: 3px 3px 0 var(--dark); font-size: 0.95rem; }
+.hero-shape.s1 { background: var(--primary); color: white; left: 15%; top: 0; animation: floatUp 3s ease-in-out infinite; }
+.hero-shape.s2 { background: var(--secondary); color: white; left: 40%; top: 25px; animation: floatUp 3s ease-in-out infinite 0.3s; }
+.hero-shape.s3 { background: var(--accent); color: var(--dark); left: 65%; top: 0; animation: floatUp 3s ease-in-out infinite 0.6s; }
+.hero-shape.s4 { background: white; color: var(--dark); left: 28%; top: 35px; animation: floatUp 3s ease-in-out infinite 0.9s; }
+
+@keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+.cover h1 { font-family: 'Fredoka', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700; line-height: 1.1; margin-bottom: 16px; color: var(--dark); text-shadow: 4px 4px 0 var(--accent); }
+.cover h1 span { color: var(--primary); }
+.cover > p { font-size: 1.05rem; color: var(--dark); opacity: 0.8; margin-bottom: 28px; max-width: 600px; line-height: 1.5; }
+
+.input-group { background: white; padding: 24px; border-radius: 20px; border: 2px solid var(--dark); box-shadow: 6px 6px 0 var(--dark); max-width: 460px; width: 100%; }
+.input-group label { display: block; font-weight: 700; margin-bottom: 8px; color: var(--dark); font-size: 1rem; }
+.input-group input { width: 100%; padding: 12px 16px; border: 2px solid var(--border); border-radius: 12px; font-family: 'Outfit', sans-serif; font-size: 1rem; margin-bottom: 16px; outline: none; transition: all 0.2s; }
+.input-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.15); }
+.btn-primary { background: var(--primary); color: white; border: 2px solid var(--dark); padding: 14px 28px; border-radius: 12px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.05rem; cursor: pointer; transition: all 0.2s; box-shadow: 4px 4px 0 var(--dark); display: inline-flex; align-items: center; gap: 8px; justify-content: center; width: 100%; }
+.btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--dark); }
+.btn-primary:active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--dark); }
+
+.slide-header { margin-bottom: 24px; text-align: center; }
+.slide-badge { display: inline-block; background: var(--accent); color: var(--dark); padding: 6px 14px; border-radius: 16px; font-size: 0.8rem; font-weight: 700; border: 2px solid var(--dark); margin-bottom: 12px; box-shadow: 2px 2px 0 var(--dark); }
+.slide-header h2 { font-family: 'Fredoka', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+.slide-header p { color: var(--dark); opacity: 0.75; font-size: 1rem; }
+
+.tujuan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+.tujuan-card { background: white; padding: 24px; border-radius: 20px; border: 2px solid var(--dark); box-shadow: 4px 4px 0 var(--dark); transition: all 0.3s; position: relative; overflow: hidden; }
+.tujuan-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--dark); }
+.tujuan-card .num { position: absolute; top: -10px; right: -10px; width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.3rem; border: 2px solid var(--dark); }
+.tujuan-card:nth-child(2) .num { background: var(--secondary); }
+.tujuan-card:nth-child(3) .num { background: var(--accent); color: var(--dark); }
+.tujuan-card:nth-child(4) .num { background: var(--primary); }
+.tujuan-card h3 { font-family: 'Fredoka', sans-serif; font-size: 1.15rem; margin-bottom: 8px; color: var(--dark); padding-right: 40px; }
+.tujuan-card p { color: var(--dark); opacity: 0.85; font-size: 0.92rem; line-height: 1.5; }
+
+.materi-section { background: white; padding: 22px; border-radius: 20px; border: 2px solid var(--dark); box-shadow: 4px 4px 0 var(--dark); margin: 0 auto 20px; max-width: 1100px; }
+.materi-section h3 { font-family: 'Fredoka', sans-serif; font-size: 1.25rem; margin-bottom: 14px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+.materi-section h3::before { content: ''; width: 6px; height: 24px; background: var(--primary); border-radius: 3px; }
+
+.method-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.method-tab { background: white; border: 2px solid var(--border); padding: 8px 16px; border-radius: 12px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--dark); transition: all 0.2s; font-size: 0.92rem; }
+.method-tab:hover { background: var(--bg); }
+.method-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+.method-content { display: none; background: var(--bg); padding: 16px; border-radius: 12px; border: 2px solid var(--border); }
+.method-content.active { display: block; animation: fadeIn 0.4s; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.prima-table { width: 100%; max-width: 400px; border-collapse: separate; border-spacing: 0; margin: 12px auto; border: 2px solid var(--dark); border-radius: 12px; overflow: hidden; }
+.prima-table th, .prima-table td { padding: 8px 12px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-family: 'Fredoka', sans-serif; }
+.prima-table th { background: var(--primary); color: white; }
+.prima-table td { background: white; }
+.prima-table tr:last-child td { background: var(--accent); font-weight: 700; }
+.prima-table tr:last-child td:first-child { background: var(--secondary); color: white; }
+.prima-table tr:last-child td, .prima-table tr:last-child th { border-bottom: none; }
+.prima-table td:last-child, .prima-table th:last-child { border-right: none; }
+
+.latihan-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 16px; }
+.latihan-card { background: var(--bg); padding: 14px; border-radius: 12px; border: 2px solid var(--border); text-align: center; transition: all 0.2s; }
+.latihan-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 8px rgba(255, 107, 53, 0.15); }
+.latihan-card .label { font-size: 0.75rem; font-weight: 700; padding: 2px 10px; border-radius: 8px; display: inline-block; margin-bottom: 8px; border: 1px solid var(--dark); }
+.latihan-card .label.kpk { background: var(--primary); color: white; }
+.latihan-card .label.fpb { background: var(--secondary); color: white; }
+.latihan-card .question { font-family: 'Fredoka', sans-serif; font-size: 1rem; margin-bottom: 12px; color: var(--dark); }
+.latihan-card .answer-btn { background: white; border: 2px dashed var(--primary); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--primary); width: 100%; transition: all 0.2s; font-family: 'Outfit', sans-serif; font-size: 0.85rem; }
+.latihan-card .answer-btn:hover { background: var(--primary); color: white; }
+.latihan-card .answer-btn.revealed { background: var(--secondary); color: white; border-style: solid; border-color: var(--secondary); font-family: 'Fredoka', sans-serif; }
+
+.trick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 16px; }
+.trick-card { background: linear-gradient(135deg, var(--accent), #FFE5B4); padding: 18px; border-radius: 16px; border: 2px solid var(--dark); box-shadow: 4px 4px 0 var(--dark); transition: all 0.2s; }
+.trick-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--dark); }
+.trick-card .icon { font-size: 1.8rem; margin-bottom: 6px; display: block; }
+.trick-card h4 { font-family: 'Fredoka', sans-serif; color: var(--dark); font-size: 1.05rem; margin-bottom: 6px; }
+.trick-card p { font-size: 0.88rem; color: var(--dark); line-height: 1.5; }
+
+.keywords-section { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 auto 20px; max-width: 1100px; }
+.keyword-box { padding: 20px; border-radius: 16px; border: 2px solid var(--dark); box-shadow: 4px 4px 0 var(--dark); }
+.keyword-box.kpk { background: linear-gradient(135deg, var(--primary), #FF8E53); color: white; }
+.keyword-box.fpb { background: linear-gradient(135deg, var(--secondary), #08C99A); color: white; }
+.keyword-box h3 { font-family: 'Fredoka', sans-serif; font-size: 1.25rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.keyword-box ul { list-style: none; }
+.keyword-box ul li { padding: 5px 0; padding-left: 22px; position: relative; font-size: 0.92rem; }
+.keyword-box ul li::before { content: '★'; position: absolute; left: 0; color: var(--accent); }
+
+.note-section { background: white; padding: 20px; border-radius: 16px; border: 2px solid var(--dark); box-shadow: 4px 4px 0 var(--dark); margin: 0 auto 20px; max-width: 1100px; }
+.note-section h3 { font-family: 'Fredoka', sans-serif; color: var(--primary); margin-bottom: 8px; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; }
+.note-section h3::before { content: ''; width: 6px; height: 22px; background: var(--primary); border-radius: 3px; }
+.note-section p { line-height: 1.6; color: var(--dark); font-size: 0.95rem; }
+
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-top: 16px; }
+.flip-card { perspective: 1000px; height: 200px; cursor: pointer; }
+.flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 16px; border: 2px solid var(--dark); padding: 14px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 4px 4px 0 var(--dark); }
+.flip-card-front { background: white; }
+.flip-card-back { transform: rotateY(180deg); color: white; text-align: center; align-items: center; justify-content: center; }
+.flip-card-back.kpk { background: linear-gradient(135deg, var(--primary), #FF8E53); }
+.flip-card-back.fpb { background: linear-gradient(135deg, var(--secondary), #08C99A); }
+.flip-card-front .card-num { background: var(--accent); color: var(--dark); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka', sans-serif; font-weight: 700; border: 2px solid var(--dark); font-size: 0.85rem; }
+.flip-card-front .card-text { font-size: 0.85rem; line-height: 1.4; color: var(--dark); flex: 1; display: flex; align-items: center; margin-top: 8px; }
+.flip-card-front .hint { font-size: 0.75rem; color: var(--primary); font-weight: 600; text-align: center; }
+.flip-card-back .label { font-family: 'Fredoka', sans-serif; font-size: 2.5rem; font-weight: 700; letter-spacing: 1px; }
+.flip-card-back .reason { font-size: 0.82rem; line-height: 1.4; margin-top: 8px; padding: 0 8px; }
+
+.soal-list { max-width: 900px; margin: 0 auto; }
+.soal-card { background: white; padding: 20px; border-radius: 20px; border: 2px solid var(--dark); box-shadow: 4px 4px 0 var(--dark); margin-bottom: 20px; }
+.soal-card .soal-num { display: inline-block; background: var(--primary); color: white; padding: 4px 14px; border-radius: 10px; font-family: 'Fredoka', sans-serif; font-weight: 700; margin-bottom: 12px; border: 2px solid var(--dark); font-size: 0.9rem; }
+.soal-card .soal-text { font-size: 0.98rem; line-height: 1.6; margin-bottom: 16px; color: var(--dark); }
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.option { background: var(--bg); border: 2px solid var(--border); padding: 10px 14px; border-radius: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 10px; font-family: 'Outfit', sans-serif; font-size: 0.92rem; }
+.option:hover { border-color: var(--primary); background: white; transform: translateY(-1px); }
+.option.selected { background: var(--accent); border-color: var(--dark); transform: scale(1.02); }
+.option.correct { background: var(--secondary); color: white; border-color: var(--secondary); }
+.option.wrong { background: var(--danger); color: white; border-color: var(--danger); }
+.option .letter { background: white; border: 2px solid var(--dark); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Fredoka', sans-serif; font-weight: 700; color: var(--dark); flex-shrink: 0; font-size: 0.85rem; }
+.option.correct .letter, .option.wrong .letter { background: white; color: var(--dark); }
+
+.soal-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.action-btn { background: white; border: 2px solid var(--dark); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.85rem; color: var(--dark); transition: all 0.2s; box-shadow: 2px 2px 0 var(--dark); }
+.action-btn:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--dark); }
+.action-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+.action-btn.primary { background: var(--primary); color: white; }
+.action-btn.secondary { background: var(--secondary); color: white; }
+.action-btn.accent { background: var(--accent); }
+
+.keyword-hint { background: linear-gradient(135deg, var(--accent), #FFE5B4); border: 2px dashed var(--primary); padding: 12px 16px; border-radius: 10px; margin-top: 12px; font-size: 0.9rem; display: none; }
+.keyword-hint.show { display: block; animation: slideDown 0.3s; }
+.keyword-hint strong { color: var(--primary); }
+
+.pembahasan { background: linear-gradient(135deg, var(--secondary), #08C99A); color: white; padding: 16px; border-radius: 12px; margin-top: 12px; display: none; border: 2px solid var(--dark); }
+.pembahasan.show { display: block; animation: slideDown 0.4s; }
+.pembahasan h4 { font-family: 'Fredoka', sans-serif; margin-bottom: 8px; font-size: 1rem; }
+.pembahasan p { font-size: 0.9rem; line-height: 1.5; }
+
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+.kesimpulan-content { text-align: center; max-width: 800px; margin: 0 auto; }
+.kesimpulan-content h2 { font-family: 'Fredoka', sans-serif; font-size: clamp(2rem, 5vw, 3rem); color: var(--primary); margin-bottom: 16px; text-shadow: 3px 3px 0 var(--accent); }
+.kesimpulan-summary { background: white; padding: 24px; border-radius: 20px; border: 2px solid var(--dark); box-shadow: 4px 4px 0 var(--dark); margin: 24px 0; text-align: left; }
+.kesimpulan-summary h3 { font-family: 'Fredoka', sans-serif; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+.kesimpulan-summary h3::before { content: ''; width: 6px; height: 22px; background: var(--primary); border-radius: 3px; }
+.kesimpulan-summary ul { list-style: none; }
+.kesimpulan-summary ul li { padding: 6px 0; padding-left: 26px; position: relative; color: var(--dark); font-size: 0.95rem; line-height: 1.5; }
+.kesimpulan-summary ul li::before { content: '✓'; position: absolute; left: 0; color: var(--secondary); font-weight: 700; }
+
+.refleksi-box { background: linear-gradient(135deg, var(--accent), #FFE5B4); padding: 20px; border-radius: 16px; border: 2px solid var(--dark); box-shadow: 4px 4px 0 var(--dark); margin: 16px 0; text-align: left; }
+.refleksi-box h3 { font-family: 'Fredoka', sans-serif; color: var(--dark); margin-bottom: 12px; font-size: 1.1rem; }
+.refleksi-box .stars { display: flex; gap: 8px; justify-content: center; margin: 12px 0; }
+.star { font-size: 2.2rem; cursor: pointer; color: rgba(26, 26, 46, 0.2); transition: all 0.2s; user-select: none; }
+.star:hover, .star.active { color: var(--primary); transform: scale(1.2); }
+.thank-you { font-family: 'Fredoka', sans-serif; font-size: 1.4rem; color: var(--secondary); margin-top: 16px; }
+
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark); color: white; padding: 12px 24px; border-radius: 12px; font-weight: 600; z-index: 1000; opacity: 0; transition: all 0.3s; border: 2px solid var(--accent); box-shadow: 4px 4px 0 var(--primary); font-size: 0.9rem; max-width: 90vw; text-align: center; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 768px) {
+  .topbar { padding: 0 12px; height: 50px; gap: 8px; }
+  .logo { font-size: 1rem; }
+  .progress-container { margin: 0 8px; }
+  .student-info { font-size: 0.78rem; }
+  .slide { top: 60px; bottom: 80px; padding: 14px; left: 12px; right: 12px; }
+  .navbar { padding: 0 12px; height: 60px; }
+  .nav-btn { padding: 8px 14px; font-size: 0.82rem; }
+  .keywords-section { grid-template-columns: 1fr; }
+  .cover h1 { font-size: 2.2rem; }
+  .tujuan-card .num { width: 40px; height: 40px; font-size: 1.1rem; }
+  .hero-shapes { display: none; }
+  .materi-section { padding: 16px; }
+  .soal-card { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-shapes">
+  <div class="bg-shape s1"></div>
+  <div class="bg-shape s2"></div>
+  <div class="bg-shape s3"></div>
+</div>
+
+<header class="topbar">
+  <div class="logo">
+    <span>🧮</span>
+    <span>MatPetualang</span>
+  </div>
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="student-info">
+    Pemain: <span class="name" id="playerName">Tamu</span>
+  </div>
+</header>
+
+<div class="slides-wrap">
+  <!-- SLIDE 1: COVER -->
+  <section class="slide active" data-slide="1">
+    <div class="cover">
+      <div class="cover-badge">⭐ Misi Matematika Hari Ini ⭐</div>
+      
+      <div class="hero-shapes">
+        <div class="hero-shape s1">12</div>
+        <div class="hero-shape s2">18</div>
+        <div class="hero-shape s3">KPK</div>
+        <div class="hero-shape s4">FPB</div>
+      </div>
+      
+      <h1>Petualangan<br><span>KPK &amp; FPB</span></h1>
+      <p>Siap menjelajah dunia Kelipatan Persekutuan terKecil dan Faktor Persekutuan terBesar. Selesaikan misi, kumpulkan bintang, jadi juara matematika!</p>
+      
+      <div class="input-group">
+        <label for="nameInput">🚀 Namamu, Petualang!</label>
+        <input type="text" id="nameInput" placeholder="Tulis namamu di sini..." maxlength="20">
+        <button class="btn-primary" id="startBtn" onclick="startAdventure()">
+          Mulai Petualangan
+        </button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- SLIDE 2: TUJUAN -->
+  <section class="slide" data-slide="2">
+    <div class="slide-header">
+      <div class="slide-badge">🎯 Misi 01</div>
+      <h2>Tujuan Pembelajaran</h2>
+      <p>Setelah petualangan ini, kamu akan mampu:</p>
+    </div>
+    <div class="tujuan-grid">
+      <div class="tujuan-card">
+        <div class="num">1</div>
+        <h3>Memahami Konsep</h3>
+        <p>Menguasai konsep KPK dan FPB menggunakan faktorisasi prima dan metode tabel dengan benar.</p>
+      </div>
+      <div class="tujuan-card">
+        <div class="num">2</div>
+        <h3>Mengenali Soal Cerita</h3>
+        <p>Mengidentifikasi kata kunci pada soal cerita yang menuntut penyelesaian dengan KPK atau FPB.</p>
+      </div>
+      <div class="tujuan-card">
+        <div class="num">3</div>
+        <h3>Menerapkan Strategi</h3>
+        <p>Menyelesaikan 20 latihan KPK &amp; FPB serta menganalisis 20 kartu soal cerita secara akurat.</p>
+      </div>
+      <div class="tujuan-card">
+        <div class="num">4</div>
+        <h3>Berpikir Kritis</h3>
+        <p>Memilih strategi yang tepat dan mengevaluasi jawaban melalui pembahasan langkah demi langkah.</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- SLIDE 3: MATERI -->
+  <section class="slide" data-slide="3">
+    <div class="slide-header">
+      <div class="slide-badge">📚 Misi 02</div>
+      <h2>Materi: KPK &amp; FPB</h2>
+      <p>Pelajari metode faktorisasi prima, contoh, latihan, dan trik jitu menghafal!</p>
+    </div>
+    
+    <div class="materi-section">
+      <h3>Metode Faktorisasi Prima &amp; Tabel</h3>
+      <div class="method-tabs">
+        <button class="method-tab active" onclick="switchMethod(event, 'kpk')">Contoh KPK (12 &amp; 18)</button>
+        <button class="method-tab" onclick="switchMethod(event, 'fpb')">Contoh FPB (24 &amp; 36)</button>
+      </div>
+      
+      <div class="method-content active" id="method-kpk">
+        <h4 style="font-family:'Fredoka',sans-serif; color:var(--primary); margin-bottom:8px;">
+          KPK dari 12 dan 18
+        </h4>
+        <p style="margin-bottom:12px; font-size:0.95rem;">Bagi bilangan dengan bilangan prima terkecil sampai hasilnya 1. Ambil <strong>semua faktor prima</strong> dengan pangkat <strong>tertinggi</strong>.</p>
+        
+        <table class="prima-table">
+          <thead>
+            <tr><th>Prima</th><th>12</th><th>18</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2</td><td>6</td><td>9</td></tr>
+            <tr><td>2</td><td>3</td><td>9</td></tr>
+            <tr><td>3</td><td>1</td><td>3</td></tr>
+            <tr><td>3</td><td>1</td><td>1</td></tr>
+          </tbody>
+        </table>
+        
+        <p style="margin-top:12px;"><strong>KPK</strong> = 2 × 2 × 3 × 3 = <strong style="color:var(--primary); font-family:'Fredoka',sans-serif;">36</strong></p>
+      </div>
+      
+      <div class="method-content" id="method-fpb">
+        <h4 style="font-family:'Fredoka',sans-serif; color:var(--secondary); margin-bottom:8px;">
+          FPB dari 24 dan 36
+        </h4>
+        <p style="margin-bottom:12px; font-size:0.95rem;">Bagi bilangan dengan bilangan prima yang sama. Ambil faktor prima yang <strong>dimiliki bersama</strong> dengan pangkat <strong>terendah</strong>.</p>
+        
+        <table class="prima-table">
+          <thead>
+            <tr><th>Prima</th><th>24</th><th>36</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2</td><td>12</td><td>18</td></tr>
+            <tr><td>2</td><td>6</td><td>9</td></tr>
+            <tr><td>3</td><td>2</td><td>3</td></tr>
+          </tbody>
+        </table>
+        
+        <p style="margin-top:12px;"><strong>FPB</strong> = 2 × 2 × 3 = <strong style="color:var(--secondary); font-family:'Fredoka',sans-serif;">12</strong></p>
+      </div>
+    </div>
+    
+    <div class="materi-section">
+      <h3>20 Latihan KPK &amp; FPB</h3>
+      <p style="margin-bottom:12px; font-size:0.95rem;">Kerjakan dahulu di buku tulismu, lalu klik tombol untuk cek jawaban!</p>
+      <div class="latihan-grid" id="latihanGrid"></div>
+    </div>
+    
+    <div class="materi-section">
+      <h3>Trick Menghafal KPK &amp; FPB</h3>
+      <div class="trick-grid">
+        <div class="trick-card">
+          <span class="icon">⏰</span>
+          <h4>KPK = "Kapan Ketemu?"</h4>
+          <p>Soal dengan kata <strong>"kapan", "bersamaan", "saat yang sama"</strong> → KPK. K = Kelipatan = <strong>kapan</strong> bertemu?</p>
+        </div>
+        <div class="trick-card">
+          <span class="icon">🎁</span>
+          <h4>FPB = "Bagi-Bagi!"</h4>
+          <p>Soal dengan kata <strong>"dibagi", "sama rata", "paling banyak"</strong> → FPB. F = Faktor = <strong>bagi</strong> rata.</p>
+        </div>
+        <div class="trick-card">
+          <span class="icon">📈</span>
+          <h4>KPK: Ambil Pangkat Besar</h4>
+          <p>Ambil pangkat <strong>tertinggi</strong> dari setiap faktor prima. Hasilnya lebih besar dari bilangan asal.</p>
+        </div>
+        <div class="trick-card">
+          <span class="icon">📉</span>
+          <h4>FPB: Ambil Pangkat Kecil</h4>
+          <p>Ambil pangkat <strong>terendah</strong> dari faktor yang dimiliki bersama. Hasilnya lebih kecil dari bilangan asal.</p>
+        </div>
+        <div class="trick-card">
+          <span class="icon">🔤</span>
+          <h4>Singkatan Ajaib</h4>
+          <p><strong>K</strong>PK = <strong>K</strong>elipatan, ambil yang besar. <strong>F</strong>PB = <strong>F</strong>aktor, ambil yang kecil. Jangan tertukar!</p>
+        </div>
+        <div class="trick-card">
+          <span class="icon">🌳</span>
+          <h4>Pohon Faktor Cepat</h4>
+          <p>Tulis bilangan → pecah jadi 2 faktor → pecah lagi sampai dapat bilangan prima. Lalu kumpulkan "daun"-nya!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- SLIDE 4: KARTU -->
+  <section class="slide" data-slide="4">
+    <div class="slide-header">
+      <div class="slide-badge">🃏 Misi 03</div>
+      <h2>Kata Kunci Soal Cerita</h2>
+      <p>Kenali ciri khasnya, lalu uji kemampuanmu dengan 20 kartu interaktif!</p>
+    </div>
+    
+    <div class="keywords-section">
+      <div class="keyword-box kpk">
+        <h3>⏰ Kata Kunci KPK</h3>
+        <ul>
+          <li>"Kapan" / "berbarengan" / "bersamaan"</li>
+          <li>"Setiap ... menit/jam/hari"</li>
+          <li>"Menyamakan" / "titik temu"</li>
+          <li>"Paling sedikit" (jumlah barang)</li>
+          <li>"Tinggi yang sama" (menyusun)</li>
+        </ul>
+      </div>
+      <div class="keyword-box fpb">
+        <h3>🎁 Kata Kunci FPB</h3>
+        <ul>
+          <li>"Dibagi rata" / "sama rata"</li>
+          <li>"Paling banyak" (kelompok/parsel)</li>
+          <li>"Potongan terpanjang" / "terbesar"</li>
+          <li>"Paket sama" / "isi sama"</li>
+          <li>"Tanpa sisa" (saat membagi)</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="note-section">
+      <h3>Jenis Soal KPK Tanpa Berkaitan Waktu</h3>
+      <p>Tidak semua soal KPK soal waktu. KPK juga dipakai saat: menyusun balok/batu dengan ukuran beda supaya tinggi sama, menyatukan kemasan dengan isi beda supaya tidak ada sisa, menggabungkan dua siklus (misal: rotasi planet, gigi roda). Intinya: mencari <strong>kelipatan yang sama</strong> dari dua kuantitas.</p>
+    </div>
+    
+    <div class="note-section" style="background: linear-gradient(135deg, #FFE5B4, #FFF8E7);">
+      <h3>Klik Kartu Untuk Membalik — Tentukan: KPK atau FPB?</h3>
+      <p style="font-size:0.9rem; margin-bottom:8px;">Posisi kartu sudah diacak. Baca soal, tentukan jawabanmu, lalu klik untuk membalik!</p>
+      <div class="cards-grid" id="cardsGrid"></div>
+    </div>
+  </section>
+  
+  <!-- SLIDE 5: LATIHAN SOAL -->
+  <section class="slide" data-slide="5">
+    <div class="slide-header">
+      <div class="slide-badge">⚔️ Misi 04</div>
+      <h2>Latihan Soal Cerita</h2>
+      <p>Pilih jawaban yang benar, cek jawaban, lalu baca pembahasannya!</p>
+    </div>
+    
+    <div class="soal-list" id="soalList"></div>
+  </section>
+  
+  <!-- SLIDE 6: KESIMPULAN -->
+  <section class="slide" data-slide="6">
+    <div class="kesimpulan-content">
+      <div class="slide-badge">🏁 Misi Selesai</div>
+      <h2>Selamat, Petualang!</h2>
+      
+      <div class="kesimpulan-summary">
+        <h3>Ringkasan Misi Hari Ini</h3>
+        <ul>
+          <li><strong>KPK</strong> digunakan saat mencari <strong>kelipatan yang sama</strong> (kapan bertemu, menyamakan, menyatukan tanpa sisa).</li>
+          <li><strong>FPB</strong> digunakan saat <strong>membagi sama rata</strong> (parsel maksimal, potongan terpanjang, paket terbanyak).</li>
+          <li>Cara cepat: <strong>faktorisasi prima</strong> dengan pohon faktor atau tabel bilangan prima.</li>
+          <li>Trick: KPK ambil pangkat tertinggi, FPB ambil pangkat terendah dari faktor yang sama.</li>
+        </ul>
+      </div>
+      
+      <div class="refleksi-box">
+        <h3>🌟 Refleksi: Berapa bintang yang kamu dapatkan hari ini?</h3>
+        <div class="stars" id="stars">
+          <span class="star" onclick="rateStar(1)">★</span>
+          <span class="star" onclick="rateStar(2)">★</span>
+          <span class="star" onclick="rateStar(3)">★</span>
+          <span class="star" onclick="rateStar(4)">★</span>
+          <span class="star" onclick="rateStar(5)">★</span>
+        </div>
+        <p id="refleksiText" style="text-align:center; font-weight:600;">Klik bintang untuk memberi nilai!</p>
+      </div>
+      
+      <div class="thank-you">
+        <p>Thank you for today, <span id="finalName">Tamu</span>! 🚀</p>
+        <p style="font-size: 1rem; opacity: 0.8; margin-top: 8px;">Terus berlatih dan jadilah petualang matematika sejati!</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="navbar">
+  <button class="nav-btn" onclick="changeSlide(-1)" id="prevBtn">‹ Sebelumnya</button>
+  <div class="slide-dots" id="dotsContainer"></div>
+  <button class="nav-btn secondary" onclick="changeSlide(1)" id="nextBtn">Berikutnya ›</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Data 20 Latihan KPK & FPB
+const latihanData = [
+  { type: 'kpk', a: 24, b: 36, ans: 72 },
+  { type: 'fpb', a: 48, b: 60, ans: 12 },
+  { type: 'kpk', a: 15, b: 20, ans: 60 },
+  { type: 'fpb', a: 90, b: 120, ans: 30 },
+  { type: 'kpk', a: 18, b: 27, ans: 54 },
+  { type: 'fpb', a: 84, b: 100, ans: 4 },
+  { type: 'kpk', a: 32, b: 48, ans: 96 },
+  { type: 'fpb', a: 75, b: 100, ans: 25 },
+  { type: 'kpk', a: 28, b: 35, ans: 140 },
+  { type: 'fpb', a: 64, b: 80, ans: 16 },
+  { type: 'kpk', a: 45, b: 60, ans: 180 },
+  { type: 'fpb', a: 56, b: 70, ans: 14 },
+  { type: 'kpk', a: 36, b: 54, ans: 108 },
+  { type: 'fpb', a: 90, b: 135, ans: 45 },
+  { type: 'kpk', a: 40, b: 56, ans: 280 },
+  { type: 'fpb', a: 72, b: 96, ans: 24 },
+  { type: 'kpk', a: 50, b: 75, ans: 150 },
+  { type: 'fpb', a: 81, b: 108, ans: 27 },
+  { type: 'kpk', a: 42, b: 63, ans: 126 },
+  { type: 'fpb', a: 100, b: 150, ans: 50 }
+];
+
+// Data 20 Kartu Flip
+const kartuData = [
+  { soal: 'Ani beli 12 pulpen, Budi 16 pulpen. Ingin dibagi rata ke teman. Maksimal teman?', ans: 'fpb', alasan: 'Membagi barang sama rata.' },
+  { soal: 'Bus berangkat tiap 15 menit, kereta tiap 20 menit. Kapan berangkat bareng lagi?', ans: 'kpk', alasan: 'Mencari titik temu waktu.' },
+  { soal: 'Lampu menyala tiap 8 detik, tiap 12 detik. Kapan nyala bareng?', ans: 'kpk', alasan: 'Mencari waktu bersamaan.' },
+  { soal: 'Tali 30m dan 45m dipotong sama panjang tanpa sisa. Potongan terpanjang?', ans: 'fpb', alasan: 'Mencari potongan terbesar.' },
+  { soal: 'Roti isi 6, daging isi 9. Mau pasangkan tanpa sisa. Berapa burger minimum?', ans: 'kpk', alasan: 'Menyamakan jumlah barang.' },
+  { soal: '72 buku dan 48 pensil dibagi rata. Berapa maksimal siswa?', ans: 'fpb', alasan: 'Membagi barang sama rata.' },
+  { soal: 'Gigi roda 18 dan 24. Kapan ketemu di titik yang sama lagi?', ans: 'kpk', alasan: 'Mencari kelipatan siklus.' },
+  { soal: 'Balok tebal 9cm dan 12cm disusun. Tinggi menara sama minimum?', ans: 'kpk', alasan: 'Mencari tinggi yang sama.' },
+  { soal: 'Pita merah 80cm, biru 120cm. Dipotong sama panjang. Potongan terpanjang?', ans: 'fpb', alasan: 'Mencari potongan terbesar.' },
+  { soal: 'Bel tiap 20 mnt, siren tiap 30 mnt. Kapan bunyi bareng?', ans: 'kpk', alasan: 'Mencari waktu bersamaan.' },
+  { soal: '30 apel dan 45 jeruk dibuat parsel sama rata. Parsel maksimal?', ans: 'fpb', alasan: 'Membagi barang sama rata.' },
+  { soal: 'Menara balok tebal 15cm dan 20cm. Tinggi menara sama minimum?', ans: 'kpk', alasan: 'Mencari tinggi yang sama.' },
+  { soal: 'Kelas 48 dan 60 siswa dibagi kelompok sama. Kelompok terbanyak?', ans: 'fpb', alasan: 'Membagi siswa sama rata.' },
+  { soal: 'Pohon berbunga tiap 4 tahun dan 6 tahun. Kapan berbunga bareng?', ans: 'kpk', alasan: 'Mencari tahun yang sama.' },
+  { soal: 'Lantai 120m² dan 180m² dipotong ubin persegi terbesar tanpa sisa.', ans: 'fpb', alasan: 'Mencari ukuran terbesar.' },
+  { soal: 'Planet berevolusi 100 hari dan 150 hari. Kapan segaris lagi?', ans: 'kpk', alasan: 'Mencari kelipatan siklus.' },
+  { soal: 'Kardus 24kg dan 36kg dibagi ke karung sama. Karung terbesar?', ans: 'fpb', alasan: 'Mencari beban terbesar.' },
+  { soal: 'Lampu neon 5 detik dan 10 detik. Kapan kedip bareng?', ans: 'kpk', alasan: 'Mencari waktu bersamaan.' },
+  { soal: 'Stiker 54 dan 72 dibagi ke teman sama. Teman maksimal?', ans: 'fpb', alasan: 'Membagi barang sama rata.' },
+  { soal: 'Baskom 1.5L dan 2L. Tuang air sama tanpa sisa. Volume minimum?', ans: 'kpk', alasan: 'Menyamakan volume.' }
+];
+
+// Data 5 Soal Pilihan Ganda (dari PDF)
+const soalData = [
+  {
+    soal: 'Ibu memiliki 24 buah apel, 36 buah jeruk, dan 48 buah pir. Ibu ingin membagikan buah-buahan tersebut ke dalam beberapa parsel dengan jumlah dan jenis buah yang sama rata di setiap parselnya. Berapakah jumlah parsel paling banyak yang dapat dibuat oleh Ibu?',
+    opsi: ['6 parsel', '8 parsel', '12 parsel', '24 parsel'],
+    jawaban: 2,
+    kata_kunci: 'Kata kunci: <strong>"dibagikan ke beberapa parsel"</strong>, <strong>"sama rata"</strong>, <strong>"paling banyak"</strong>. Ini berarti kita membagi barang secara merata, gunakan <strong>FPB</strong>.',
+    pembahasan: '<strong>Topik: FPB</strong> karena membagi barang sama rata.<br>Faktorisasi prima: <br>24 = 2³ × 3<br>36 = 2² × 3²<br>48 = 2⁴ × 3<br><br>FPB = 2² × 3 = 4 × 3 = 12. Jadi, jumlah parsel paling banyak yang dapat dibuat adalah <strong>12 parsel</strong>.'
+  },
+  {
+    soal: 'Budi memiliki balok-balok mainan berwarna merah dengan ketebalan 15 cm dan balok-balok berwarna biru dengan ketebalan 20 cm. Ia ingin menyusun balok merah dan balok biru menjadi dua menara. Berapa tinggi minimum (paling rendah) kedua menara tersebut agar tingginya sama persis?',
+    opsi: ['30 cm', '40 cm', '60 cm', '120 cm'],
+    jawaban: 2,
+    kata_kunci: 'Kata kunci: <strong>"tinggi minimum"</strong>, <strong>"tingginya sama persis"</strong>. Ini berarti kita menyamakan tinggi/kelipatan, gunakan <strong>KPK</strong>.',
+    pembahasan: '<strong>Topik: KPK</strong> karena mencari titik temu/kelipatan dari ketebalan balok.<br>Faktorisasi prima: <br>15 = 3 × 5<br>20 = 2² × 5<br><br>KPK = 2² × 3 × 5 = 4 × 15 = 60. Jadi, tinggi minimum agar kedua menara sama persis adalah <strong>60 cm</strong>.'
+  },
+  {
+    soal: 'Seorang pekerja proyek memiliki 3 gulung kabel listrik dengan panjang masing-masing 40 meter, 60 meter, dan 80 meter. Kabel-kabel tersebut akan dipotong menjadi bagian-bagian yang sama panjang tanpa ada sisa. Berapa ukuran potongan kabel terpanjang yang bisa dibuat?',
+    opsi: ['10 meter', '20 meter', '30 meter', '40 meter'],
+    jawaban: 1,
+    kata_kunci: 'Kata kunci: <strong>"dipotong sama panjang"</strong>, <strong>"terpanjang"</strong>, <strong>"tanpa sisa"</strong>. Ini berarti kita mencari potongan terbesar, gunakan <strong>FPB</strong>.',
+    pembahasan: '<strong>Topik: FPB</strong> karena memotong benda dengan ukuran sama dan terbesar.<br>Faktorisasi prima: <br>40 = 2³ × 5<br>60 = 2² × 3 × 5<br>80 = 2⁴ × 5<br><br>FPB = 2² × 5 = 4 × 5 = 20. Jadi, potongan kabel terpanjang yang bisa dibuat adalah <strong>20 meter</strong>.'
+  },
+  {
+    soal: 'Sebuah pabrik menjual roti burger dalam kemasan berisi 8 buah, sedangkan daging burger dijual dalam kemasan berisi 12 buah. Jika pedagang ingin membuat burger tanpa ada sisa roti maupun daging, berapa jumlah burger paling sedikit yang bisa ia buat?',
+    opsi: ['12 burger', '20 burger', '24 burger', '96 burger'],
+    jawaban: 2,
+    kata_kunci: 'Kata kunci: <strong>"membuat burger tanpa sisa"</strong>, <strong>"paling sedikit"</strong>, <strong>"menyatukan pasangan"</strong>. Ini berarti menyamakan jumlah, gunakan <strong>KPK</strong>.',
+    pembahasan: '<strong>Topik: KPK</strong> karena menyamakan jumlah barang dari dua kemasan yang berbeda kuantitas (menyatukan pasangan tanpa sisa).<br>Faktorisasi prima: <br>8 = 2³<br>12 = 2² × 3<br><br>KPK = 2³ × 3 = 8 × 3 = 24. Jadi, jumlah minimum burger yang bisa dibuat adalah <strong>24 burger</strong>.'
+  },
+  {
+    soal: 'Yayasan peduli anak yatim menerima sumbangan 90 buku tulis, 120 pulpen, dan 150 pensil. Alat tulis tersebut akan dibagikan kepada anak-anak dengan jumlah yang sama untuk setiap jenisnya. Berapa banyak anak yang menerima paket tersebut, dan berapa jumlah pulpen yang didapat oleh tiap anak?',
+    opsi: ['30 anak, 3 pulpen per anak', '30 anak, 4 pulpen per anak', '15 anak, 8 pulpen per anak', '15 anak, 4 pulpen per anak'],
+    jawaban: 1,
+    kata_kunci: 'Kata kunci: <strong>"dibagikan"</strong>, <strong>"jumlah yang sama"</strong>. Ini berarti kita membagi barang sama rata, gunakan <strong>FPB</strong> untuk mencari jumlah anak.',
+    pembahasan: '<strong>Topik: FPB</strong> (untuk mencari jumlah anak) dilanjutkan pembagian barang.<br>Faktorisasi prima untuk mencari jumlah anak maksimal:<br>90 = 2 × 3² × 5<br>120 = 2³ × 3 × 5<br>150 = 2 × 3 × 5²<br><br>FPB = 2 × 3 × 5 = 30 anak.<br>Untuk mencari jumlah pulpen per anak, bagi total pulpen dengan jumlah anak: 120 ÷ 30 = 4 pulpen per anak.'
+  }
+];
+
+let currentSlide = 1;
+const totalSlides = 6;
+let selectedAnswers = {};
+
+// Inisialisasi
+document.addEventListener('DOMContentLoaded', function() {
+  renderLatihan();
+  renderCards();
+  renderSoal();
+  renderDots();
+  updateUI();
+});
+
+// Start Adventure
+function startAdventure() {
+  const nameInput = document.getElementById('nameInput');
+  const name = nameInput.value.trim();
+  
+  if (!name) {
+    showToast('Isi namamu dulu, Petualang!');
+    nameInput.focus();
+    nameInput.style.borderColor = 'var(--danger)';
+    setTimeout(() => { nameInput.style.borderColor = ''; }, 1500);
+    return;
+  }
+  
+  document.getElementById('playerName').textContent = name;
+  document.getElementById('finalName').textContent = name;
+  goToSlide(2);
+}
+
+// Slide Navigation
+function changeSlide(dir) {
+  const newSlide = currentSlide + dir;
+  if (newSlide >= 1 && newSlide <= totalSlides) {
+    goToSlide(newSlide);
+  }
+}
+
+function goToSlide(slideNum) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active', 'prev'));
+  document.querySelector(`.slide[data-slide="${slideNum}"]`).classList.add('active');
+  
+  currentSlide = slideNum;
+  updateUI();
+  
+  // Scroll to top inside slide
+  document.querySelector(`.slide[data-slide="${slideNum}"]`).scrollTop = 0;
+}
+
+function updateUI() {
+  document.getElementById('progressBar').style.width = (currentSlide / totalSlides) * 100 + '%';
+  document.getElementById('prevBtn').disabled = currentSlide === 1;
+  document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+  
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i + 1 === currentSlide);
+  });
+}
+
+function renderDots() {
+  const container = document.getElementById('dotsContainer');
+  let html = '';
+  for (let i = 1; i <= totalSlides; i++) {
+    html += `<div class="dot ${i === 1 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`;
+  }
+  container.innerHTML = html;
+}
+
+// Switch Method Tab
+function switchMethod(e, method) {
+  document.querySelectorAll('.method-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.method-content').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById(`method-${method}`).classList.add('active');
+}
+
+// Render Latihan
+function renderLatihan() {
+  const grid = document.getElementById('latihanGrid');
+  let html = '';
+  latihanData.forEach((item, i) => {
+    html += `
+      <div class="latihan-card">
+        <span class="label ${item.type}">${item.type.toUpperCase()}</span>
+        <p class="question">${item.a} &amp; ${item.b}</p>
+        <button class="answer-btn" id="lat-btn-${i}" onclick="revealLatihan(${i})">
+          Lihat Jawaban
+        </button>
+      </div>
+    `;
+  });
+  grid.innerHTML = html;
+}
+
+function revealLatihan(i) {
+  const btn = document.getElementById(`lat-btn-${i}`);
+  btn.textContent = `= ${latihanData[i].ans}`;
+  btn.classList.add('revealed');
+  btn.disabled = true;
+}
+
+// Render Flip Cards (Acak)
+function renderCards() {
+  const grid = document.getElementById('cardsGrid');
+  // Acak kartu
+  const shuffled = [...kartuData].sort(() => Math.random() - 0.5);
+  let html = '';
+  shuffled.forEach((card, i) => {
+    html += `
+      <div class="flip-card" onclick="flipCard(this)">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <div class="card-num">${i + 1}</div>
+            <div class="card-text">${card.soal}</div>
+            <div class="hint">👉 Klik untuk balik kartu!</div>
+          </div>
+          <div class="flip-card-back ${card.ans}">
+            <div class="label">${card.ans.toUpperCase()}</div>
+            <div class="reason">${card.alasan}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  grid.innerHTML = html;
+}
+
+function flipCard(el) {
+  el.classList.toggle('flipped');
+}
+
+// Render Soal
+function renderSoal() {
+  const list = document.getElementById('soalList');
+  let html = '';
+  soalData.forEach((s, i) => {
+    let optionsHtml = '';
+    s.opsi.forEach((opt, j) => {
+      const letter = String.fromCharCode(65 + j);
+      optionsHtml += `
+        <div class="option" id="opt-${i}-${j}" onclick="selectOption(${i}, ${j})">
+          <div class="letter">${letter}</div>
+          <span>${opt}</span>
+        </div>
+      `;
+    });
+    
+    html += `
+      <div class="soal-card">
+        <span class="soal-num">Soal ${i + 1}</span>
+        <p class="soal-text">${s.soal}</p>
+        <div class="options">${optionsHtml}</div>
+        <div class="soal-actions">
+          <button class="action-btn accent" onclick="showKeyword(${i})">💡 Kata Kunci</button>
+          <button class="action-btn primary" id="check-btn-${i}" onclick="checkAnswer(${i})">✅ Cek Jawaban</button>
+          <button class="action-btn secondary" id="pemb-btn-${i}" onclick="showPembahasan(${i})" disabled>📝 Pembahasan</button>
+        </div>
+        <div class="keyword-hint" id="hint-${i}">${s.kata_kunci}</div>
+        <div class="pembahasan" id="pemb-${i}">${s.pembahasan}</div>
+      </div>
+    `;
+  });
+  list.innerHTML = html;
+}
+
+function selectOption(qIdx, optIdx) {
+  if (document.getElementById(`check-btn-${qIdx}`).disabled) return; // Jangan ubah jika sudah dicek
+  
+  selectedAnswers[qIdx] = optIdx;
+  document.querySelectorAll(`.option[id^="opt-${qIdx}-"]`).forEach(el => {
+    el.classList.remove('selected');
+  });
+  document.getElementById(`opt-${qIdx}-${optIdx}`).classList.add('selected');
+}
+
+function showKeyword(i) {
+  const hint = document.getElementById(`hint-${i}`);
+  hint.classList.toggle('show');
+}
+
+function checkAnswer(i) {
+  if (selectedAnswers[i] === undefined) {
+    showToast('Pilih jawaban dulu!');
+    return;
+  }
+  
+  const correctIdx = soalData[i].jawaban;
+  
+  // Tampilkan benar/salah
+  document.getElementById(`opt-${i}-${correctIdx}`).classList.add('correct');
+  
+  if (selectedAnswers[i] !== correctIdx) {
+    document.getElementById(`opt-${i}-${selectedAnswers[i]}`).classList.add('wrong');
+    showToast('Jawaban kurang tepat, coba lihat pembahasan!');
+  } else {
+    showToast('Selamat! Jawaban benar 🎉');
+  }
+  
+  // Disable dan aktifkan tombol pembahasan
+  document.getElementById(`check-btn-${i}`).disabled = true;
+  document.getElementById(`pemb-btn-${i}`).disabled = false;
+  
+  // Disable klik option
+  document.querySelectorAll(`.option[id^="opt-${i}-"]`).forEach(el => {
+    el.style.pointerEvents = 'none';
+  });
+}
+
+function showPembahasan(i) {
+  document.getElementById(`pemb-${i}`).classList.toggle('show');
+}
+
+// Refleksi Bintang
+function rateStar(n) {
+  document.querySelectorAll('.star').forEach((s, i) => {
+    s.classList.toggle('active', i < n);
+  });
+  let msg = '';
+  if (n == 1) msg = 'Semangat! Belajar lagi yuk! 📚';
+  else if (n == 2) msg = 'Lumayan, tingkatkan lagi! 💪';
+  else if (n == 3) msg = 'Bagus! Terus berlatih! 👍';
+  else if (n == 4) msg = 'Hebat! Hampir sempurna! 🌟';
+  else if (n == 5) msg = 'Jenius! Kamu master matematika! 🏆';
+  document.getElementById('refleksiText').textContent = msg;
+}
+
+// Toast Notification
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Keyboard Navigation
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') changeSlide(1);
+  if (e.key === 'ArrowLeft') changeSlide(-1);
+});
+</script>
+
+</body>
+</html>
