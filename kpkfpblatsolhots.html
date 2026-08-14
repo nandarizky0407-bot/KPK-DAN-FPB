@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan KPK & FPB - Kelas 5 SD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg: #FFF8E7;
+  --bg-alt: #FFF1D6;
+  --primary: #FF6B6B;
+  --primary-dark: #E55555;
+  --secondary: #4ECDC4;
+  --secondary-dark: #3DB5AC;
+  --accent: #FFD93D;
+  --accent-dark: #F0C420;
+  --purple: #A78BFA;
+  --purple-dark: #8B6FE6;
+  --text: #2D3436;
+  --text-light: #636E72;
+  --success: #00B894;
+  --error: #E84393;
+  --card: #FFFFFF;
+  --border: rgba(45, 52, 54, 0.08);
+  --shadow-sm: 0 2px 8px rgba(45, 52, 54, 0.08);
+  --shadow-md: 0 8px 24px rgba(45, 52, 54, 0.12);
+  --shadow-lg: 0 16px 40px rgba(45, 52, 54, 0.16);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Background dekorasi */
+.bg-shapes {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.shape {
+  position: absolute;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  color: rgba(78, 205, 196, 0.1);
+  font-size: 5rem;
+  animation: float 20s infinite ease-in-out;
+}
+.shape:nth-child(2) { color: rgba(255, 107, 107, 0.08); animation-delay: 2s; }
+.shape:nth-child(3) { color: rgba(255, 217, 61, 0.12); animation-delay: 4s; }
+.shape:nth-child(4) { color: rgba(167, 139, 250, 0.08); animation-delay: 6s; }
+.shape:nth-child(5) { color: rgba(78, 205, 196, 0.1); animation-delay: 8s; }
+.shape:nth-child(6) { color: rgba(255, 107, 107, 0.08); animation-delay: 10s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(10deg); }
+}
+
+/* Progress bar */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+  z-index: 100;
+  transition: width 0.4s ease;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+/* Top nav */
+.top-nav {
+  position: fixed;
+  top: 16px; right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  padding: 10px 18px;
+  border-radius: 100px;
+  box-shadow: var(--shadow-sm);
+  z-index: 50;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.top-nav .student-name { color: var(--primary); font-weight: 600; }
+.top-nav .score-pill {
+  background: var(--bg-alt);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+.top-nav .score-pill strong { color: var(--secondary-dark); }
+
+/* Slides */
+.slide {
+  min-height: 100vh;
+  padding: 80px 24px 60px;
+  display: none;
+  animation: slideIn 0.6s ease;
+}
+.slide.active { display: block; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Cover slide */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+}
+.cover-card {
+  background: var(--card);
+  border-radius: 32px;
+  padding: 60px 40px;
+  box-shadow: var(--shadow-lg);
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.cover-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255, 107, 107, 0.06) 0%, transparent 50%);
+  pointer-events: none; /* Penting agar tidak menghalangi klik */
+}
+.cover-card::after {
+  content: '';
+  position: absolute;
+  bottom: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(78, 205, 196, 0.06) 0%, transparent 50%);
+  pointer-events: none; /* Penting agar tidak menghalangi klik */
+}
+.cover-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  padding: 8px 22px;
+  border-radius: 100px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.25);
+}
+.cover h1 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  line-height: 1.05;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 2;
+}
+.cover .subtitle {
+  font-size: 1.15rem;
+  color: var(--text-light);
+  margin-bottom: 32px;
+  line-height: 1.6;
+  position: relative;
+  z-index: 2;
+}
+.cover .math-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 36px;
+  position: relative;
+  z-index: 2;
+}
+.math-icon {
+  width: 80px; height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  transition: transform 0.3s ease;
+}
+.math-icon:hover { transform: translateY(-4px) rotate(-5deg); }
+.math-icon.kpk { background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)); }
+.math-icon.fpb { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+.math-icon.equal { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: var(--text); }
+
+.input-group {
+  margin-bottom: 24px;
+  text-align: left;
+  position: relative;
+  z-index: 2; /* Penting agar input bisa diklik */
+}
+.input-group label {
+  display: block;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.input-group input {
+  width: 100%;
+  padding: 14px 20px;
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: var(--bg);
+  transition: all 0.3s ease;
+}
+.input-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--card);
+  box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  position: relative; /* Penting untuk z-index */
+  z-index: 2; /* Mengangkat tombol di atas dekorasi */
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+}
+.btn-secondary { background: var(--secondary); color: white; }
+.btn-secondary:hover { background: var(--secondary-dark); transform: translateY(-2px); }
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: var(--text);
+  box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+}
+.btn-accent:hover { transform: translateY(-2px); }
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 2px solid var(--border);
+}
+.btn-outline:hover {
+  background: var(--bg-alt);
+  border-color: var(--text-light);
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* Slide title */
+.slide-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.slide-title .eyebrow {
+  display: inline-block;
+  background: var(--bg-alt);
+  padding: 6px 18px;
+  border-radius: 100px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 16px;
+}
+.slide-title h2 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin-bottom: 12px;
+  line-height: 1.1;
+}
+.slide-title p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Info intro box */
+.intro-box {
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.08), rgba(255, 217, 61, 0.08));
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 32px;
+  border-left: 5px solid var(--secondary);
+}
+.intro-box h3 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--secondary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.intro-box p { line-height: 1.7; color: var(--text); margin-bottom: 8px; }
+.intro-box p:last-child { margin-bottom: 0; }
+.intro-box strong { color: var(--primary-dark); }
+
+/* Question card */
+.question-card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+.question-card.correct {
+  border-color: var(--success);
+  background: rgba(0, 184, 148, 0.04);
+}
+.question-card.wrong {
+  border-color: var(--error);
+  background: rgba(232, 67, 147, 0.04);
+  animation: shake 0.5s ease;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.question-number {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+.question-number .num {
+  background: var(--primary);
+  color: white;
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(255, 107, 107, 0.3);
+}
+.category-badge {
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.category-badge.fpb { background: rgba(255, 107, 107, 0.15); color: var(--primary-dark); }
+.category-badge.kpk { background: rgba(78, 205, 196, 0.15); color: var(--secondary-dark); }
+
+.question-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Answer input */
+.answer-input-wrap {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.answer-input-wrap input {
+  width: 120px;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-align: center;
+  background: var(--bg);
+  transition: all 0.3s ease;
+}
+.answer-input-wrap input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--card);
+  box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+.answer-input-wrap .label {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+/* Options */
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.option {
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  user-select: none;
+}
+.option:hover {
+  border-color: var(--primary);
+  background: var(--card);
+  transform: translateY(-1px);
+}
+.option input[type="radio"] { display: none; }
+.option .letter {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  color: var(--text-light);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.option.selected { border-color: var(--primary); background: rgba(255, 107, 107, 0.05); }
+.option.selected .letter { background: var(--primary); color: white; border-color: var(--primary); }
+.option.correct-answer { border-color: var(--success); background: rgba(0, 184, 148, 0.08); }
+.option.correct-answer .letter { background: var(--success); color: white; border-color: var(--success); }
+.option.wrong-answer { border-color: var(--error); background: rgba(232, 67, 147, 0.06); }
+.option.wrong-answer .letter { background: var(--error); color: white; border-color: var(--error); }
+.option.disabled { pointer-events: none; }
+
+/* Action buttons */
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.btn-small {
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  border-radius: 10px;
+}
+.btn-keyword { background: var(--purple); color: white; }
+.btn-keyword:hover { background: var(--purple-dark); transform: translateY(-2px); }
+.btn-explain { background: var(--accent); color: var(--text); }
+.btn-explain:hover { background: var(--accent-dark); transform: translateY(-2px); }
+.btn-hint { background: var(--secondary); color: white; }
+.btn-hint:hover { background: var(--secondary-dark); }
+
+/* Feedback */
+.feedback {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.4s ease;
+}
+.feedback.show { display: flex; }
+.feedback.success {
+  background: rgba(0, 184, 148, 0.1);
+  color: var(--success);
+  border-left: 4px solid var(--success);
+}
+.feedback.error {
+  background: rgba(232, 67, 147, 0.08);
+  color: var(--error);
+  border-left: 4px solid var(--error);
+}
+
+/* Info box */
+.info-box {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--bg-alt);
+  border-left: 4px solid var(--accent);
+  display: none;
+  animation: slideIn 0.4s ease;
+}
+.info-box.show { display: block; }
+.info-box.keyword-box { border-left-color: var(--purple); background: rgba(167, 139, 250, 0.06); }
+.info-box.explain-box { border-left-color: var(--secondary); background: rgba(78, 205, 196, 0.05); }
+.info-box h4 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.keyword-box h4 { color: var(--purple-dark); }
+.explain-box h4 { color: var(--secondary-dark); }
+.info-box p { line-height: 1.7; margin-bottom: 8px; }
+.info-box p:last-child { margin-bottom: 0; }
+.info-box ul { padding-left: 20px; line-height: 1.8; }
+.info-box .keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+.info-box .keyword-tag {
+  background: var(--card);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.info-box .keyword-tag.fpb { color: var(--primary-dark); border-color: var(--primary); }
+.info-box .keyword-tag.kpk { color: var(--secondary-dark); border-color: var(--secondary); }
+.info-box .strategy-box {
+  background: var(--card);
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-top: 10px;
+  border-left: 3px solid var(--accent);
+}
+.info-box .answer-final {
+  background: linear-gradient(135deg, var(--success), #00A884);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+  margin-top: 12px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Slide nav */
+.slide-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  gap: 12px;
+}
+
+/* Score tracker */
+.score-tracker {
+  background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+  color: white;
+  padding: 32px;
+  border-radius: 20px;
+  margin-bottom: 32px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(78, 205, 196, 0.25);
+}
+.score-tracker .label {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.score-tracker .score {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 4rem;
+  margin: 4px 0;
+  line-height: 1;
+}
+.score-tracker .total { font-size: 1rem; opacity: 0.85; }
+.score-tracker .score-msg {
+  margin-top: 16px;
+  font-size: 1rem;
+  opacity: 0.95;
+  font-style: italic;
+}
+
+/* Summary table */
+.summary-table {
+  background: var(--card);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 32px;
+}
+.summary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+.summary-row.header { background: linear-gradient(135deg, var(--primary), var(--purple)); }
+.summary-row > div {
+  background: var(--card);
+  padding: 20px 24px;
+}
+.summary-row.header > div {
+  background: transparent;
+  color: white;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.summary-row .col-title {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+.summary-row .col-title.fpb { color: var(--primary-dark); }
+.summary-row .col-title.kpk { color: var(--secondary-dark); }
+.summary-row ul { padding-left: 20px; line-height: 1.9; }
+.summary-row li { font-size: 0.95rem; }
+.summary-row p { font-size: 0.95rem; line-height: 1.6; }
+
+/* Reflection */
+.reflection-card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+.reflection-card h3 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--primary);
+  font-size: 1.15rem;
+}
+.reflection-card .sub-text {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+.emoji-list {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+.emoji-option {
+  flex: 1;
+  padding: 16px 8px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--bg);
+}
+.emoji-option:hover { border-color: var(--primary); transform: translateY(-2px); }
+.emoji-option.selected {
+  border-color: var(--primary);
+  background: rgba(255, 107, 107, 0.08);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.15);
+}
+.emoji-option .emoji {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 4px;
+}
+.emoji-option .desc {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+/* Thank you */
+.thankyou-card {
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: white;
+  border-radius: 32px;
+  padding: 60px 40px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+.thankyou-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255, 217, 61, 0.2) 0%, transparent 50%);
+  pointer-events: none; /* Penting agar tidak menghalangi klik tombol mulai lagi */
+}
+.thankyou-card::after {
+  content: '';
+  position: absolute;
+  bottom: -30%; right: -30%;
+  width: 150%; height: 150%;
+  background: radial-gradient(circle, rgba(78, 205, 196, 0.15) 0%, transparent 50%);
+  pointer-events: none; /* Penting agar tidak menghalangi klik */
+}
+.thankyou-card .emoji-big {
+  font-size: 5rem;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+  animation: bounce 2s infinite ease-in-out;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.thankyou-card h2 {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+.thankyou-card p {
+  font-size: 1.2rem;
+  opacity: 0.95;
+  max-width: 500px;
+  margin: 0 auto 32px;
+  position: relative;
+  z-index: 2;
+  line-height: 1.6;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  z-index: 1000;
+  pointer-events: none;
+  animation: fall 3s ease-in forwards;
+}
+@keyframes fall {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .options { grid-template-columns: 1fr; }
+  .summary-row { grid-template-columns: 1fr; }
+  .cover-card { padding: 40px 24px; }
+  .slide { padding: 70px 16px 40px; }
+  .emoji-list { flex-direction: column; }
+  .top-nav { font-size: 0.85rem; padding: 8px 14px; }
+  .top-nav .score-pill { display: none; }
+  .math-icon { width: 60px; height: 60px; font-size: 1.1rem; }
+  .question-card { padding: 20px; }
+  .btn { padding: 12px 20px; font-size: 0.95rem; }
+  .actions { gap: 8px; }
+  .btn-small { padding: 8px 14px; font-size: 0.85rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background dekorasi -->
+<div class="bg-shapes">
+  <div class="shape" style="top: 10%; left: 5%;">×</div>
+  <div class="shape" style="top: 20%; right: 10%;">÷</div>
+  <div class="shape" style="top: 60%; left: 8%;">+</div>
+  <div class="shape" style="top: 80%; right: 5%;">=</div>
+  <div class="shape" style="top: 40%; left: 50%;">%</div>
+  <div class="shape" style="top: 70%; right: 30%;">−</div>
+</div>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+
+<!-- Top nav -->
+<div class="top-nav" id="topNav" style="display: none;">
+  <i class="fas fa-user-circle" style="color: var(--primary); font-size: 1.3rem;"></i>
+  <span>Halo, <span class="student-name" id="studentNameDisplay">Siswa</span>!</span>
+  <span class="score-pill">Skor: <strong id="liveScore">0</strong>/10</span>
+</div>
+
+<!-- Slide 1: Cover -->
+<section class="slide active" id="slide-cover">
+  <div class="cover">
+    <div class="cover-card">
+      <div class="cover-badge">Matematika Kelas 5 SD</div>
+      <h1>Petualangan<br>KPK & FPB</h1>
+      <p class="subtitle">Ayo belajar menyelesaikan soal cerita Kelipatan Persekutuan Terkecil dan Faktor Persekutuan Terbesar!</p>
+      <div class="math-icons">
+        <div class="math-icon kpk">KPK</div>
+        <div class="math-icon equal">=</div>
+        <div class="math-icon fpb">FPB</div>
+      </div>
+      <div class="input-group">
+        <label for="studentName">Siapa nama kamu?</label>
+        <input type="text" id="studentName" placeholder="Tulis namamu di sini..." autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="startBtn" style="width: 100%;">
+        <i class="fas fa-rocket"></i>
+        Mulai Petualangan
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 2: Warm-up -->
+<section class="slide" id="slide-warmup">
+  <div class="container">
+    <div class="slide-title">
+      <span class="eyebrow">Tahap 1 · Pemanasan</span>
+      <h2>Ayo Pemanasan Dulu!</h2>
+      <p>Sebelum mengerjakan soal cerita, latih dulu kemampuanmu mencari KPK dan FPB langsung dari beberapa bilangan.</p>
+    </div>
+
+    <div class="intro-box">
+      <h3><i class="fas fa-lightbulb"></i> Tips Singkat</h3>
+      <p><strong>FPB (Faktor Persekutuan Terbesar)</strong> = faktor terbesar yang sama-sama membagi habis beberapa bilangan. Digunakan saat membagi/membuat kelompok.</p>
+      <p><strong>KPK (Kelipatan Persekutuan Terkecil)</strong> = kelipatan terkecil yang sama dari beberapa bilangan. Digunakan saat mencari waktu/jarak/jumlah yang sama.</p>
+    </div>
+
+    <div id="warmupContainer"></div>
+
+    <div class="slide-nav">
+      <button class="btn btn-outline nav-prev" data-target="slide-cover">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </button>
+      <button class="btn btn-primary nav-next" data-target="slide-story1">
+        Lanjut ke Soal Cerita <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Story questions akan diisi oleh JS -->
+<div id="storySlidesContainer"></div>
+
+<!-- Slide: Conclusion -->
+<section class="slide" id="slide-conclusion">
+  <div class="container">
+    <div class="slide-title">
+      <span class="eyebrow">Tahap Akhir</span>
+      <h2>Kesimpulan</h2>
+      <p>Ingat kata kunci berikut untuk membedakan kapan menggunakan KPK atau FPB.</p>
+    </div>
+
+    <div class="score-tracker">
+      <div class="label">Skor Akhir Soal Cerita</div>
+      <div class="score" id="finalScore">0</div>
+      <div class="total">dari 10 soal</div>
+      <div class="score-msg" id="scoreMessage">Kerja bagus! Tetap berlatih ya!</div>
+    </div>
+
+    <div class="summary-table">
+      <div class="summary-row header">
+        <div><i class="fas fa-arrow-down"></i> FPB - Faktor Persekutuan Terbesar</div>
+        <div><i class="fas fa-arrow-up"></i> KPK - Kelipatan Persekutuan Terkecil</div>
+      </div>
+      <div class="summary-row">
+        <div>
+          <div class="col-title fpb">Kata Kunci pada Soal</div>
+          <ul>
+            <li>"Terbesar", "terpanjang", "maksimal"</li>
+            <li>"Membagi habis", "dipotong sama"</li>
+            <li>"Sama rata", "dibagikan sama banyak"</li>
+            <li>"Jumlah paling banyak"</li>
+          </ul>
+        </div>
+        <div>
+          <div class="col-title kpk">Kata Kunci pada Soal</div>
+          <ul>
+            <li>"Pertama kali bersamaan"</li>
+            <li>"Tanpa sisa", "pas"</li>
+            <li>"Paling sedikit", "minimal"</li>
+            <li>"Kembali ke posisi awal"</li>
+            <li>"Titik temu", "bertemu lagi"</li>
+          </ul>
+        </div>
+      </div>
+      <div class="summary-row">
+        <div>
+          <div class="col-title fpb">Yang Dicari</div>
+          <p>Ukuran atau jumlah maksimal dari suatu pembagian (kelompok, keranjang, anak, potongan).</p>
+        </div>
+        <div>
+          <div class="col-title kpk">Yang Dicari</div>
+          <p>Waktu, jarak, atau jumlah terkecil yang sama-sama tercapai oleh dua/beberapa hal.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="intro-box">
+      <h3><i class="fas fa-star"></i> Tips Menjawab Soal Cerita</h3>
+      <p><strong>Langkah 1:</strong> Baca soal dengan teliti. Garis bawahi kata kunci seperti "terbesar", "sama", "pertama kali", "paling sedikit".</p>
+      <p><strong>Langkah 2:</strong> Tentukan apakah soal meminta pembagian maksimal (FPB) atau pertemuan pertama (KPK).</p>
+      <p><strong>Langkah 3:</strong> Tulis bilangan-bilangan yang terlibat, lalu cari FPB/KPK dengan faktorisasi atau daftar kelipatan.</p>
+      <p><strong>Langkah 4:</strong> Sesuaikan hasil dengan pertanyaan soal. Beberapa soal tidak langsung menanyakan KPK/FPB, tetapi jumlah kelompok/keranjang/anak yang hasilnya sama dengan KPK/FPB.</p>
+    </div>
+
+    <div class="slide-nav">
+      <button class="btn btn-outline nav-prev" data-target="slide-story10">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </button>
+      <button class="btn btn-primary nav-next" data-target="slide-reflection">
+        Lanjut ke Refleksi <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Slide: Reflection -->
+<section class="slide" id="slide-reflection">
+  <div class="container">
+    <div class="slide-title">
+      <span class="eyebrow">Tahap Akhir</span>
+      <h2>Refleksi Belajar</h2>
+      <p>Ayo renungkan apa yang sudah kamu pelajari hari ini.</p>
+    </div>
+
+    <div class="reflection-card">
+      <h3>1. Bagaimana perasaanmu setelah belajar KPK & FPB?</h3>
+      <p class="sub-text">Pilih satu yang paling sesuai dengan perasaanmu.</p>
+      <div class="emoji-list" data-question="q1">
+        <div class="emoji-option"><span class="emoji">😄</span><span class="desc">Sangat Senang</span></div>
+        <div class="emoji-option"><span class="emoji">🙂</span><span class="desc">Senang</span></div>
+        <div class="emoji-option"><span class="emoji">😐</span><span class="desc">Biasa</span></div>
+        <div class="emoji-option"><span class="emoji">😕</span><span class="desc">Bingung</span></div>
+      </div>
+    </div>
+
+    <div class="reflection-card">
+      <h3>2. Bagian mana yang paling mudah kamu pahami?</h3>
+      <div class="emoji-list" data-question="q2">
+        <div class="emoji-option"><span class="emoji">➗</span><span class="desc">Mencari FPB</span></div>
+        <div class="emoji-option"><span class="emoji">✖️</span><span class="desc">Mencari KPK</span></div>
+        <div class="emoji-option"><span class="emoji">📝</span><span class="desc">Soal Cerita</span></div>
+        <div class="emoji-option"><span class="emoji">🔑</span><span class="desc">Kata Kunci</span></div>
+      </div>
+    </div>
+
+    <div class="reflection-card">
+      <h3>3. Apa yang masih perlu kamu pelajari lagi?</h3>
+      <p class="sub-text">Tuliskan pendapatmu dengan jujur.</p>
+      <div class="input-group" style="margin-top: 8px;">
+        <input type="text" id="reflectionInput" placeholder="Tulis jawabanmu di sini..." style="width: 100%;">
+      </div>
+    </div>
+
+    <div class="slide-nav">
+      <button class="btn btn-outline nav-prev" data-target="slide-conclusion">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </button>
+      <button class="btn btn-primary nav-next" data-target="slide-thankyou">
+        Selesai <i class="fas fa-check-circle"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Slide: Thank You -->
+<section class="slide" id="slide-thankyou">
+  <div class="container">
+    <div class="thankyou-card">
+      <div class="emoji-big">🎉</div>
+      <h2>Thank You for Today!</h2>
+      <p id="thankyouMessage">Hebat! Kamu sudah menyelesaikan petualangan KPK & FPB. Tetap semangat belajar, ya!</p>
+      <button class="btn btn-accent" onclick="restart()">
+        <i class="fas fa-redo"></i> Mulai Lagi
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+// === DATA ===
+const warmupQuestions = [
+  { id: 'w1', question: 'Berapakah FPB dari 12 dan 18?', answer: 6, hint: 'Faktor yang sama-sama membagi habis 12 dan 18: 1, 2, 3, 6. Yang terbesar adalah 6.' },
+  { id: 'w2', question: 'Berapakah KPK dari 4 dan 6?', answer: 12, hint: 'Kelipatan 4: 4, 8, 12, 16, ... Kelipatan 6: 6, 12, 18, ... Yang terkecil sama = 12.' },
+  { id: 'w3', question: 'Berapakah FPB dari 24 dan 36?', answer: 12, hint: 'Faktor 24: 1,2,3,4,6,8,12,24. Faktor 36: 1,2,3,4,6,9,12,18,36. FPB = 12.' },
+  { id: 'w4', question: 'Berapakah KPK dari 3, 4, dan 5?', answer: 60, hint: 'KPK 3 dan 4 = 12. KPK 12 dan 5 = 60.' },
+  { id: 'w5', question: 'Berapakah FPB dari 30, 45, dan 60?', answer: 15, hint: 'Faktor 30: 1,2,3,5,6,10,15,30. Faktor 45: 1,3,5,9,15,45. Faktor 60: 1,2,3,4,5,6,10,12,15,20,30,60. FPB = 15.' }
+];
+
+const storyQuestions = [
+  {
+    id: 's1', category: 'FPB',
+    question: 'Sebuah karton berukuran 48 cm × 36 cm akan dipotong menjadi beberapa persegi yang sama besar sehingga jumlah potongannya minimal. Berapa ukuran sisi persegi terbesar yang bisa dibuat?',
+    options: [
+      { letter: 'A', text: '6 cm' },
+      { letter: 'B', text: '8 cm' },
+      { letter: 'C', text: '12 cm' },
+      { letter: 'D', text: '16 cm' }
+    ],
+    correct: 2,
+    keywords: {
+      type: 'FPB',
+      hint: 'Kata "sama besar" dan "terbesar" dengan syarat "jumlah potongan minimal" menunjukkan kita mencari ukuran sisi persegi terbesar yang bisa membagi habis kedua sisi karton.',
+      keywords: ['sama besar', 'terbesar', 'jumlah potongan minimal'],
+      what: 'Ukuran sisi persegi terbesar = FPB dari 48 dan 36',
+      answer: '12 cm'
+    },
+    explanation: 'Cari FPB dari 48 dan 36. Faktor 48: 1, 2, 3, 4, 6, 8, 12, 16, 24, 48. Faktor 36: 1, 2, 3, 4, 6, 9, 12, 18, 36. FPB-nya adalah 12. Jadi, ukuran sisi persegi terbesar adalah 12 cm.'
+  },
+  {
+    id: 's2', category: 'FPB',
+    question: 'Bu Santi memiliki 60 buah apel dan 45 buah jeruk. Buah-buahan tersebut akan dimasukkan ke dalam keranjang dengan jumlah yang sama rata terbanyak. Berapa jumlah keranjang yang dibutuhkan?',
+    options: [
+      { letter: 'A', text: '5' },
+      { letter: 'B', text: '10' },
+      { letter: 'C', text: '15' },
+      { letter: 'D', text: '20' }
+    ],
+    correct: 2,
+    keywords: {
+      type: 'FPB',
+      hint: 'Kata "sama rata" dan "terbanyak" menunjukkan kita mencari jumlah keranjang maksimal yang bisa membagi habis apel dan jeruk.',
+      keywords: ['sama rata', 'terbanyak'],
+      what: 'Jumlah keranjang terbanyak = FPB dari 60 dan 45',
+      answer: '15 keranjang'
+    },
+    explanation: 'Cari FPB dari 60 dan 45. Faktor 60: 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60. Faktor 45: 1, 3, 5, 9, 15, 45. FPB-nya adalah 15. Jadi, jumlah keranjang yang dibutuhkan adalah 15 buah.'
+  },
+  {
+    id: 's3', category: 'FPB',
+    question: 'Pak Amin akan membagikan 72 buku tulis dan 48 pensil kepada anak-anak dengan jumlah yang sama banyak dan maksimal. Berapa jumlah anak maksimal yang menerima bantuan tersebut?',
+    options: [
+      { letter: 'A', text: '12' },
+      { letter: 'B', text: '24' },
+      { letter: 'C', text: '36' },
+      { letter: 'D', text: '48' }
+    ],
+    correct: 1,
+    keywords: {
+      type: 'FPB',
+      hint: 'Kata "sama banyak" dan "maksimal" menunjukkan kita mencari jumlah anak terbanyak yang bisa menerima pembagian yang rata.',
+      keywords: ['sama banyak', 'maksimal'],
+      what: 'Jumlah anak maksimal = FPB dari 72 dan 48',
+      answer: '24 anak'
+    },
+    explanation: 'Cari FPB dari 72 dan 48. Faktor 72: 1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36, 72. Faktor 48: 1, 2, 3, 4, 6, 8, 12, 16, 24, 48. FPB-nya adalah 24. Jadi, jumlah anak maksimal adalah 24 anak.'
+  },
+  {
+    id: 's4', category: 'FPB',
+    question: 'Sebuah toko menjual pita merah sepanjang 80 meter dan pita putih sepanjang 64 meter. Pita tersebut akan dipotong menjadi potongan sama panjang terpanjang. Berapa panjang setiap potongan pita?',
+    options: [
+      { letter: 'A', text: '8 meter' },
+      { letter: 'B', text: '12 meter' },
+      { letter: 'C', text: '16 meter' },
+      { letter: 'D', text: '24 meter' }
+    ],
+    correct: 2,
+    keywords: {
+      type: 'FPB',
+      hint: 'Kata "sama panjang" dan "terpanjang" menunjukkan kita mencari panjang potongan terbesar yang bisa membagi habis kedua pita.',
+      keywords: ['sama panjang', 'terpanjang'],
+      what: 'Panjang setiap potongan = FPB dari 80 dan 64',
+      answer: '16 meter'
+    },
+    explanation: 'Cari FPB dari 80 dan 64. Faktor 80: 1, 2, 4, 5, 8, 10, 16, 20, 40, 80. Faktor 64: 1, 2, 4, 8, 16, 32, 64. FPB-nya adalah 16. Jadi, panjang setiap potongan pita adalah 16 meter.'
+  },
+  {
+    id: 's5', category: 'FPB',
+    question: 'Ada 75 kelereng merah dan 90 kelereng biru. Kelereng-kelereng tersebut akan dibagikan ke dalam beberapa kelompok dengan jumlah dan jenis yang sama banyak pada setiap kelompok. Berapa jumlah kelompok terbanyak yang bisa terbentuk?',
+    options: [
+      { letter: 'A', text: '5' },
+      { letter: 'B', text: '10' },
+      { letter: 'C', text: '15' },
+      { letter: 'D', text: '20' }
+    ],
+    correct: 2,
+    keywords: {
+      type: 'FPB',
+      hint: 'Kata "sama banyak" dan "terbanyak" menunjukkan kita mencari jumlah kelompok maksimal yang bisa membagi habis kedua jenis kelereng.',
+      keywords: ['sama banyak', 'terbanyak'],
+      what: 'Jumlah kelompok terbanyak = FPB dari 75 dan 90',
+      answer: '15 kelompok'
+    },
+    explanation: 'Cari FPB dari 75 dan 90. Faktor 75: 1, 3, 5, 15, 25, 75. Faktor 90: 1, 2, 3, 5, 6, 9, 10, 15, 18, 30, 45, 90. FPB-nya adalah 15. Jadi, jumlah kelompok terbanyak adalah 15 kelompok.'
+  },
+  {
+    id: 's6', category: 'KPK',
+    question: 'Rina menyusun balok-balok mainan yang tebalnya 12 cm, sedangkan Sari menyusun balok-balok mainan yang tebalnya 15 cm. Pada ketinggian berapakah tumpukan balok mereka akan memiliki tinggi yang sama untuk pertama kalinya?',
+    options: [
+      { letter: 'A', text: '30 cm' },
+      { letter: 'B', text: '45 cm' },
+      { letter: 'C', text: '60 cm' },
+      { letter: 'D', text: '120 cm' }
+    ],
+    correct: 2,
+    keywords: {
+      type: 'KPK',
+      hint: 'Kata "tinggi yang sama" dan "pertama kali" menunjukkan kita mencari kelipatan terkecil yang sama dari kedua tebal balok.',
+      keywords: ['tinggi yang sama', 'pertama kali'],
+      what: 'Ketinggian pertama yang sama = KPK dari 12 dan 15',
+      answer: '60 cm'
+    },
+    explanation: 'Cari KPK dari 12 dan 15. Kelipatan 12: 12, 24, 36, 48, 60, ... Kelipatan 15: 15, 30, 45, 60, ... KPK-nya adalah 60. Ketinggian yang sama akan tercapai di 60 cm.'
+  },
+  {
+    id: 's7', category: 'KPK',
+    question: 'Roda gigi mesin A memiliki 16 gigi dan roda gigi mesin B memiliki 24 gigi. Keduanya saling bersinggungan. Setelah berapa gigi yang terlewati, kedua roda gigi tersebut akan kembali ke posisi awal pertemuannya untuk pertama kalinya?',
+    options: [
+      { letter: 'A', text: '24 gigi' },
+      { letter: 'B', text: '32 gigi' },
+      { letter: 'C', text: '48 gigi' },
+      { letter: 'D', text: '96 gigi' }
+    ],
+    correct: 2,
+    keywords: {
+      type: 'KPK',
+      hint: 'Kata "kembali ke posisi awal" dan "pertama kali" menunjukkan kita mencari kelipatan terkecil yang sama dari jumlah gigi kedua roda.',
+      keywords: ['kembali ke posisi awal', 'pertama kali'],
+      what: 'Jumlah gigi yang terlewati = KPK dari 16 dan 24',
+      answer: '48 gigi'
+    },
+    explanation: 'Cari KPK dari 16 dan 24. Kelipatan 16: 16, 32, 48, 64, ... Kelipatan 24: 24, 48, 72, ... KPK-nya adalah 48. Jadi, butuh 48 gigi yang terlewati agar posisinya sama kembali.'
+  },
+  {
+    id: 's8', category: 'KPK',
+    question: 'Sebuah supermarket menjual sosis dalam kemasan isi 8 buah dan roti dalam kemasan isi 12 buah. Jika Ibu ingin membuat hotdog tanpa ada sisa sosis maupun roti, berapa jumlah sosis paling sedikit yang harus Ibu beli?',
+    options: [
+      { letter: 'A', text: '12 buah' },
+      { letter: 'B', text: '24 buah' },
+      { letter: 'C', text: '36 buah' },
+      { letter: 'D', text: '48 buah' }
+    ],
+    correct: 1,
+    keywords: {
+      type: 'KPK',
+      hint: 'Kata "tanpa sisa" dan "paling sedikit" menunjukkan kita mencari jumlah terkecil yang habis dibagi isi kedua kemasan.',
+      keywords: ['tanpa sisa', 'paling sedikit'],
+      what: 'Jumlah sosis minimal = KPK dari 8 dan 12 (bukan jumlah kemasan, tapi jumlah buah)',
+      answer: '24 buah'
+    },
+    explanation: 'Cari KPK dari 8 dan 12. Kelipatan 8: 8, 16, 24, 32, ... Kelipatan 12: 12, 24, 36, ... KPK-nya adalah 24. Jadi, jumlah sosis (dan roti) minimal yang diperlukan agar pas tanpa sisa adalah 24 buah. (Ibu beli 3 kemasan sosis = 24, dan 2 kemasan roti = 24.)'
+  },
+  {
+    id: 's9', category: 'KPK',
+    question: 'Dalam pembuatan sebuah kalung manik-manik, manik-manik merah dipasang setiap jarak 10 mm dan manik-manik biru dipasang setiap jarak 15 mm. Pada jarak berapakah dari ujung kalung, manik-manik merah dan biru akan dipasang pada titik yang sama untuk pertama kalinya?',
+    options: [
+      { letter: 'A', text: '15 mm' },
+      { letter: 'B', text: '30 mm' },
+      { letter: 'C', text: '45 mm' },
+      { letter: 'D', text: '60 mm' }
+    ],
+    correct: 1,
+    keywords: {
+      type: 'KPK',
+      hint: 'Kata "titik yang sama" dan "pertama kali" menunjukkan kita mencari kelipatan terkecil yang sama dari jarak pemasangan kedua manik.',
+      keywords: ['titik yang sama', 'pertama kali'],
+      what: 'Jarak pertemuan pertama = KPK dari 10 dan 15',
+      answer: '30 mm'
+    },
+    explanation: 'Cari KPK dari 10 dan 15. Kelipatan 10: 10, 20, 30, 40, ... Kelipatan 15: 15, 30, 45, ... KPK-nya adalah 30. Jadi, manik-manik merah dan biru akan bertemu di titik 30 mm.'
+  },
+  {
+    id: 's10', category: 'KPK',
+    question: 'Roda sepeda adik memiliki keliling 40 cm, sedangkan roda sepeda kakak memiliki keliling 50 cm. Berapa jarak terdekat yang harus ditempuh agar kedua roda menyelesaikan putaran penuh (tanpa pecahan putaran) pada saat yang bersamaan?',
+    options: [
+      { letter: 'A', text: '100 cm' },
+      { letter: 'B', text: '150 cm' },
+      { letter: 'C', text: '200 cm' },
+      { letter: 'D', text: '400 cm' }
+    ],
+    correct: 2,
+    keywords: {
+      type: 'KPK',
+      hint: 'Kata "putaran penuh" dan "bersamaan" dengan syarat "jarak terdekat" menunjukkan kita mencari kelipatan terkecil yang sama dari keliling kedua roda.',
+      keywords: ['putaran penuh', 'bersamaan', 'jarak terdekat'],
+      what: 'Jarak terdekat = KPK dari keliling 40 dan 50',
+      answer: '200 cm'
+    },
+    explanation: 'Cari KPK dari keliling roda, yaitu 40 dan 50. Kelipatan 40: 40, 80, 120, 160, 200, ... Kelipatan 50: 50, 100, 150, 200, ... KPK-nya adalah 200. Jarak terdekat agar keduanya berputar penuh bersamaan adalah 200 cm.'
+  }
+];
+
+// === STATE ===
+let currentSlide = 'slide-cover';
+let studentName = 'Siswa';
+let storyScore = 0;
+let answeredStory = {};
+
+// === BUILD WARMUP ===
+function buildWarmup() {
+  const container = document.getElementById('warmupContainer');
+  let html = '';
+  warmupQuestions.forEach((q, i) => {
+    html += `
+      <div class="question-card" id="${q.id}">
+        <div class="question-header">
+          <span class="question-number"><span class="num">${i+1}</span> Soal Pemanasan</span>
+        </div>
+        <div class="question-text">${q.question}</div>
+        <div class="answer-input-wrap">
+          <span class="label">Jawaban:</span>
+          <input type="number" id="input-${q.id}" placeholder="..." onkeydown="if(event.key==='Enter') checkWarmup('${q.id}')">
+          <button class="btn btn-primary btn-small" onclick="checkWarmup('${q.id}')">
+            <i class="fas fa-check"></i> Cek Jawaban
+          </button>
+        </div>
+        <div class="feedback" id="feedback-${q.id}"></div>
+        <div class="info-box explain-box" id="hint-${q.id}">
+          <h4><i class="fas fa-lightbulb"></i> Petunjuk</h4>
+          <p>${q.hint}</p>
+          <p><strong>Jawaban yang benar: ${q.answer}</strong></p>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+// === CHECK WARMUP ===
+function checkWarmup(id) {
+  const q = warmupQuestions.find(x => x.id === id);
+  const input = document.getElementById(`input-${id}`);
+  const feedback = document.getElementById(`feedback-${id}`);
+  const card = document.getElementById(id);
+  const val = parseInt(input.value);
+  
+  if (isNaN(val)) {
+    feedback.className = 'feedback error show';
+    feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Yuk isi jawaban dulu!';
+    return;
+  }
+  
+  if (val === q.answer) {
+    card.classList.remove('wrong');
+    card.classList.add('correct');
+    feedback.className = 'feedback success show';
+    feedback.innerHTML = `<i class="fas fa-star"></i> Hebat! Jawabanmu benar. ${q.answer} adalah jawabannya.`;
+  } else {
+    card.classList.remove('correct');
+    card.classList.add('wrong');
+    feedback.className = 'feedback error show';
+    feedback.innerHTML = '<i class="fas fa-times-circle"></i> Belum tepat. Lihat petunjuk di bawah ya!';
+    document.getElementById(`hint-${id}`).classList.add('show');
+  }
+}
+
+// === BUILD STORY QUESTIONS ===
+function buildStoryQuestions() {
+  const container = document.getElementById('storySlidesContainer');
+  let html = '';
+  storyQuestions.forEach((q, i) => {
+    const slideId = `slide-story${i+1}`;
+    const prevId = i === 0 ? 'slide-warmup' : `slide-story${i}`;
+    const nextId = i === storyQuestions.length - 1 ? 'slide-conclusion' : `slide-story${i+2}`;
+    
+    html += `
+      <section class="slide" id="${slideId}">
+        <div class="container">
+          <div class="slide-title">
+            <span class="eyebrow">Soal Cerita ${i+1} dari ${storyQuestions.length}</span>
+            <h2>Ayo Berpikir Kritis!</h2>
+          </div>
+          
+          <div class="question-card" id="${q.id}">
+            <div class="question-header">
+              <span class="question-number"><span class="num">${i+1}</span> Soal Cerita</span>
+              <span class="category-badge ${q.category.toLowerCase()}"><i class="fas ${q.category === 'FPB' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i> ${q.category}</span>
+            </div>
+            <div class="question-text">${q.question}</div>
+            <div class="options" id="options-${q.id}">
+              ${q.options.map((opt, j) => `
+                <label class="option" data-index="${j}" onclick="selectOption('${q.id}', ${j})">
+                  <span class="letter">${opt.letter}</span>
+                  <span>${opt.text}</span>
+                  <input type="radio" name="${q.id}" value="${j}">
+                </label>
+              `).join('')}
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary btn-small" onclick="checkStory('${q.id}')">
+                <i class="fas fa-check"></i> Cek Jawaban
+              </button>
+              <button class="btn btn-keyword btn-small" onclick="toggleInfo('keyword-${q.id}')">
+                <i class="fas fa-key"></i> Kata Kunci
+              </button>
+              <button class="btn btn-explain btn-small" onclick="toggleInfo('explain-${q.id}')">
+                <i class="fas fa-book-open"></i> Pembahasan
+              </button>
+            </div>
+            <div class="feedback" id="feedback-${q.id}"></div>
+            <div class="info-box keyword-box" id="keyword-${q.id}">
+              <h4><i class="fas fa-key"></i> Kata Kunci & Strategi</h4>
+              <p><strong>Tipe soal:</strong> <span class="keyword-tag ${q.keywords.type.toLowerCase()}">${q.keywords.type}</span></p>
+              <p><strong>Kata kunci pada soal:</strong></p>
+              <div class="keyword-list">
+                ${q.keywords.keywords.map(k => `<span class="keyword-tag ${q.keywords.type.toLowerCase()}"><i class="fas fa-search"></i> ${k}</span>`).join('')}
+              </div>
+              <div class="strategy-box">
+                <p><strong><i class="fas fa-lightbulb"></i> Strategi:</strong> ${q.keywords.hint}</p>
+              </div>
+              <p style="margin-top: 12px;"><strong>Yang harus dicari:</strong> ${q.keywords.what}</p>
+              <div class="answer-final">
+                <i class="fas fa-flag-checkered"></i> Jawaban: ${q.keywords.answer}
+              </div>
+            </div>
+            <div class="info-box explain-box" id="explain-${q.id}">
+              <h4><i class="fas fa-book-open"></i> Pembahasan Lengkap</h4>
+              <p>${q.explanation}</p>
+            </div>
+          </div>
+          
+          <div class="slide-nav">
+            <button class="btn btn-outline nav-prev" data-target="${prevId}">
+              <i class="fas fa-arrow-left"></i> Sebelumnya
+            </button>
+            <button class="btn btn-primary nav-next" data-target="${nextId}">
+              Berikutnya <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+// === SELECT OPTION ===
+function selectOption(qId, idx) {
+  const opts = document.querySelectorAll(`#options-${qId} .option`);
+  opts.forEach(opt => opt.classList.remove('selected'));
+  document.querySelector(`#options-${qId} .option[data-index="${idx}"]`).classList.add('selected');
+  document.querySelector(`#options-${qId} input[value="${idx}"]`).checked = true;
+}
+
+// === CHECK STORY ANSWER ===
+function checkStory(qId) {
+  const q = storyQuestions.find(x => x.id === qId);
+  const selected = document.querySelector(`#options-${qId} input[name="${qId}"]:checked`);
+  const feedback = document.getElementById(`feedback-${qId}`);
+  const card = document.getElementById(qId);
+  
+  if (!selected) {
+    feedback.className = 'feedback error show';
+    feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Pilih salah satu jawaban dulu!';
+    return;
+  }
+  
+  const chosen = parseInt(selected.value);
+  document.querySelectorAll(`#options-${qId} .option`).forEach(opt => opt.classList.remove('correct-answer', 'wrong-answer'));
+  
+  if (chosen === q.correct) {
+    card.classList.remove('wrong');
+    card.classList.add('correct');
+    document.querySelector(`#options-${qId} .option[data-index="${chosen}"]`).classList.add('correct-answer');
+    feedback.className = 'feedback success show';
+    feedback.innerHTML = '<i class="fas fa-star"></i> Selamat! Jawabanmu benar.';
+    if (!answeredStory[qId]) {
+      storyScore++;
+      answeredStory[qId] = true;
+      updateScore();
+    }
+  } else {
+    card.classList.remove('correct');
+    card.classList.add('wrong');
+    document.querySelector(`#options-${qId} .option[data-index="${chosen}"]`).classList.add('wrong-answer');
+    document.querySelector(`#options-${qId} .option[data-index="${q.correct}"]`).classList.add('correct-answer');
+    feedback.className = 'feedback error show';
+    feedback.innerHTML = '<i class="fas fa-times-circle"></i> Belum tepat. Lihat kata kunci dan pembahasan untuk memahami jawabannya.';
+    answeredStory[qId] = true;
+  }
+}
+
+// === TOGGLE INFO ===
+function toggleInfo(id) {
+  document.getElementById(id).classList.toggle('show');
+}
+
+// === UPDATE SCORE ===
+function updateScore() {
+  document.getElementById('finalScore').textContent = storyScore;
+  document.getElementById('liveScore').textContent = storyScore;
+  
+  const msg = document.getElementById('scoreMessage');
+  if (storyScore === 10) msg.textContent = 'Luar biasa! Kamu jago sekali!';
+  else if (storyScore >= 7) msg.textContent = 'Kerja bagus! Kamu sudah paham materi.';
+  else if (storyScore >= 5) msg.textContent = 'Lumayan! Tetap berlatih agar makin pintar.';
+  else msg.textContent = 'Jangan menyerah! Ayo pelajari lagi materinya.';
+}
+
+// === NAVIGATION ===
+function showSlide(targetId) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.getElementById(targetId).classList.add('active');
+  currentSlide = targetId;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateProgress();
+}
+
+function updateProgress() {
+  const slides = ['slide-cover', 'slide-warmup', 
+    ...storyQuestions.map((_,i) => `slide-story${i+1}`),
+    'slide-conclusion', 'slide-reflection', 'slide-thankyou'];
+  const idx = slides.indexOf(currentSlide);
+  const percent = ((idx + 1) / slides.length) * 100;
+  document.getElementById('progressBar').style.width = percent + '%';
+}
+
+function attachNavHandlers() {
+  document.querySelectorAll('.nav-next, .nav-prev').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+      showSlide(target);
+    });
+  });
+}
+
+// === START BUTTON ===
+document.getElementById('startBtn').addEventListener('click', () => {
+  const name = document.getElementById('studentName').value.trim();
+  if (!name) {
+    const input = document.getElementById('studentName');
+    input.focus();
+    input.style.borderColor = 'var(--error)';
+    input.style.boxShadow = '0 0 0 4px rgba(232, 67, 147, 0.1)';
+    setTimeout(() => {
+      input.style.borderColor = '';
+      input.style.boxShadow = '';
+    }, 2000);
+    return;
+  }
+  studentName = name;
+  document.getElementById('studentNameDisplay').textContent = name;
+  document.getElementById('topNav').style.display = 'flex';
+  document.getElementById('thankyouMessage').textContent = `Hebat, ${name}! Kamu sudah menyelesaikan petualangan KPK & FPB. Tetap semangat belajar, ya!`;
+  showSlide('slide-warmup');
+});
+
+document.getElementById('studentName').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') document.getElementById('startBtn').click();
+});
+
+// === REFLECTION EMOJI ===
+document.querySelectorAll('.emoji-list').forEach(list => {
+  list.querySelectorAll('.emoji-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      list.querySelectorAll('.emoji-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+});
+
+// === RESTART ===
+function restart() {
+  storyScore = 0;
+  answeredStory = {};
+  updateScore();
+  
+  document.querySelectorAll('.question-card').forEach(card => {
+    card.classList.remove('correct', 'wrong');
+  });
+  document.querySelectorAll('.feedback').forEach(f => f.classList.remove('show'));
+  document.querySelectorAll('.info-box').forEach(b => b.classList.remove('show'));
+  document.querySelectorAll('.option').forEach(o => {
+    o.classList.remove('selected', 'correct-answer', 'wrong-answer');
+  });
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+  document.querySelectorAll('input[type="number"]').forEach(i => i.value = '');
+  document.querySelectorAll('.emoji-option').forEach(o => o.classList.remove('selected'));
+  if (document.getElementById('reflectionInput')) document.getElementById('reflectionInput').value = '';
+  
+  document.getElementById('topNav').style.display = 'none';
+  document.getElementById('studentName').value = '';
+  
+  showSlide('slide-cover');
+}
+
+// === CONFETTI ===
+function makeConfetti() {
+  const colors = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#A78BFA', '#00B894'];
+  for (let i = 0; i < 60; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 2 + 's';
+    c.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+    if (Math.random() > 0.5) c.style.borderRadius = '50%';
+    if (Math.random() > 0.7) { c.style.width = '8px'; c.style.height = '16px'; }
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5500);
+  }
+}
+
+// === OBSERVER FOR THANK YOU SLIDE ===
+const observer = new MutationObserver(() => {
+  if (document.getElementById('slide-thankyou').classList.contains('active')) {
+    makeConfetti();
+    setTimeout(makeConfetti, 800);
+  }
+});
+observer.observe(document.getElementById('slide-thankyou'), { attributes: true, attributeFilter: ['class'] });
+
+// === INIT ===
+buildWarmup();
+buildStoryQuestions();
+attachNavHandlers();
+updateProgress();
+</script>
+</body>
+</html>
