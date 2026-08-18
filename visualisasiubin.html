@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kain Perca Bu Rina — Visualisasi Interaktif FPB</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5ebdc;
+    --bg-2: #ede0c8;
+    --fg: #2a1a0e;
+    --fg-soft: #5a4632;
+    --muted: #8a7960;
+    --primary: #c8553d;
+    --primary-dark: #9a3a26;
+    --primary-light: #e08e6b;
+    --secondary: #2d5d4f;
+    --secondary-light: #4a7d6f;
+    --accent: #d4a017;
+    --accent-light: #e8c45e;
+    --card: #fffaf0;
+    --border: #d4c4a8;
+  }
+  
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  
+  html, body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overflow-x: hidden;
+  }
+  
+  .font-display { font-family: 'Fraunces', serif; font-optical-sizing: auto; }
+  
+  body {
+    background-image: 
+      radial-gradient(circle at 15% 25%, rgba(212, 160, 23, 0.08) 0%, transparent 45%),
+      radial-gradient(circle at 85% 75%, rgba(200, 85, 61, 0.07) 0%, transparent 45%),
+      radial-gradient(circle at 50% 100%, rgba(45, 93, 79, 0.05) 0%, transparent 50%);
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.07;
+    mix-blend-mode: multiply;
+  }
+  
+  .slide { display: none; }
+  .slide.active { display: block; animation: slideIn 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+  
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .nav-btn { transition: all 0.3s ease; color: var(--fg-soft); }
+  .nav-btn:hover { color: var(--fg); }
+  .nav-btn.active { background: var(--fg); color: var(--bg); }
+  
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(200, 85, 61, 0.3);
+  }
+  .btn-secondary {
+    background: var(--secondary);
+    color: white;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-secondary:hover {
+    background: #1f4538;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(45, 93, 79, 0.3);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--fg);
+    border: 1.5px solid var(--border);
+    transition: all 0.3s ease;
+  }
+  .btn-ghost:hover {
+    background: var(--card);
+    border-color: var(--fg);
+  }
+  
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(42, 26, 14, 0.05);
+  }
+  
+  .square-tile {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform-origin: center;
+    transform-box: fill-box;
+    cursor: pointer;
+  }
+  .square-tile:hover {
+    opacity: 0.78;
+    transform: scale(0.94);
+  }
+  
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 26px;
+    width: 26px;
+    background: var(--primary);
+    border-radius: 50%;
+    border: 3px solid var(--card);
+    box-shadow: 0 4px 12px rgba(200, 85, 61, 0.4);
+    margin-top: -10px;
+    transition: transform 0.2s ease;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  input[type="range"]::-moz-range-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+  }
+  input[type="range"]::-moz-range-thumb {
+    height: 26px;
+    width: 26px;
+    background: var(--primary);
+    border-radius: 50%;
+    border: 3px solid var(--card);
+    box-shadow: 0 4px 12px rgba(200, 85, 61, 0.4);
+  }
+  
+  .input-field {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    width: 100%;
+    color: var(--fg);
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+  }
+  .input-correct {
+    border-color: var(--secondary) !important;
+    background: rgba(45, 93, 79, 0.08) !important;
+  }
+  .input-incorrect {
+    border-color: var(--primary) !important;
+    background: rgba(200, 85, 61, 0.08) !important;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .float-anim { animation: float 6s ease-in-out infinite; }
+  
+  @keyframes drawIn {
+    from { opacity: 0; transform: scale(0.3); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212, 160, 23, 0.5); }
+    50% { box-shadow: 0 0 0 16px rgba(212, 160, 23, 0); }
+  }
+  .pulse-glow { animation: pulseGlow 2.5s ease-in-out infinite; }
+  
+  .explanation {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    opacity: 0;
+  }
+  .explanation.open {
+    max-height: 1500px;
+    opacity: 1;
+  }
+  
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  
+  @keyframes confettiFall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 14px;
+    pointer-events: none;
+    z-index: 9999;
+    top: 0;
+    animation: confettiFall 2.4s linear forwards;
+  }
+  
+  .square-tooltip {
+    position: absolute;
+    background: var(--fg);
+    color: var(--bg);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 50;
+    white-space: nowrap;
+  }
+  .square-tooltip.visible { opacity: 1; }
+  
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .insight-box {
+    background: linear-gradient(135deg, rgba(45, 93, 79, 0.06), rgba(212, 160, 23, 0.06));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+  }
+  
+  .big-number {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+  }
+  
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    transition: all 0.3s ease;
+  }
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(42, 26, 14, 0.08);
+  }
+  
+  .fabric-strip {
+    height: 14px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--primary) 0, var(--primary) 24px,
+      var(--accent) 24px, var(--accent) 48px,
+      var(--secondary) 48px, var(--secondary) 72px,
+      var(--primary-light) 72px, var(--primary-light) 96px
+    );
+    opacity: 0.85;
+  }
+  
+  .problem-card-practice {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .question-box {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 0.875rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .badge-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--secondary);
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .problem-grid { grid-template-columns: 1fr 1fr; }
+  }
+  
+  .dot {
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.3);
+    transition: background 0.3s;
+  }
+  .dot.active { background: rgba(255,255,255,1); }
+  
+  sup { font-size: 0.75em; vertical-align: super; }
+  
+  .scissor-deco {
+    position: absolute;
+    color: var(--accent);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+  }
+  .shimmer { animation: shimmer 4s ease-in-out infinite; }
+  
+  @media (max-width: 768px) {
+    .big-number { font-size: 2.5rem; }
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Top Navigation -->
+<nav class="sticky top-0 z-40 backdrop-blur-md bg-[var(--bg)]/85 border-b border-[var(--border)]">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-[var(--primary)] flex items-center justify-center text-white font-display font-bold text-base shadow-md">FPB</div>
+      <div>
+        <div class="font-display font-bold text-base md:text-lg leading-tight">Kain Perca Bu Rina</div>
+        <div class="text-[10px] md:text-xs text-[var(--muted)] uppercase tracking-wider">Visualisasi Interaktif · FPB</div>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-1">
+      <button data-slide="1" class="nav-btn active px-4 py-2 rounded-full text-sm font-medium">1 · Soal</button>
+      <button data-slide="2" class="nav-btn px-4 py-2 rounded-full text-sm font-medium">2 · Konsep</button>
+      <button data-slide="3" class="nav-btn px-4 py-2 rounded-full text-sm font-medium">3 · Visualisasi</button>
+      <button data-slide="4" class="nav-btn px-4 py-2 rounded-full text-sm font-medium">4 · Latihan</button>
+    </div>
+  </div>
+  <div class="fabric-strip"></div>
+</nav>
+
+<main class="relative max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 pb-32">
+
+  <!-- ============ SLIDE 1: HERO ============ -->
+  <section id="slide-1" class="slide active">
+    <div class="grid lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-7 space-y-6 relative">
+        <div class="flex items-center gap-3 flex-wrap">
+          <span class="tag">Matematika Dasar</span>
+          <span class="tag" style="background: var(--secondary); color: white; border-color: var(--secondary);">FPB · Faktor Persekutuan Terbesar</span>
+        </div>
+        <h1 class="font-display font-black text-5xl md:text-7xl leading-[0.95] tracking-tight">
+          Memotong kain<br>
+          <span class="italic font-light text-[var(--primary)]">tanpa sisa.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-[var(--fg-soft)] max-w-2xl leading-relaxed">
+          Bu Rina memiliki selembar kain perca <strong class="text-[var(--fg)]">120 cm × 90 cm</strong>. Ia ingin memotongnya menjadi potongan-potongan persegi berukuran sama, tanpa ada sisa kain sedikit pun. Berapa banyak potongan paling sedikit yang bisa diperoleh?
+        </p>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <button onclick="goToSlide(2)" class="btn-primary px-6 py-3 rounded-full font-semibold flex items-center gap-2">
+            Pelajari Konsepnya
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+          <button onclick="goToSlide(3)" class="btn-ghost px-6 py-3 rounded-full font-semibold">Lihat Visualisasi</button>
+        </div>
+        <div class="grid grid-cols-3 gap-4 pt-6 max-w-md">
+          <div>
+            <div class="big-number text-[var(--primary)]">30</div>
+            <div class="text-xs text-[var(--muted)] uppercase tracking-wider mt-1">Sisi Persegi (cm)</div>
+          </div>
+          <div>
+            <div class="big-number text-[var(--secondary)]">12</div>
+            <div class="text-xs text-[var(--muted)] uppercase tracking-wider mt-1">Jumlah Potongan</div>
+          </div>
+          <div>
+            <div class="big-number text-[var(--accent)]">0</div>
+            <div class="text-xs text-[var(--muted)] uppercase tracking-wider mt-1">Sisa Kain</div>
+          </div>
+        </div>
+      </div>
+      <div class="lg:col-span-5">
+        <div class="card p-6 relative overflow-hidden">
+          <div class="absolute top-4 right-4 z-10">
+            <span class="tag" style="background: var(--accent); color: var(--fg); border-color: var(--accent);">Preview</span>
+          </div>
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-2">Soal Bu Rina · 120 × 90</div>
+          <div class="text-xl font-display font-bold mb-4">Visualisasi langsung:</div>
+          <svg id="hero-svg" viewBox="0 0 400 320" class="w-full h-auto"></svg>
+          <div class="mt-4 flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-sm" style="background: var(--primary);"></div>
+              <span class="text-[var(--fg-soft)]">12 persegi × 30 cm</span>
+            </div>
+            <div class="font-display font-semibold text-[var(--secondary)]">FPB(120, 90) = 30</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2: CONCEPT ============ -->
+  <section id="slide-2" class="slide">
+    <div class="space-y-12">
+      <header class="space-y-4">
+        <span class="tag">Konsep Inti</span>
+        <h2 class="font-display font-black text-4xl md:text-6xl leading-[0.95] tracking-tight">
+          Mengapa <span class="italic text-[var(--primary)]">FPB</span>?
+        </h2>
+        <p class="text-lg text-[var(--fg-soft)] max-w-3xl leading-relaxed">
+          Soal ini sebenarnya bertanya: <em>berapa ukuran persegi terbesar yang dapat menutupi persegi panjang secara sempurna tanpa sisa?</em> Jawabannya terletak pada Faktor Persekutuan Terbesar (FPB) dari kedua sisi persegi panjang tersebut.
+        </p>
+      </header>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Step 1 -->
+        <div class="card p-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center font-display font-black text-xl">1</div>
+            <div>
+              <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Langkah Pertama</div>
+              <h3 class="font-display font-bold text-2xl">Memahami Syarat</h3>
+            </div>
+          </div>
+          <p class="text-[var(--fg-soft)] leading-relaxed mb-3">Potongan harus persegi berukuran sama, dan harus memenuhi syarat:</p>
+          <ul class="space-y-2 text-sm">
+            <li class="flex items-start gap-2"><span class="text-[var(--primary)] font-bold mt-0.5">•</span><span>Sisi persegi harus <strong>faktor dari panjang</strong> (120 cm)</span></li>
+            <li class="flex items-start gap-2"><span class="text-[var(--primary)] font-bold mt-0.5">•</span><span>Sisi persegi harus <strong>faktor dari lebar</strong> (90 cm)</span></li>
+            <li class="flex items-start gap-2"><span class="text-[var(--primary)] font-bold mt-0.5">•</span><span>Untuk potongan <strong>paling sedikit</strong>, sisi harus <strong>sebesar mungkin</strong></span></li>
+          </ul>
+          <p class="mt-3 text-sm text-[var(--fg-soft)]">Dengan kata lain: sisi persegi = <strong>faktor persekutuan</strong> dari 120 dan 90. Yang terbesar = <strong>FPB</strong>.</p>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="card p-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-[var(--secondary)] text-white flex items-center justify-center font-display font-black text-xl">2</div>
+            <div>
+              <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Langkah Kedua</div>
+              <h3 class="font-display font-bold text-2xl">Faktorisasi Prima</h3>
+            </div>
+          </div>
+          <p class="text-[var(--fg-soft)] leading-relaxed mb-4">Uraikan kedua bilangan menjadi perkalian faktor-faktor primanya:</p>
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl" style="background: var(--bg);">
+              <div class="font-display text-lg mb-2">120 = <span class="text-[var(--primary)] font-bold">2<sup>3</sup> × 3 × 5</span></div>
+              <div class="text-xs text-[var(--muted)]">= 8 × 3 × 5 = 120 ✓</div>
+            </div>
+            <div class="p-4 rounded-xl" style="background: var(--bg);">
+              <div class="font-display text-lg mb-2">90 = <span class="text-[var(--primary)] font-bold">2 × 3<sup>2</sup> × 5</span></div>
+              <div class="text-xs text-[var(--muted)]">= 2 × 9 × 5 = 90 ✓</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="card p-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-[var(--accent)] text-[var(--fg)] flex items-center justify-center font-display font-black text-xl">3</div>
+            <div>
+              <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Langkah Ketiga</div>
+              <h3 class="font-display font-bold text-2xl">Ambil Faktor Sama, Pangkat Terkecil</h3>
+            </div>
+          </div>
+          <p class="text-[var(--fg-soft)] leading-relaxed mb-4">Untuk setiap faktor prima yang <strong>muncul di kedua bilangan</strong>, ambil pangkat yang lebih kecil:</p>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center justify-between p-2 rounded-lg" style="background: var(--bg);">
+              <span class="font-display">Faktor 2:</span>
+              <span>min(3, 1) = <strong class="text-[var(--primary)]">2<sup>1</sup></strong></span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-lg" style="background: var(--bg);">
+              <span class="font-display">Faktor 3:</span>
+              <span>min(1, 2) = <strong class="text-[var(--primary)]">3<sup>1</sup></strong></span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-lg" style="background: var(--bg);">
+              <span class="font-display">Faktor 5:</span>
+              <span>min(1, 1) = <strong class="text-[var(--primary)]">5<sup>1</sup></strong></span>
+            </div>
+          </div>
+          <div class="mt-4 p-4 rounded-xl" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
+            <div class="text-white/80 text-xs uppercase tracking-wider mb-1">FPB(120, 90)</div>
+            <div class="font-display text-2xl font-bold text-white">2 × 3 × 5 = <span class="text-3xl">30 cm</span></div>
+          </div>
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="card p-6">
+          <div class="flex items-start gap-4 mb-3">
+            <div class="flex-shrink-0 w-12 h-12 rounded-2xl bg-[var(--fg)] text-white flex items-center justify-center font-display font-black text-xl">4</div>
+            <div>
+              <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Langkah Keempat</div>
+              <h3 class="font-display font-bold text-2xl">Hitung Jumlah Potongan</h3>
+            </div>
+          </div>
+          <p class="text-[var(--fg-soft)] leading-relaxed mb-4">Bagi panjang dan lebar dengan sisi persegi untuk mendapatkan jumlah potongan di setiap arah:</p>
+          <div class="space-y-2">
+            <div class="p-3 rounded-lg flex items-center justify-between" style="background: var(--bg);">
+              <span class="font-display">120 ÷ 30</span>
+              <span class="font-display font-bold text-[var(--secondary)] text-xl">= 4 potong</span>
+            </div>
+            <div class="p-3 rounded-lg flex items-center justify-between" style="background: var(--bg);">
+              <span class="font-display">90 ÷ 30</span>
+              <span class="font-display font-bold text-[var(--secondary)] text-xl">= 3 potong</span>
+            </div>
+          </div>
+          <div class="mt-4 p-4 rounded-xl pulse-glow" style="background: linear-gradient(135deg, var(--secondary), #1f4538);">
+            <div class="text-white/80 text-xs uppercase tracking-wider mb-1">Total Potongan</div>
+            <div class="font-display text-3xl font-bold text-white">4 × 3 = 12 buah</div>
+            <div class="text-white/70 text-xs mt-1">atau Luas Kain ÷ Luas Persegi = 10.800 ÷ 900 = 12</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="insight-box">
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-[var(--accent)] flex items-center justify-center">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--fg)" stroke-width="2.5"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Wawasan Kunci</div>
+            <h3 class="font-display font-bold text-2xl mb-2">FPB = Sisi Terbesar yang Pas</h3>
+            <p class="text-[var(--fg-soft)] leading-relaxed">
+              Mengapa FPB bekerja? Karena FPB adalah bilangan terbesar yang dapat membagi <strong>kedua</strong> dimensi tanpa sisa. Artinya persegi dengan sisi = FPB akan <strong>pas</strong> di kedua arah — sepanjang panjang dan sepanjang lebar — tanpa ada bagian yang harus dipotong. Semakin besar sisi persegi, semakin sedikit jumlahnya. Maka FPB memberi kita jawaban optimal: <strong>jumlah potongan paling sedikit</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-2">Rumus 1</div>
+          <div class="font-display text-lg font-semibold mb-1">Sisi Persegi Terbesar</div>
+          <div class="font-display text-xl text-[var(--primary)]">s = FPB(P, L)</div>
+          <div class="text-sm text-[var(--fg-soft)] mt-2">P = panjang, L = lebar</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-2">Rumus 2</div>
+          <div class="font-display text-lg font-semibold mb-1">Jumlah Potongan</div>
+          <div class="font-display text-xl text-[var(--primary)]">n = (P ÷ s) × (L ÷ s)</div>
+          <div class="text-sm text-[var(--fg-soft)] mt-2">Banyak persegi = kolom × baris</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-2">Rumus 3 (Alternatif)</div>
+          <div class="font-display text-lg font-semibold mb-1">Via Luas</div>
+          <div class="font-display text-xl text-[var(--primary)]">n = (P × L) ÷ (s × s)</div>
+          <div class="text-sm text-[var(--fg-soft)] mt-2">Luas kain ÷ luas 1 persegi</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 3: INTERACTIVE VISUALIZATION ============ -->
+  <section id="slide-3" class="slide">
+    <header class="mb-8 space-y-4">
+      <span class="tag">Eksplorasi Bebas</span>
+      <h2 class="font-display font-black text-4xl md:text-5xl leading-[0.95] tracking-tight">
+        Ubah ukuran, <span class="italic text-[var(--primary)]">lihat hasilnya.</span>
+      </h2>
+      <p class="text-lg text-[var(--fg-soft)] max-w-3xl leading-relaxed">
+        Geser slider atau ketik angka untuk mengubah ukuran kain. Sistem akan menghitung FPB secara real-time dan memvisualisasikan potongan persegi yang dihasilkan.
+      </p>
+    </header>
+    
+    <div class="grid lg:grid-cols-12 gap-6">
+      <!-- Controls -->
+      <div class="lg:col-span-3 space-y-5">
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-4">Atur Ukuran Kain</div>
+          
+          <div class="mb-5">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-sm font-semibold">Panjang (P)</label>
+              <input type="number" id="length-input" min="20" max="360" value="120" step="5" 
+                     class="w-20 px-2 py-1 text-right font-display font-bold text-[var(--primary)] bg-[var(--bg)] border border-[var(--border)] rounded-lg">
+            </div>
+            <input type="range" id="length-slider" min="20" max="360" value="120" step="5">
+            <div class="flex justify-between text-xs text-[var(--muted)] mt-1"><span>20</span><span>360</span></div>
+          </div>
+          
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-sm font-semibold">Lebar (L)</label>
+              <input type="number" id="width-input" min="20" max="300" value="90" step="5"
+                     class="w-20 px-2 py-1 text-right font-display font-bold text-[var(--primary)] bg-[var(--bg)] border border-[var(--border)] rounded-lg">
+            </div>
+            <input type="range" id="width-slider" min="20" max="300" value="90" step="5">
+            <div class="flex justify-between text-xs text-[var(--muted)] mt-1"><span>20</span><span>300</span></div>
+          </div>
+        </div>
+        
+        <div class="card p-5">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-3">Preset Soal</div>
+          <div class="space-y-2">
+            <button onclick="setPreset(120, 90)" class="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg)] transition text-sm flex items-center justify-between">
+              <span>Bu Rina</span><span class="font-display font-semibold text-[var(--primary)]">120 × 90</span>
+            </button>
+            <button onclick="setPreset(360, 240)" class="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg)] transition text-sm flex items-center justify-between">
+              <span>Ruang Tamu</span><span class="font-display font-semibold text-[var(--primary)]">360 × 240</span>
+            </button>
+            <button onclick="setPreset(280, 160)" class="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg)] transition text-sm flex items-center justify-between">
+              <span>Dapur</span><span class="font-display font-semibold text-[var(--primary)]">280 × 160</span>
+            </button>
+            <button onclick="setPreset(540, 180)" class="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg)] transition text-sm flex items-center justify-between">
+              <span>Koridor</span><span class="font-display font-semibold text-[var(--primary)]">540 × 180</span>
+            </button>
+            <button onclick="setPreset(225, 150)" class="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg)] transition text-sm flex items-center justify-between">
+              <span>Gazebo</span><span class="font-display font-semibold text-[var(--primary)]">225 × 150</span>
+            </button>
+            <button onclick="setPreset(225, 225)" class="w-full text-left px-3 py-2 rounded-lg hover:bg-[var(--bg)] transition text-sm flex items-center justify-between">
+              <span>Persegi (khusus)</span><span class="font-display font-semibold text-[var(--primary)]">225 × 225</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Visualization -->
+      <div class="lg:col-span-6">
+        <div class="card p-6 relative">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <div class="text-xs uppercase tracking-wider text-[var(--muted)]">Visualisasi Kain</div>
+              <div class="font-display text-2xl font-bold" id="viz-title">120 × 90 cm</div>
+            </div>
+            <button onclick="animateVisualization()" class="btn-ghost px-3 py-2 rounded-lg text-sm flex items-center gap-1">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 3l14 9-14 9V3z"/></svg>
+              Animasi
+            </button>
+          </div>
+          <div class="relative" id="svg-container">
+            <svg id="viz-svg" viewBox="0 0 700 520" class="w-full h-auto" style="max-height: 520px;"></svg>
+            <div id="square-tooltip" class="square-tooltip"></div>
+          </div>
+          <div class="mt-4 p-4 rounded-xl" style="background: var(--bg);">
+            <div class="font-display text-sm" id="factor-display"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Stats -->
+      <div class="lg:col-span-3 space-y-3">
+        <div class="stat-card">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Sisi Persegi</div>
+          <div class="flex items-baseline gap-1">
+            <span class="big-number" id="stat-square-size" style="font-size: 2.5rem;">30</span>
+            <span class="text-[var(--muted)] font-display">cm</span>
+          </div>
+          <div class="text-xs text-[var(--fg-soft)] mt-1">= FPB dari P & L</div>
+        </div>
+        <div class="stat-card">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Jumlah Potongan</div>
+          <div class="flex items-baseline gap-2">
+            <span class="big-number text-[var(--secondary)]" id="stat-total" style="font-size: 2.5rem;">12</span>
+            <span class="text-[var(--muted)] font-display">buah</span>
+          </div>
+          <div class="text-xs text-[var(--fg-soft)] mt-1"><span id="stat-cols">4</span> kolom × <span id="stat-rows">3</span> baris</div>
+        </div>
+        <div class="stat-card">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Luas Kain</div>
+          <div class="font-display text-xl font-bold" id="stat-area-rect">10.800 cm²</div>
+        </div>
+        <div class="stat-card">
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Luas 1 Persegi</div>
+          <div class="font-display text-xl font-bold" id="stat-area-square">900 cm²</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, rgba(45, 93, 79, 0.08), rgba(212, 160, 23, 0.08)); border-color: var(--secondary-light);">
+          <div class="text-xs uppercase tracking-wider text-[var(--secondary)] mb-1">Sisa Kain</div>
+          <div class="big-number text-[var(--secondary)]" style="font-size: 2.5rem;">0</div>
+          <div class="text-xs text-[var(--fg-soft)] mt-1">Tidak ada sisa ✓</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 4: PRACTICE ============ -->
+  <section id="slide-4" class="slide">
+    <header class="mb-8 space-y-4">
+      <span class="tag">10 Soal Latihan</span>
+      <h2 class="font-display font-black text-4xl md:text-5xl leading-[0.95] tracking-tight">
+        Latihan <span class="italic text-[var(--primary)]">FPB</span>.
+      </h2>
+      <p class="text-lg text-[var(--fg-soft)] max-w-3xl leading-relaxed">
+        Kerjakan setiap soal, lalu tekan tombol <strong>Cek Jawaban</strong> untuk mengetahui benar/salah. Jika ingin melihat pembahasan lengkap, klik <strong>Lihat Pembahasan</strong>.
+      </p>
+      <div class="max-w-md">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="text-[var(--fg-soft)]">Progress</span>
+          <span class="font-display font-semibold" id="progress-text">0 / 20 benar</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+    </header>
+    
+    <div class="problem-grid" id="problems-container"></div>
+  </section>
+
+</main>
+
+<!-- Bottom Navigation -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30">
+  <div class="flex items-center gap-3 bg-[var(--fg)] text-white px-4 py-2.5 rounded-full shadow-2xl">
+    <button onclick="navigate(-1)" class="p-2 rounded-full hover:bg-white/10 transition" aria-label="Sebelumnya">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="flex gap-1.5 px-2">
+      <button onclick="goToSlide(1)" class="dot active" data-slide="1"></button>
+      <button onclick="goToSlide(2)" class="dot" data-slide="2"></button>
+      <button onclick="goToSlide(3)" class="dot" data-slide="3"></button>
+      <button onclick="goToSlide(4)" class="dot" data-slide="4"></button>
+    </div>
+    <button onclick="navigate(1)" class="p-2 rounded-full hover:bg-white/10 transition" aria-label="Berikutnya">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container" class="fixed top-24 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+<script>
+  // ===== Utility Functions =====
+  function gcd(a, b) {
+    a = Math.abs(a); b = Math.abs(b);
+    while (b) { [a, b] = [b, a % b]; }
+    return a || 1;
+  }
+  
+  function primeFactorization(n) {
+    const factors = {};
+    let num = Math.max(1, Math.floor(n));
+    let d = 2;
+    while (num > 1) {
+      while (num % d === 0) {
+        factors[d] = (factors[d] || 0) + 1;
+        num = num / d;
+      }
+      d++;
+      if (d * d > num && num > 1) {
+        factors[num] = 1;
+        break;
+      }
+    }
+    return factors;
+  }
+  
+  function formatFactorization(n) {
+    const factors = primeFactorization(n);
+    const keys = Object.keys(factors).map(Number).sort((a, b) => a - b);
+    if (keys.length === 0) return `${n}`;
+    return keys.map(p => {
+      const e = factors[p];
+      return e === 1 ? `${p}` : `${p}<sup>${e}</sup>`;
+    }).join(' × ');
+  }
+  
+  // ===== Fabric Colors =====
+  const fabricColors = [
+    '#c8553d', '#e08e6b', '#d4a017', '#2d5d4f',
+    '#7a9b6e', '#a23e29', '#e8c39e', '#5a7a6a'
+  ];
+  
+  function getSquareColor(i, j) {
+    const idx = (i * 3 + j * 5 + (i * j) % 3) % fabricColors.length;
+    return fabricColors[idx];
+  }
+  
+  // ===== Visualization =====
+  let currentLength = 120;
+  let currentWidth = 90;
+  
+  function renderVisualization(length, width, animate = false) {
+    currentLength = length;
+    currentWidth = width;
+    const svg = document.getElementById('viz-svg');
+    const gcdVal = gcd(length, width);
+    const squareSize = gcdVal;
+    const cols = length / squareSize;
+    const rows = width / squareSize;
+    const totalSquares = cols * rows;
+    
+    const maxW = 700, maxH = 520;
+    const padX = 70, padY = 50;
+    const availW = maxW - padX * 2;
+    const availH = maxH - padY * 2;
+    const scale = Math.min(availW / length, availH / width);
+    const w = length * scale;
+    const h = width * scale;
+    const offsetX = (maxW - w) / 2;
+    const offsetY = (maxH - h) / 2;
+    const squareW = squareSize * scale;
+    
+    let html = '';
+    
+    // Background grid
+    html += `<defs>
+      <pattern id="bgGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(212, 196, 168, 0.25)" stroke-width="0.5"/>
+      </pattern>
+    </defs>`;
+    html += `<rect x="0" y="0" width="${maxW}" height="${maxH}" fill="url(#bgGrid)"/>`;
+    
+    // Shadow
+    html += `<rect x="${offsetX + 4}" y="${offsetY + 6}" width="${w}" height="${h}" fill="rgba(42, 26, 14, 0.08)" rx="4"/>`;
+    
+    // Rectangle base
+    html += `<rect x="${offsetX}" y="${offsetY}" width="${w}" height="${h}" fill="#fffaf0" stroke="#2a1a0e" stroke-width="2.5" rx="2"/>`;
+    
+    // Squares
+    if (totalSquares <= 400) {
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = offsetX + i * squareW;
+          const y = offsetY + j * squareW;
+          const color = getSquareColor(i, j);
+          const delay = animate ? (i + j) * 0.04 : 0;
+          const animStyle = animate ? `style="animation: drawIn 0.5s ease ${delay}s both;"` : '';
+          html += `<rect class="square-tile" x="${x}" y="${y}" width="${squareW}" height="${squareW}" fill="${color}" stroke="white" stroke-width="2" stroke-dasharray="4,3" rx="1.5" data-i="${i}" data-j="${j}" data-size="${squareSize}" ${animStyle}>
+            <title>Potongan ${i+1},${j+1} — ${squareSize}×${squareSize} cm</title>
+          </rect>`;
+        }
+      }
+    } else {
+      // Just draw grid lines
+      for (let i = 1; i < cols; i++) {
+        const x = offsetX + i * squareW;
+        html += `<line x1="${x}" y1="${offsetY}" x2="${x}" y2="${offsetY + h}" stroke="#d4c4a8" stroke-width="1" stroke-dasharray="2,2"/>`;
+      }
+      for (let j = 1; j < rows; j++) {
+        const y = offsetY + j * squareW;
+        html += `<line x1="${offsetX}" y1="${y}" x2="${offsetX + w}" y2="${y}" stroke="#d4c4a8" stroke-width="1" stroke-dasharray="2,2"/>`;
+      }
+      html += `<text x="${offsetX + w/2}" y="${offsetY + h/2}" text-anchor="middle" font-family="Fraunces" font-size="18" fill="#8a7960">Total ${totalSquares} persegi kecil</text>`;
+    }
+    
+    // Border overlay
+    html += `<rect x="${offsetX}" y="${offsetY}" width="${w}" height="${h}" fill="none" stroke="#2a1a0e" stroke-width="2.5" rx="2"/>`;
+    
+    // Top dimension line
+    const topLineY = offsetY - 22;
+    const topLabel = `${length} cm`;
+    const topLabelWidth = Math.max(60, topLabel.length * 9);
+    html += `<g>
+      <line x1="${offsetX}" y1="${topLineY}" x2="${offsetX + w}" y2="${topLineY}" stroke="#2a1a0e" stroke-width="1.5"/>
+      <line x1="${offsetX}" y1="${topLineY - 5}" x2="${offsetX}" y2="${topLineY + 5}" stroke="#2a1a0e" stroke-width="1.5"/>
+      <line x1="${offsetX + w}" y1="${topLineY - 5}" x2="${offsetX + w}" y2="${topLineY + 5}" stroke="#2a1a0e" stroke-width="1.5"/>
+      <rect x="${offsetX + w/2 - topLabelWidth/2}" y="${topLineY - 11}" width="${topLabelWidth}" height="22" rx="11" fill="#2a1a0e"/>
+      <text x="${offsetX + w/2}" y="${topLineY + 4}" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="13" fill="#f5ebdc">${topLabel}</text>
+    </g>`;
+    
+    // Left dimension line (rotated)
+    const leftLineX = offsetX - 22;
+    const leftLabel = `${width} cm`;
+    const leftLabelWidth = Math.max(60, leftLabel.length * 9);
+    const cx = leftLineX;
+    const cy = offsetY + h/2;
+    html += `<g>
+      <line x1="${leftLineX}" y1="${offsetY}" x2="${leftLineX}" y2="${offsetY + h}" stroke="#2a1a0e" stroke-width="1.5"/>
+      <line x1="${leftLineX - 5}" y1="${offsetY}" x2="${leftLineX + 5}" y2="${offsetY}" stroke="#2a1a0e" stroke-width="1.5"/>
+      <line x1="${leftLineX - 5}" y1="${offsetY + h}" x2="${leftLineX + 5}" y2="${offsetY + h}" stroke="#2a1a0e" stroke-width="1.5"/>
+      <g transform="rotate(-90 ${cx} ${cy})">
+        <rect x="${cx - leftLabelWidth/2}" y="${cy - 11}" width="${leftLabelWidth}" height="22" rx="11" fill="#2a1a0e"/>
+        <text x="${cx}" y="${cy + 4}" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="13" fill="#f5ebdc">${leftLabel}</text>
+      </g>
+    </g>`;
+    
+    // Square size annotation
+    if (squareW > 14 && cols <= 30 && totalSquares > 1) {
+      const labelX = offsetX + w + 28;
+      const labelY = offsetY;
+      if (labelX + squareW + 60 < maxW) {
+        html += `<g>
+          <rect x="${labelX}" y="${labelY}" width="${squareW}" height="${squareW}" fill="${fabricColors[0]}" stroke="white" stroke-width="1.5" stroke-dasharray="4,3" rx="1.5"/>
+          <line x1="${labelX}" y1="${labelY + squareW/2}" x2="${offsetX + w}" y2="${labelY + squareW/2}" stroke="#8a7960" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="${labelX + squareW/2}" y="${labelY - 8}" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="14" fill="#2a1a0e">${squareSize} cm</text>
+          <text x="${labelX + squareW/2}" y="${labelY + squareW + 16}" text-anchor="middle" font-size="10" fill="#8a7960">sisi persegi</text>
+        </g>`;
+      }
+    }
+    
+    svg.innerHTML = html;
+    
+    // Hover listeners
+    const tiles = svg.querySelectorAll('.square-tile');
+    tiles.forEach(tile => {
+      tile.addEventListener('mouseenter', () => {
+        const tooltip = document.getElementById('square-tooltip');
+        const i = tile.dataset.i;
+        const j = tile.dataset.j;
+        const size = tile.dataset.size;
+        tooltip.innerHTML = `Potongan (${parseInt(i)+1}, ${parseInt(j)+1}) — ${size}×${size} cm`;
+        tooltip.classList.add('visible');
+      });
+      tile.addEventListener('mousemove', (e) => {
+        const tooltip = document.getElementById('square-tooltip');
+        const container = document.getElementById('svg-container');
+        const rect = container.getBoundingClientRect();
+        const tx = e.clientX - rect.left + 12;
+        const ty = e.clientY - rect.top - 32;
+        tooltip.style.left = tx + 'px';
+        tooltip.style.top = ty + 'px';
+      });
+      tile.addEventListener('mouseleave', () => {
+        document.getElementById('square-tooltip').classList.remove('visible');
+      });
+    });
+    
+    // Update stats
+    document.getElementById('stat-square-size').textContent = squareSize;
+    document.getElementById('stat-cols').textContent = cols;
+    document.getElementById('stat-rows').textContent = rows;
+    document.getElementById('stat-total').textContent = totalSquares;
+    document.getElementById('stat-area-rect').textContent = (length * width).toLocaleString('id-ID') + ' cm²';
+    document.getElementById('stat-area-square').textContent = (squareSize * squareSize).toLocaleString('id-ID') + ' cm²';
+    
+    document.getElementById('factor-display').innerHTML = `
+      <div class="mb-1">${length} = ${formatFactorization(length)}</div>
+      <div class="mb-1">${width} = ${formatFactorization(width)}</div>
+      <div>FPB(${length}, ${width}) = <strong class="text-[var(--primary)] text-base">${squareSize}</strong></div>
+    `;
+    
+    document.getElementById('viz-title').textContent = `${length} × ${width} cm`;
+  }
+  
+  function animateVisualization() {
+    renderVisualization(currentLength, currentWidth, true);
+  }
+  
+  function setPreset(length, width) {
+    document.getElementById('length-input').value = length;
+    document.getElementById('length-slider').value = length;
+    document.getElementById('width-input').value = width;
+    document.getElementById('width-slider').value = width;
+    renderVisualization(length, width, true);
+  }
+  
+  function setupVizControls() {
+    const lengthSlider = document.getElementById('length-slider');
+    const lengthInput = document.getElementById('length-input');
+    const widthSlider = document.getElementById('width-slider');
+    const widthInput = document.getElementById('width-input');
+    
+    function syncLength(val) {
+      let v = parseInt(val);
+      if (isNaN(v)) return;
+      v = Math.max(20, Math.min(360, v));
+      lengthSlider.value = v;
+      lengthInput.value = v;
+      renderVisualization(v, parseInt(widthInput.value) || 90);
+    }
+    function syncWidth(val) {
+      let v = parseInt(val);
+      if (isNaN(v)) return;
+      v = Math.max(20, Math.min(300, v));
+      widthSlider.value = v;
+      widthInput.value = v;
+      renderVisualization(parseInt(lengthInput.value) || 120, v);
+    }
+    
+    lengthSlider.addEventListener('input', () => syncLength(lengthSlider.value));
+    lengthInput.addEventListener('input', () => syncLength(lengthInput.value));
+    widthSlider.addEventListener('input', () => syncWidth(widthSlider.value));
+    widthInput.addEventListener('input', () => syncWidth(widthInput.value));
+  }
+  
+  // ===== Hero SVG =====
+  function renderHeroSVG() {
+    const svg = document.getElementById('hero-svg');
+    const length = 120, width = 90, gcdVal = 30;
+    const cols = 4, rows = 3;
+    const maxW = 400, maxH = 320;
+    const scale = Math.min(maxW / length, maxH / width) * 0.78;
+    const w = length * scale;
+    const h = width * scale;
+    const offsetX = (maxW - w) / 2;
+    const offsetY = (maxH - h) / 2 + 10;
+    const squareW = gcdVal * scale;
+    
+    let html = '';
+    html += `<rect x="${offsetX + 3}" y="${offsetY + 5}" width="${w}" height="${h}" fill="rgba(42, 26, 14, 0.08)" rx="4"/>`;
+    html += `<rect x="${offsetX}" y="${offsetY}" width="${w}" height="${h}" fill="#fffaf0" stroke="#2a1a0e" stroke-width="2" rx="2"/>`;
+    for (let i = 0; i < cols; i++) {
+      for (let j = 0; j < rows; j++) {
+        const x = offsetX + i * squareW;
+        const y = offsetY + j * squareW;
+        const color = getSquareColor(i, j);
+        const delay = (i + j) * 0.08;
+        html += `<rect x="${x}" y="${y}" width="${squareW}" height="${squareW}" fill="${color}" stroke="white" stroke-width="2" stroke-dasharray="4,3" rx="1.5" style="animation: drawIn 0.6s ease ${delay}s both;"/>`;
+      }
+    }
+    html += `<rect x="${offsetX}" y="${offsetY}" width="${w}" height="${h}" fill="none" stroke="#2a1a0e" stroke-width="2" rx="2"/>`;
+    html += `<text x="${offsetX + w/2}" y="${offsetY - 8}" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="13" fill="#2a1a0e">120 cm</text>`;
+    html += `<text x="${offsetX - 14}" y="${offsetY + h/2}" text-anchor="middle" font-family="Fraunces" font-weight="700" font-size="13" fill="#2a1a0e" transform="rotate(-90 ${offsetX - 14} ${offsetY + h/2})">90 cm</text>`;
+    
+    svg.innerHTML = html;
+  }
+  
+  // ===== Practice Problems =====
+  const problems = [
+    { id: 1, title: "Ruang Tamu Pak Budi", length: 360, width: 240, 
+      text: "Pak Budi ingin memasang ubin keramik pada lantai ruang tamu yang berukuran panjang 360 cm dan lebar 240 cm. Seluruh lantai akan ditutup oleh ubin berbentuk persegi yang berukuran sama tanpa ada ubin yang dipotong." },
+    { id: 2, title: "Dapur Bu Siti", length: 280, width: 160,
+      text: "Bu Siti memiliki dapur berbentuk persegi panjang dengan ukuran panjang 280 cm dan lebar 160 cm. Ia ingin melapisi seluruh lantai dapur tersebut dengan ubin persegi berukuran sebesar mungkin secara tepat tanpa memotong ubin." },
+    { id: 3, title: "Teras Sekolah", length: 450, width: 300,
+      text: "Halaman teras sekolah yang berukuran panjang 450 cm dan lebar 300 cm akan dipasangi ubin granit berbentuk bujur sangkar (persegi). Pihak sekolah menginginkan ukuran granit yang sebesar-besarnya agar terlihat elegan." },
+    { id: 4, title: "Aula Serbaguna", length: 1200, width: 800, displayLength: "12 m", displayWidth: "8 m",
+      text: "Sebuah aula serbaguna berukuran panjang 12 m dan lebar 8 m akan direnovasi lantainya menggunakan ubin marmer persegi berukuran terbesar yang memungkinkan tanpa ada sisa pemotongan." },
+    { id: 5, title: "Kamar Tidur Attaya", length: 420, width: 350,
+      text: "Kamar tidur Attaya berukuran panjang 420 cm dan lebar 350 cm. Lantai kamar tersebut akan dipasangi ubin parket kayu berbentuk persegi dengan ukuran sisi terbesar yang memungkinkan." },
+    { id: 6, title: "Koridor Perpustakaan", length: 540, width: 180,
+      text: "Koridor perpustakaan sekolah memiliki panjang 540 cm dan lebar 180 cm. Pengelola perpustakaan hendak memasang ubin keramik persegi dengan ukuran sebesar mungkin agar sambungan antarubin tampak minimal." },
+    { id: 7, title: "Garasi Mobil", length: 500, width: 375,
+      text: "Lantai sebuah garasi mobil berukuran panjang 500 cm dan lebar 375 cm. Pemilik garasi ingin memasang ubin batu alam berbentuk bujur sangkar dengan ukuran paling besar yang menutup lantai secara sempurna." },
+    { id: 8, title: "Lab Komputer", length: 720, width: 480,
+      text: "Sebuah laboratorium komputer berukuran panjang 720 cm dan lebar 480 cm akan dipasangi ubin antistatis berbentuk persegi. Agar pemasangan rapi dan cepat, dipilih ukuran ubin terbesar yang pas menutupi ruangan." },
+    { id: 9, title: "Gazebo Taman", length: 225, width: 150,
+      text: "Lantai sebuah gazebo taman berbentuk persegi panjang dengan ukuran panjang 225 cm dan lebar 150 cm. Gazebo akan dihias dengan ubin motif terakota berbentuk persegi berukuran maksimal tanpa pemotongan." },
+    { id: 10, title: "Galeri Seni", length: 600, width: 450,
+      text: "Ruang pameran galeri seni berukuran panjang 600 cm dan lebar 450 cm akan dipasangi ubin lantai khusus berbentuk bujur sangkar. Pengelola menginginkan ukuran ubin terbesar agar pola lantai tampak minimalis." }
+  ];
+  
+  function renderProblems() {
+    const container = document.getElementById('problems-container');
+    let html = '';
+    problems.forEach(p => {
+      const gcdVal = gcd(p.length, p.width);
+      const isMeter = !!p.displayLength;
+      
+      html += `
+        <div class="problem-card-practice" id="problem-${p.id}">
+          <div class="flex items-start gap-3 mb-3">
+            <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center font-display font-bold">${p.id}</div>
+            <div class="flex-1">
+              <div class="text-xs uppercase tracking-wider text-[var(--muted)]">Soal ${p.id}</div>
+              <h3 class="font-display font-bold text-xl leading-tight">${p.title}</h3>
+            </div>
+          </div>
+          <p class="text-sm text-[var(--fg-soft)] leading-relaxed mb-4">${p.text}</p>
+          
+          <div class="space-y-3">
+            <div class="question-box">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="badge-letter">a</span>
+                <span class="text-sm font-medium">Ukuran sisi ubin terbesar?</span>
+              </div>
+              <div class="flex gap-2">
+                <input type="number" id="answer-a-${p.id}" class="input-field flex-1" placeholder="Jawaban Anda" step="any">
+                <select class="input-field" style="width: 80px; flex: 0 0 80px;" id="unit-a-${p.id}">
+                  <option value="cm">cm</option>
+                  <option value="m" ${isMeter ? 'selected' : ''}>m</option>
+                </select>
+                <button onclick="checkAnswer(${p.id}, 'a')" class="btn-secondary px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap">Cek</button>
+              </div>
+              <div id="feedback-a-${p.id}" class="text-xs mt-2 min-h-[1rem]"></div>
+            </div>
+            
+            <div class="question-box">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="badge-letter">b</span>
+                <span class="text-sm font-medium">Jumlah ubin paling sedikit?</span>
+              </div>
+              <div class="flex gap-2">
+                <input type="number" id="answer-b-${p.id}" class="input-field flex-1" placeholder="Jawaban Anda" step="any">
+                <span class="input-field flex items-center justify-center" style="width: 80px; flex: 0 0 80px; background: var(--bg-2);">buah</span>
+                <button onclick="checkAnswer(${p.id}, 'b')" class="btn-secondary px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap">Cek</button>
+              </div>
+              <div id="feedback-b-${p.id}" class="text-xs mt-2 min-h-[1rem]"></div>
+            </div>
+          </div>
+          
+          <button onclick="toggleExplanation(${p.id})" class="mt-4 text-sm text-[var(--primary)] font-semibold flex items-center gap-2 hover:gap-3 transition-all">
+            <svg id="icon-exp-${p.id}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transition: transform 0.3s;"><path d="M6 9l6 6 6-6"/></svg>
+            <span id="text-exp-${p.id}">Lihat Pembahasan</span>
+          </button>
+          <div id="explanation-${p.id}" class="explanation mt-3">
+            <div class="p-4 rounded-xl border border-[var(--border)]" style="background: var(--bg);">
+              ${generateExplanation(p)}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+  
+  function generateExplanation(p) {
+    const L = p.length, W = p.width;
+    const g = gcd(L, W);
+    const cols = L / g, rows = W / g;
+    const total = cols * rows;
+    const isMeter = !!p.displayLength;
+    const displayL = p.displayLength || (L + ' cm');
+    const displayW = p.displayWidth || (W + ' cm');
+    const answerSize = isMeter ? g / 100 : g;
+    const answerUnit = isMeter ? 'm' : 'cm';
+    
+    return `
+      <div class="space-y-3 text-sm">
+        <div>
+          <div class="text-xs uppercase tracking-wider text-[var(--secondary)] mb-1 font-semibold">Faktorisasi Prima:</div>
+          <div class="font-display text-base">${L} = ${formatFactorization(L)}</div>
+          <div class="font-display text-base">${W} = ${formatFactorization(W)}</div>
+        </div>
+        <div>
+          <div class="text-xs uppercase tracking-wider text-[var(--secondary)] mb-1 font-semibold">FPB(${L}, ${W}):</div>
+          <div class="text-sm text-[var(--fg-soft)] mb-1">Ambil faktor prima yang sama dengan pangkat terkecil:</div>
+          <div class="font-display text-base">FPB = <strong class="text-[var(--primary)]">${g} cm${isMeter ? ` (= ${g/100} m)` : ''}</strong></div>
+        </div>
+        <div class="border-t border-[var(--border)] pt-3">
+          <div class="text-xs uppercase tracking-wider text-[var(--secondary)] mb-1 font-semibold">Perhitungan Jumlah Ubin:</div>
+          <div class="space-y-1">
+            <div>Arah panjang: ${L} ÷ ${g} = <strong>${cols} ubin</strong></div>
+            <div>Arah lebar: ${W} ÷ ${g} = <strong>${rows} ubin</strong></div>
+            <div class="mt-2 pt-2 border-t border-dashed border-[var(--border)]">
+              Total ubin = ${cols} × ${rows} = <strong class="text-[var(--primary)] text-lg font-display">${total} buah</strong>
+            </div>
+            <div class="text-xs text-[var(--muted)] mt-1">atau: (${L} × ${W}) ÷ (${g} × ${g}) = ${(L*W).toLocaleString('id-ID')} ÷ ${(g*g).toLocaleString('id-ID')} = ${total}</div>
+          </div>
+        </div>
+        <div class="border-t border-[var(--border)] pt-3">
+          <div class="text-xs uppercase tracking-wider text-[var(--primary)] mb-1 font-semibold">Jawaban:</div>
+          <div class="font-display text-base"><strong>a.</strong> Sisi ubin terbesar = <strong class="text-[var(--primary)]">${answerSize} ${answerUnit}</strong></div>
+          <div class="font-display text-base"><strong>b.</strong> Jumlah ubin minimum = <strong class="text-[var(--primary)]">${total} buah</strong></div>
+        </div>
+      </div>
+    `;
+  }
+  
+  function checkAnswer(pid, part) {
+    const p = problems.find(x => x.id === pid);
+    const input = document.getElementById(`answer-${part}-${pid}`);
+    const feedback = document.getElementById(`feedback-${part}-${pid}`);
+    const userVal = parseFloat(input.value);
+    
+    if (isNaN(userVal)) {
+      feedback.innerHTML = `<span class="text-[var(--primary)]">⚠ Masukkan jawaban terlebih dahulu</span>`;
+      return;
+    }
+    
+    let correctVal;
+    if (part === 'a') {
+      const unit = document.getElementById(`unit-a-${pid}`).value;
+      const gcdVal = gcd(p.length, p.width);
+      correctVal = unit === 'm' ? gcdVal / 100 : gcdVal;
+    } else {
+      const g = gcd(p.length, p.width);
+      correctVal = (p.length / g) * (p.width / g);
+    }
+    
+    if (Math.abs(userVal - correctVal) < 0.01) {
+      input.classList.remove('input-incorrect');
+      input.classList.add('input-correct');
+      feedback.innerHTML = `<span class="text-[var(--secondary)] font-semibold">✓ Benar! Jawaban: ${correctVal}</span>`;
+      showToast('Jawaban benar!', 'success');
+      launchConfetti(input);
+    } else {
+      input.classList.remove('input-correct');
+      input.classList.add('input-incorrect');
+      feedback.innerHTML = `<span class="text-[var(--primary)] font-semibold">✗ Belum tepat. Coba lagi atau lihat pembahasan.</span>`;
+      showToast('Belum tepat, coba lagi', 'error');
+    }
+    
+    updateProgress();
+  }
+  
+  function toggleExplanation(pid) {
+    const exp = document.getElementById(`explanation-${pid}`);
+    const icon = document.getElementById(`icon-exp-${pid}`);
+    const text = document.getElementById(`text-exp-${pid}`);
+    exp.classList.toggle('open');
+    if (exp.classList.contains('open')) {
+      icon.style.transform = 'rotate(180deg)';
+      text.textContent = 'Sembunyikan Pembahasan';
+    } else {
+      icon.style.transform = 'rotate(0deg)';
+      text.textContent = 'Lihat Pembahasan';
+    }
+  }
+  
+  function updateProgress() {
+    let correctCount = 0;
+    problems.forEach(p => {
+      const aInput = document.getElementById(`answer-a-${p.id}`);
+      const bInput = document.getElementById(`answer-b-${p.id}`);
+      if (aInput && aInput.classList.contains('input-correct')) correctCount++;
+      if (bInput && bInput.classList.contains('input-correct')) correctCount++;
+    });
+    const total = problems.length * 2;
+    const pct = (correctCount / total) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = `${correctCount} / ${total} benar`;
+  }
+  
+  // ===== Toast =====
+  function showToast(msg, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    const bg = type === 'success' ? 'var(--secondary)' : type === 'error' ? 'var(--primary)' : 'var(--fg)';
+    toast.className = 'pointer-events-auto px-4 py-2 rounded-lg text-white text-sm font-medium shadow-lg';
+    toast.style.background = bg;
+    toast.style.transform = 'translateX(120%)';
+    toast.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+    toast.textContent = msg;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.transform = 'translateX(0)'; }, 10);
+    setTimeout(() => {
+      toast.style.transform = 'translateX(120%)';
+      setTimeout(() => toast.remove(), 400);
+    }, 2200);
+  }
+  
+  // ===== Confetti =====
+  function launchConfetti(target) {
+    const colors = ['#c8553d', '#d4a017', '#2d5d4f', '#e08e6b', '#7a9b6e'];
+    const rect = target.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top;
+    for (let i = 0; i < 24; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = (cx + (Math.random() - 0.5) * 100) + 'px';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDelay = (Math.random() * 0.3) + 's';
+      piece.style.animationDuration = (1.8 + Math.random() * 0.8) + 's';
+      piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+      document.body.appendChild(piece);
+      setTimeout(() => piece.remove(), 3000);
+    }
+  }
+  
+  // ===== Slide Navigation =====
+  let currentSlide = 1;
+  
+  function goToSlide(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById(`slide-${n}`).classList.add('active');
+    document.querySelectorAll('.nav-btn[data-slide]').forEach(b => b.classList.remove('active'));
+    const activeBtn = document.querySelector(`.nav-btn[data-slide="${n}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i + 1 === n);
+    });
+    currentSlide = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    if (n === 1) renderHeroSVG();
+    if (n === 3) renderVisualization(currentLength, currentWidth, true);
+  }
+  
+  function navigate(dir) {
+    const next = Math.max(1, Math.min(4, currentSlide + dir));
+    goToSlide(next);
+  }
+  
+  // ===== Init =====
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-btn[data-slide]').forEach(btn => {
+      btn.addEventListener('click', () => goToSlide(parseInt(btn.dataset.slide)));
+    });
+    
+    setupVizControls();
+    renderHeroSVG();
+    renderVisualization(120, 90, true);
+    renderProblems();
+  });
+</script>
+
+</body>
+</html>
