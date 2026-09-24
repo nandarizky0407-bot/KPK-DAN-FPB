@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KPK & FPB — Latihan Soal Interaktif ⏱️</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1f2a4d; --muted:#64748f; --line:#e4e9f4; --card:#fff;
+  --primary:#4f46e5; --primary2:#7c3aed;
+  --kpk:#f59e0b; --kpk-ink:#b45309; --kpk-bg:#fff7e8;
+  --fpb:#0d9488; --fpb-ink:#0f766e; --fpb-bg:#e9faf7;
+  --good:#16a34a; --good-bg:#e9f9ef; --bad:#e11d48; --bad-bg:#fdecf0;
+  --shadow:0 12px 34px rgba(31,42,77,.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins','Segoe UI',system-ui,sans-serif;color:var(--ink);min-height:100vh;
+  background:linear-gradient(160deg,#eef3ff 0%,#f6f1ff 45%,#fff0f4 100%);}
+
+/* ===== hiasan latar ===== */
+.fsym{position:fixed;font-weight:800;opacity:.07;z-index:0;pointer-events:none;user-select:none;animation:floaty 9s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-26px) rotate(8deg)}}
+
+/* ===== topbar & progress ===== */
+.topbar{position:fixed;top:0;left:0;right:0;height:58px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:60}
+.brand{font-weight:800;display:flex;align-items:center;gap:10px;font-size:1rem}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem;box-shadow:0 6px 14px rgba(79,70,229,.35)}
+.brand-sub{font-weight:600;color:var(--muted);font-size:.82rem}
+.slidecount{font-weight:700;color:var(--muted);font-size:.85rem;background:#fff;border:1px solid var(--line);padding:6px 12px;border-radius:999px}
+.progress{position:fixed;top:58px;left:0;right:0;height:4px;background:#e9edf8;z-index:60}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary2),var(--kpk));transition:width .45s ease}
+
+main{max-width:1020px;margin:0 auto;padding:88px 16px 118px;position:relative;z-index:1}
+.slide{display:none}
+.slide.active{display:block;animation:slideIn .45s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ===== kartu & tipografi ===== */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px}
+.slide-head{margin-bottom:16px}
+.slide-head h2{font-size:clamp(1.4rem,4vw,1.9rem);font-weight:800;letter-spacing:-.3px}
+.slide-head p{color:var(--muted);margin-top:6px;line-height:1.6}
+.muted-p{color:var(--muted);font-size:.9rem;margin-top:6px;line-height:1.6}
+.sub-h{font-weight:800;margin:20px 0 10px;font-size:1.02rem}
+.centerrow{display:flex;justify-content:center;margin-top:18px}
+.kpk-t{color:var(--kpk-ink)} .fpb-t{color:var(--fpb-ink)}
+.tk{background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tf{background:linear-gradient(135deg,#0d9488,#059669);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ===== tombol ===== */
+.btn{border:none;cursor:pointer;font-family:inherit;font-weight:700;border-radius:14px;padding:12px 22px;font-size:.98rem;
+  transition:.2s;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn-primary{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;box-shadow:0 8px 20px rgba(79,70,229,.32)}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;box-shadow:0 8px 20px rgba(245,158,11,.35)}
+.btn-ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn-lg{padding:15px 30px;font-size:1.05rem;border-radius:16px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+
+/* ===== chips nomor soal ===== */
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px}
+.chip{width:44px;height:44px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:700;
+  font-family:inherit;font-size:1rem;cursor:pointer;transition:.15s;color:var(--muted)}
+.chip:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px)}
+.chip.active{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border-color:transparent;box-shadow:0 6px 14px rgba(79,70,229,.35)}
+.chip.ok{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.chip.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.chip.timing{animation:pulseRing 1.2s infinite}
+@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(245,158,11,.55)}100%{box-shadow:0 0 0 11px rgba(245,158,11,0)}}
+
+/* ===== kartu soal ===== */
+.qcard{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px;animation:slideIn .3s ease}
+.qmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.badge{padding:4px 12px;border-radius:999px;font-size:.76rem;font-weight:800;letter-spacing:.4px}
+.badge.kpk{background:var(--kpk-bg);color:var(--kpk-ink);border:1px solid #fcd34d}
+.badge.fpb{background:var(--fpb-bg);color:var(--fpb-ink);border:1px solid #5eead4}
+.badge.lvl{background:#eef2fb;color:var(--muted);border:1px solid var(--line)}
+.badge.sm{padding:2px 10px;font-size:.7rem}
+.qof{color:var(--muted);font-size:.85rem;font-weight:600}
+.ws{color:var(--primary)}
+.qtext{font-size:1.05rem;font-weight:600;line-height:1.75;margin-bottom:16px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;width:100%;padding:12px 14px;border-radius:14px;
+  border:2px solid var(--line);background:#fff;cursor:pointer;font-family:inherit;font-size:.98rem;transition:.15s;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:#a5b4fc;background:#f5f6ff}
+.opt .letter{width:30px;height:30px;border-radius:10px;background:#eef2fb;color:var(--muted);display:flex;align-items:center;
+  justify-content:center;font-weight:800;flex-shrink:0;font-size:.88rem}
+.opt.sel{border-color:var(--primary);background:#eef0ff;box-shadow:0 0 0 3px rgba(79,70,229,.14)}
+.opt.sel .letter{background:var(--primary);color:#fff}
+.opt.good{border-color:var(--good);background:var(--good-bg)} .opt.good .letter{background:var(--good);color:#fff}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)} .opt.bad .letter{background:var(--bad);color:#fff}
+.opt:disabled{cursor:default}
+.opt:disabled:not(.good):not(.bad):not(.sel){opacity:.55}
+.qactions{margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hint{font-size:.78rem;color:var(--muted)}
+.timechip{background:#f1f5ff;border:1px solid var(--line);padding:8px 14px;border-radius:999px;font-size:.9rem;font-weight:600}
+.feedback{margin-top:16px;padding:14px 16px;border-radius:14px;line-height:1.65;animation:slideIn .3s ease}
+.feedback.good{background:var(--good-bg);border:1.5px solid #86efac;color:#14532d}
+.feedback.bad{background:var(--bad-bg);border:1.5px solid #fda4af;color:#7f1d1d}
+.expl{margin-top:12px;background:#f6f8ff;border-left:4px solid var(--primary);padding:14px 16px;border-radius:0 14px 14px 0;
+  line-height:1.9;animation:slideIn .3s ease;font-size:.97rem}
+.expl-title{font-weight:800;margin-bottom:6px;color:var(--primary)}
+.expl b{color:var(--ink)}
+
+/* ===== stopwatch ===== */
+.exam-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+.exam-head h2{font-size:clamp(1.3rem,3.5vw,1.7rem);font-weight:800}
+.exam-live{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pos-chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:.82rem;font-weight:700;color:var(--muted)}
+.timer-pill{display:inline-flex;gap:8px;align-items:center;background:#fff;border:2px solid var(--line);padding:8px 16px;
+  border-radius:999px;font-weight:700;font-variant-numeric:tabular-nums}
+.timer-pill.running{border-color:var(--kpk);color:var(--kpk-ink);animation:pulseSoft 1.2s infinite}
+@keyframes pulseSoft{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.4)}50%{box-shadow:0 0 0 9px rgba(245,158,11,0)}}
+.finish-row{display:flex;justify-content:center;margin-top:22px}
+
+/* ===== cover ===== */
+.cover-card{text-align:center;padding:52px 26px;position:relative;overflow:hidden}
+.cover-badge{display:inline-block;background:#eef0ff;border:1px solid #c7d2fe;color:var(--primary);font-weight:700;
+  font-size:.85rem;padding:7px 16px;border-radius:999px;margin-bottom:18px}
+.cover-title{font-size:clamp(3rem,9vw,4.6rem);font-weight:800;letter-spacing:-2px;line-height:1.05}
+.amp{color:#94a3b8;font-weight:600;margin:0 8px;font-size:.7em}
+.cover-sub{color:var(--muted);font-weight:600;margin-top:10px}
+.cover-desc{max-width:620px;margin:14px auto 0;line-height:1.7;color:var(--muted);font-size:.95rem}
+.feat-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px 0 6px}
+.feat{background:#f4f6ff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.82rem;font-weight:600}
+.name-row{margin:18px 0 8px}
+#nameInput{padding:13px 20px;border-radius:999px;border:1.5px solid var(--line);width:min(360px,100%);font-family:inherit;
+  font-size:.95rem;outline:none;transition:.2s;text-align:center}
+#nameInput:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+.cover-hint{color:var(--muted);font-size:.8rem;margin-top:14px}
+
+/* ===== kata kunci ===== */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.twocol.tight{gap:14px;margin-top:16px}
+.kw-card{border-radius:18px;padding:20px;border:2px solid}
+.kw-card.kpk{background:#fffaf0;border-color:#fcd34d}
+.kw-card.fpb{background:#f0fbf9;border-color:#5eead4}
+.kw-card h3{font-size:1.02rem;margin-bottom:6px}
+.kw-sub{color:var(--muted);font-size:.9rem;margin-bottom:10px;line-height:1.6}
+.kw-card ul{list-style:none}
+.kw-card li{padding:5px 0 5px 26px;position:relative;line-height:1.55;font-size:.93rem}
+.kw-card.kpk li::before{content:"🔔";position:absolute;left:0;font-size:.85rem}
+.kw-card.fpb li::before{content:"✂️";position:absolute;left:0;font-size:.85rem}
+.kw-example{margin-top:12px;background:#fff;border-radius:12px;padding:12px 14px;font-size:.88rem;line-height:1.7;border:1px dashed #cbd5e1}
+.kw-tag{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:999px;font-weight:800;font-size:.8rem}
+.kw-tag.kpk{background:var(--kpk-bg);color:var(--kpk-ink)} .kw-tag.fpb{background:var(--fpb-bg);color:var(--fpb-ink)}
+.trap{margin-top:16px;background:#fff7ed;border:2px dashed #fdba74;padding:16px 18px;border-radius:16px;line-height:1.75;font-size:.95rem}
+
+/* ===== contoh soal ===== */
+.ex-card{border-radius:18px;padding:20px;border:2px solid;background:#fff}
+.ex-card.kpk{border-color:#fcd34d} .ex-card.fpb{border-color:#5eead4}
+.ex-q{line-height:1.75;margin:10px 0 14px;font-size:.95rem}
+.steps{list-style:none;counter-reset:st}
+.steps li{position:relative;padding-left:34px;margin-bottom:10px;line-height:1.7;font-size:.93rem;counter-increment:st}
+.steps li::before{content:counter(st);position:absolute;left:0;top:2px;width:24px;height:24px;border-radius:8px;
+  background:var(--primary);color:#fff;font-size:.78rem;display:flex;align-items:center;justify-content:center;font-weight:800}
+.steps.wide li{font-size:.97rem}
+.resultline{margin-top:6px;font-weight:800;background:#eef0ff;padding:10px 14px;border-radius:12px;font-size:.93rem;line-height:1.6}
+
+/* ===== trick hari ===== */
+.mini-soal{background:#fff;border:2px solid #c7d2fe;border-radius:16px;padding:16px 18px;line-height:1.75;font-size:.95rem;margin-bottom:16px}
+.step-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tstep{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.tstep h4{margin:10px 0 8px;font-size:.95rem}
+.tstep p{font-size:.9rem;line-height:1.7;color:#3b4a6b}
+.tnum{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;
+  font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+.timeline{display:flex;align-items:center;justify-content:center;gap:4px;margin:20px 0;overflow-x:auto;padding:6px 2px}
+.tl-node{background:#fff;border:2px solid var(--kpk);border-radius:14px;padding:10px 16px;font-weight:800;text-align:center;
+  font-size:.9rem;line-height:1.4;white-space:nowrap}
+.tl-node small{font-weight:600;color:var(--muted)}
+.tl-node.start{border-color:var(--primary);color:var(--primary)} .tl-node.end{border-color:var(--good);color:var(--good)}
+.tl-arrow{display:flex;flex-direction:column;align-items:center;margin:0 8px;color:var(--muted);font-size:.75rem;font-weight:700;white-space:nowrap}
+.tl-arrow .arr{font-size:1.5rem;color:#94a3b8;line-height:1}
+.cal-card,.bonus-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+.cal-card h4,.bonus-card h4{font-size:.98rem;margin-bottom:12px}
+.months{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.mcell{background:#f6f8ff;border:1px solid var(--line);border-radius:10px;padding:8px 4px;text-align:center}
+.mcell b{display:block;font-size:.72rem;color:var(--muted)}
+.mcell span{font-weight:800;font-size:.95rem}
+.mcell.feb{background:#fdf2f8;border-color:#f9a8d4}
+.rhyme{margin-top:12px;font-size:.85rem;line-height:1.7;color:#3b4a6b}
+.rhyme small{color:var(--muted)}
+.bonus-card p{font-size:.92rem;line-height:1.7;margin-bottom:8px}
+.week{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.day{padding:6px 12px;border-radius:10px;background:#f6f8ff;border:1px solid var(--line);font-size:.83rem;font-weight:700;color:var(--muted)}
+.day.start{border-color:var(--primary);color:var(--primary)}
+.day.hit{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* ===== petunjuk ===== */
+.rules{list-style:none}
+.rules li{padding:9px 0 9px 34px;position:relative;line-height:1.75;font-size:.95rem}
+.rules li::before{position:absolute;left:0;top:9px}
+.rules li:nth-child(1)::before{content:"📌"} .rules li:nth-child(2)::before{content:"⏱️"}
+.rules li:nth-child(3)::before{content:"✅"} .rules li:nth-child(4)::before{content:"🔄"} .rules li:nth-child(5)::before{content:"🏁"}
+.target-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.target{background:#f4f6ff;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:.85rem;font-weight:700;color:var(--muted)}
+
+/* ===== hasil ===== */
+.ring-wrap{display:flex;gap:26px;align-items:center;justify-content:center;flex-wrap:wrap;padding:8px 0 4px}
+.ring{position:relative;width:170px;height:170px}
+.ring svg{transform:rotate(0)}
+.ring-fg{transition:stroke-dashoffset 1.1s ease}
+.ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-val b{font-size:2.6rem;font-weight:800;line-height:1}
+.ring-val span{color:var(--muted);font-size:.85rem;font-weight:600}
+.ring-side{text-align:center}
+.predikat{font-size:1.35rem;font-weight:800}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:20px}
+.stat{background:#f6f8ff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.stat .v{font-size:1.45rem;font-weight:800}
+.stat .l{font-size:.78rem;color:var(--muted);font-weight:600;margin-top:2px}
+.tablewrap{overflow-x:auto}
+.rtable{width:100%;border-collapse:collapse;margin-top:6px;font-size:.92rem;min-width:480px}
+.rtable th{font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);text-align:left;padding:10px;border-bottom:2px solid var(--line)}
+.rtable td{padding:9px 10px;border-bottom:1px solid var(--line)}
+.rtable tr:hover td{background:#f8faff}
+.rtable .lv{font-size:.85rem;color:var(--muted)} .rtable .tm{font-weight:700;font-variant-numeric:tabular-nums}
+.st-ok{color:var(--good);font-weight:700} .st-bad{color:var(--bad);font-weight:700} .st-skip{color:var(--muted)}
+.trow td{font-weight:800;background:#f6f8ff}
+
+/* ===== refleksi & kesimpulan ===== */
+.reflect-card p{line-height:1.85;margin-bottom:10px;font-size:.97rem}
+.prompt-list{list-style:none}
+.prompt-list li{padding:9px 0 9px 34px;position:relative;line-height:1.7;font-size:.95rem}
+.prompt-list li::before{content:"🤔";position:absolute;left:0;top:9px}
+.sum-card{border-radius:18px;padding:20px;border:2px solid;background:#fff}
+.sum-card.kpk{border-color:#fcd34d} .sum-card.fpb{border-color:#5eead4}
+.sum-card h3{margin-bottom:8px}
+.sum-card p{line-height:1.75;font-size:.93rem}
+.sum-card .mini{color:var(--muted);font-size:.87rem;margin-top:8px}
+.motto{margin-top:18px;text-align:center;font-size:clamp(1.1rem,3.5vw,1.5rem);font-weight:800;background:#f6f8ff;
+  border:2px dashed #c7d2fe;border-radius:16px;padding:16px}
+
+/* ===== thanks ===== */
+.thanks-card{text-align:center;padding:48px 26px}
+.thanks-emoji{font-size:4rem;animation:floaty 3s ease-in-out infinite}
+.thanks-title{font-size:clamp(2rem,6vw,3rem);font-weight:800;letter-spacing:-1px;margin:10px 0 14px;
+  background:linear-gradient(135deg,var(--primary),var(--primary2),#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent}
+.thanks-text{max-width:620px;margin:0 auto;line-height:1.8;font-size:1rem}
+.thanks-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.tchip{background:#f4f6ff;border:1px solid var(--line);border-radius:999px;padding:9px 18px;font-size:.9rem;font-weight:600}
+.thanks-text2{max-width:560px;margin:0 auto 22px;line-height:1.8;color:var(--muted);font-size:.95rem}
+
+/* ===== footer, modal, toast, confetti ===== */
+.footnav{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 20px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:60}
+.foot-label{color:var(--muted);font-weight:600;font-size:.83rem;text-align:center;flex:1}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal-overlay[hidden]{display:none}
+.modal-card{background:#fff;border-radius:20px;padding:30px 26px;max-width:430px;width:100%;text-align:center;animation:pop .25s ease}
+.modal-icon{font-size:2.4rem}
+.modal-msg{margin:14px 0 20px;line-height:1.7;font-size:.98rem}
+.modal-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(10px);background:#1f2a4d;color:#fff;
+  padding:11px 20px;border-radius:999px;font-size:.88rem;font-weight:600;opacity:0;transition:.3s;z-index:95;box-shadow:0 10px 26px rgba(31,42,77,.35);max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;top:-24px;z-index:80;pointer-events:none;border-radius:2px;animation:confall linear forwards}
+@keyframes confall{to{transform:translateY(115vh) rotate(720deg)}}
+
+@media(max-width:760px){
+  .twocol{grid-template-columns:1fr}
+  .step-cards{grid-template-columns:1fr}
+  .months{grid-template-columns:repeat(4,1fr)}
+  .brand-sub{display:none}
+  .exam-head{flex-direction:column}
+  .chip{width:40px;height:40px}
+  .card{padding:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- hiasan simbol matematika melayang -->
+<span class="fsym" style="top:12%;left:4%;font-size:3rem;color:#4f46e5;animation-delay:0s">×</span>
+<span class="fsym" style="top:60%;left:2%;font-size:2.4rem;color:#0d9488;animation-delay:1.2s">÷</span>
+<span class="fsym" style="top:20%;right:5%;font-size:3.4rem;color:#f59e0b;animation-delay:.6s">+</span>
+<span class="fsym" style="top:70%;right:6%;font-size:2.6rem;color:#7c3aed;animation-delay:2s">−</span>
+<span class="fsym" style="top:88%;left:45%;font-size:2.2rem;color:#ec4899;animation-delay:1.6s">=</span>
+
+<header class="topbar">
+  <div class="brand"><span class="logo">∑</span> KPK &amp; FPB <span class="brand-sub">· Latihan Interaktif</span></div>
+  <div class="slidecount" id="slideCount">1 / 11</div>
+</header>
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<main>
+
+<!-- ================= SLIDE 1: COVER ================= -->
+<section class="slide active">
+  <div class="card cover-card">
+    <div class="cover-badge">📘 Matematika · Bab KPK &amp; FPB</div>
+    <h1 class="cover-title"><span class="tk">KPK</span><span class="amp">&amp;</span><span class="tf">FPB</span></h1>
+    <p class="cover-sub"><b>K</b>elipatan <b>P</b>ersekutuan <b>T</b>erkecil &nbsp;·&nbsp; <b>F</b>aktor <b>P</b>ersekutuan <b>T</b>erbesar</p>
+    <p class="cover-desc">Media latihan interaktif: pemanasan, kata kunci soal cerita, trick hari &amp; tanggal,
+      lalu <b>15 soal cerita dengan stopwatch ⏱️</b> yang mencatat waktumu dan menganalisis hasil belajarmu.</p>
+    <div class="feat-chips">
+      <span class="feat">🔥 5 Soal Pemanasan</span>
+      <span class="feat">💡 Kata Kunci + Contoh</span>
+      <span class="feat">🎯 Trick Hari &amp; Tanggal</span>
+      <span class="feat">📝 15 Soal + Pembahasan</span>
+      <span class="feat">⏱️ Stopwatch &amp; Skor</span>
+    </div>
+    <div class="name-row">
+      <input id="nameInput" type="text" placeholder="Tulis namamu di sini… (opsional)" maxlength="24" autocomplete="off">
+    </div>
+    <button class="btn btn-primary btn-lg" id="btnStart">🚀 Mulai Belajar</button>
+    <p class="cover-hint">Tips: gunakan tombol ← / ➜ pada keyboard untuk berpindah slide.</p>
+  </div>
+</section>
+
+<!-- ================= SLIDE 2: PEMANASAN ================= -->
+<section class="slide">
+  <div class="slide-head">
+    <h2>🔥 Pemanasan Dulu, Yuk!</h2>
+    <p>Cari <b class="kpk-t">KPK</b> atau <b class="fpb-t">FPB</b> dari 2–3 bilangan. Tidak ada stopwatch di sini — santai saja!
+      Klik nomor soal, pilih jawaban, lalu tekan <b>Cek Jawaban</b>.</p>
+  </div>
+  <div class="chips" id="warmChips"></div>
+  <div id="warmArea"></div>
+</section>
+
+<!-- ================= SLIDE 3: KATA KUNCI ================= -->
+<section class="slide">
+  <div class="slide-head">
+    <h2>🔑 Kata Kunci Soal Cerita</h2>
+    <p>Sebelum menghitung, kenali dulu: soal ini meminta <b class="kpk-t">KPK</b> atau <b class="fpb-t">FPB</b>?</p>
+  </div>
+  <div class="twocol">
+    <div class="kw-card kpk">
+      <h3>🔁 KPK — Kelipatan Persekutuan Terkecil</h3>
+      <p class="kw-sub">Dipakai saat <b>kejadian berulang</b> dan <b>bertemu/bersamaan kembali</b>.</p>
+      <ul>
+        <li>"setiap … hari/menit/detik <b>sekali</b>"</li>
+        <li>"<b>bersamaan</b> / bersama-sama <b>lagi</b>"</li>
+        <li>"menyala, berbunyi, berangkat, ronda <b>bersamaan</b>"</li>
+        <li>"<b>paling sedikit</b> / pertama kali dapat dibagi …"</li>
+      </ul>
+      <div class="kw-example">💡 <b>Contoh:</b> "Lampu merah menyala setiap 4 detik dan lampu biru setiap 6 detik.
+        Kapan keduanya menyala <i>bersamaan lagi</i>?" <span class="kw-tag kpk">→ KPK(4, 6) = 12</span></div>
+    </div>
+    <div class="kw-card fpb">
+      <h3>✂️ FPB — Faktor Persekutuan Terbesar</h3>
+      <p class="kw-sub">Dipakai saat <b>benda dibagi</b> sama banyak / sama rata.</p>
+      <ul>
+        <li>"dibagikan <b>sama banyak</b> / sama rata"</li>
+        <li>"paket, kantong, bungkus, kelompok"</li>
+        <li>"<b>paling banyak</b> / maksimal"</li>
+        <li>"<b>tanpa sisa</b> / habis terbagi"</li>
+        <li>"potongan <b>terpanjang</b>, ubin <b>terbesar</b>"</li>
+      </ul>
+      <div class="kw-example">💡 <b>Contoh:</b> "20 buku dan 30 pensil dimasukkan ke paket dengan isi sama banyak.
+        Berapa paket <i>paling banyak</i>?" <span class="kw-tag fpb">→ FPB(20, 30) = 10</span></div>
+    </div>
+  </div>
+  <div class="trap">⚠️ <b>Awas jebakan!</b> Kata "paling banyak" belum tentu selalu FPB. Tanyakan pada dirimu:
+    apakah <b>benda dibagi rata</b> (→ FPB) atau <b>kejadian berulang/bersamaan</b> (→ KPK)?
+    Ingat: <b>KPK = kejadian berulang</b>, <b>FPB = membagi rata</b>.</div>
+</section>
+
+<!-- ================= SLIDE 4: CONTOH SOAL ================= -->
+<section class="slide">
+  <div class="slide-head">
+    <h2>🧪 Contoh Soal &amp; Cara Menyelesaikannya</h2>
+    <p>Perhatikan langkahnya: dari kata kunci → memilih KPK/FPB → menghitung.</p>
+  </div>
+  <div class="twocol">
+    <div class="ex-card kpk">
+      <span class="badge kpk">KPK</span>
+      <p class="ex-q">Lampu hias merah menyala setiap <b>3 detik</b> dan lampu hijau setiap <b>4 detik</b>.
+        Keduanya menyala bersamaan sekarang. Detik ke berapa mereka menyala bersamaan lagi?</p>
+      <ol class="steps">
+        <li>Kata kunci: <i>"setiap … sekali"</i> dan <i>"bersamaan lagi"</i> → gunakan <b>KPK</b>.</li>
+        <li>Kelipatan 3: 3, 6, 9, <b>12</b>, 15, …</li>
+        <li>Kelipatan 4: 4, 8, <b>12</b>, 16, …</li>
+        <li>Kelipatan persekutuan terkecil: <b>12</b>.</li>
+      </ol>
+      <div class="resultline">✅ KPK(3, 4) = 12 → menyala bersamaan lagi pada detik ke-12.</div>
+    </div>
+    <div class="ex-card fpb">
+      <span class="badge fpb">FPB</span>
+      <p class="ex-q">Ibu memiliki <b>24 kue</b> dan <b>36 permen</b> yang akan dimasukkan ke kantong-kantong
+        dengan isi sama banyak untuk setiap jenis. Berapa kantong <b>paling banyak</b>?</p>
+      <ol class="steps">
+        <li>Kata kunci: <i>"isi sama banyak"</i> dan <i>"kantong paling banyak"</i> → gunakan <b>FPB</b>.</li>
+        <li>24 = 2<sup>3</sup> × 3 &nbsp;dan&nbsp; 36 = 2<sup>2</sup> × 3<sup>2</sup>.</li>
+        <li>Ambil faktor sama dengan pangkat terkecil: 2<sup>2</sup> × 3 = 12.</li>
+        <li>Jadi 12 kantong — tiap kantong berisi 2 kue &amp; 3 permen.</li>
+      </ol>
+      <div class="resultline">✅ FPB(24, 36) = 12 kantong.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 5: TRICK HARI ================= -->
+<section class="slide">
+  <div class="slide-head">
+    <h2>🎯 Trick Khusus KPK: Menentukan Tanggal &amp; Hari</h2>
+    <p>Sudah dapat KPK-nya, tapi <b>tanggal/jadwalnya</b> jatuh kapan? Pakai 3 langkah ini!</p>
+  </div>
+  <div class="mini-soal">📖 <b>Soal:</b> Ali berenang setiap <b>4 hari</b>, Banu setiap <b>5 hari</b>, dan Caca setiap <b>6 hari</b>.
+    Mereka berenang bersama pada tanggal <b>1 Maret</b>. Kapan mereka berenang bersama lagi?</div>
+  <div class="step-cards">
+    <div class="tstep"><div class="tnum">1</div><h4>🧮 Hitung KPK-nya</h4>
+      <p>KPK(4, 5, 6) = <b>60</b> → mereka bertemu lagi <b>60 hari setelah 1 Maret</b>.</p></div>
+    <div class="tstep"><div class="tnum">2</div><h4>📅 Hitung sisa hari bulan berjalan</h4>
+      <p>Maret = 31 hari. Dari tanggal 1 Maret masih ada <b>31 − 1 = 30 hari</b> (tanggal 2–31 Maret).</p></div>
+    <div class="tstep"><div class="tnum">3</div><h4>➡️ Bawa sisanya ke bulan berikutnya</h4>
+      <p>60 − 30 = <b>30 hari</b> lagi di bulan April → jatuh pada <b>30 April</b> ✅</p></div>
+  </div>
+  <div class="timeline">
+    <div class="tl-node start">🏁<br>1 Maret</div>
+    <div class="tl-arrow"><span>30 hari</span><span class="arr">⟶</span></div>
+    <div class="tl-node">31 Maret<br><small>(habis Maret)</small></div>
+    <div class="tl-arrow"><span>30 hari</span><span class="arr">⟶</span></div>
+    <div class="tl-node end">🎉<br>30 April</div>
+  </div>
+  <div class="twocol tight">
+    <div class="cal-card">
+      <h4>🗓️ Jumlah hari tiap bulan</h4>
+      <div class="months">
+        <div class="mcell"><b>Jan</b><span>31</span></div>
+        <div class="mcell feb"><b>Feb</b><span>28*</span></div>
+        <div class="mcell"><b>Mar</b><span>31</span></div>
+        <div class="mcell"><b>Apr</b><span>30</span></div>
+        <div class="mcell"><b>Mei</b><span>31</span></div>
+        <div class="mcell"><b>Jun</b><span>30</span></div>
+        <div class="mcell"><b>Jul</b><span>31</span></div>
+        <div class="mcell"><b>Agu</b><span>31</span></div>
+        <div class="mcell"><b>Sep</b><span>30</span></div>
+        <div class="mcell"><b>Okt</b><span>31</span></div>
+        <div class="mcell"><b>Nov</b><span>30</span></div>
+        <div class="mcell"><b>Des</b><span>31</span></div>
+      </div>
+      <p class="rhyme">🎵 <i>"Tiga puluh hari — April, Juni, September, November. Selebihnya tiga puluh satu —
+        kecuali Februari, 28 atau 29!"</i> <small>(*29 pada tahun kabisat)</small></p>
+    </div>
+    <div class="bonus-card">
+      <h4>✨ Bonus: kalau yang ditanya <u>nama hari</u>?</h4>
+      <p>Bagi KPK dengan <b>7</b> (satu minggu) — <b>sisanya</b> = maju berapa hari dari hari awal.</p>
+      <p><b>Contoh:</b> hari ini <b>Senin</b>, bertemu lagi <b>24 hari</b> lagi → 24 ÷ 7 = 3 <b>sisa 3</b> → maju 3 hari dari Senin.</p>
+      <div class="week">
+        <span class="day start">Sen</span><span class="day">Sel</span><span class="day">Rab</span>
+        <span class="day hit">Kam</span><span class="day">Jum</span><span class="day">Sab</span><span class="day">Min</span>
+      </div>
+      <div class="resultline">✅ Jawaban: hari <b>Kamis</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 6: PETUNJUK ================= -->
+<section class="slide">
+  <div class="slide-head">
+    <h2>📋 Petunjuk Latihan Soal</h2>
+    <p>Baca dulu aturannya supaya waktumu tercatat dengan benar, ya!</p>
+  </div>
+  <div class="card">
+    <ul class="rules">
+      <li>Terdapat <b>15 soal cerita pilihan ganda</b>: nomor 1–5 <b>mudah</b>, 6–10 <b>sedang</b>, 11–15 <b>sulit / HOTS</b>.</li>
+      <li><b>Stopwatch otomatis:</b> mulai berjalan saat kamu <b>menekan nomor soal</b>, dan <b>berhenti</b> saat kamu
+        menekan tombol <b>"✅ Cek Jawaban"</b>. Waktu tiap soal langsung dicatat!</li>
+      <li>Setiap soal dilengkapi <b>tombol Cek Jawaban</b> dan <b>pembahasan lengkap</b>.</li>
+      <li>Kamu boleh <b>loncat-loncat</b> lewat nomor soal. Jika kembali ke soal yang belum dijawab, stopwatch lanjut berjalan.</li>
+      <li>Setelah selesai, tekan <b>"🏁 Finish Exam"</b> untuk melihat <b>skor, catatan waktu, rata-rata waktu, refleksi, dan kesimpulan</b>.</li>
+    </ul>
+    <div class="target-row">
+      <span class="target">🟢 Mudah · ± 1–2 menit</span>
+      <span class="target">🟡 Sedang · ± 2–3 menit</span>
+      <span class="target">🔴 HOTS · ± 3–5 menit</span>
+    </div>
+    <div class="centerrow"><button class="btn btn-primary btn-lg" data-act="startexam">🚀 Mulai Latihan Sekarang</button></div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 7: EXAM ================= -->
+<section class="slide">
+  <div class="exam-head">
+    <div>
+      <h2>📝 Latihan Soal Cerita KPK &amp; FPB</h2>
+      <p class="muted-p">Klik nomor soal untuk memulai — stopwatch berjalan selama kamu berpikir!</p>
+    </div>
+    <div class="exam-live">
+      <span class="pos-chip" id="examPos">Soal 1/15</span>
+      <span class="pos-chip" id="examLvl">Mudah</span>
+      <span class="pos-chip" id="examProg">Terjawab 0/15</span>
+      <span class="timer-pill" id="timerPill">⏱️ <b id="timerVal">0:00</b></span>
+    </div>
+  </div>
+  <div class="chips" id="examChips"></div>
+  <div id="examArea"></div>
+  <div class="finish-row">
+    <button class="btn btn-amber btn-lg" data-act="finishbtn">🏁 Finish Exam</button>
+  </div>
+</section>
+
+<!-- ================= SLIDE 8: HASIL ================= -->
+<section class="slide">
+  <div class="slide-head">
+    <h2>📊 Hasil Latihan</h2>
+    <p>Hebat, <b id="resName">Sahabat Matematika</b>! Ini rekap performamu hari ini.</p>
+  </div>
+  <div class="card">
+    <div class="ring-wrap">
+      <div class="ring">
+        <svg width="170" height="170" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="54" fill="none" stroke="#e9edf8" stroke-width="11"/>
+          <circle id="ringFg" class="ring-fg" cx="60" cy="60" r="54" fill="none" stroke="#4f46e5" stroke-width="11"
+            stroke-linecap="round" transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="ring-val"><b id="scoreVal">0</b><span>/ 100</span></div>
+      </div>
+      <div class="ring-side">
+        <div class="predikat" id="resPred">—</div>
+        <p class="muted-p">Skor = (jumlah benar ÷ 15) × 100</p>
+      </div>
+    </div>
+    <div class="statgrid">
+      <div class="stat"><div class="v" id="statBenar">0</div><div class="l">✅ Benar</div></div>
+      <div class="stat"><div class="v" id="statSalah">0</div><div class="l">❌ Salah</div></div>
+      <div class="stat"><div class="v" id="statSkip">0</div><div class="l">⭕ Belum dijawab</div></div>
+      <div class="stat"><div class="v" id="statTotal">0:00</div><div class="l">⏱️ Total waktu</div></div>
+      <div class="stat"><div class="v" id="statAvg">–</div><div class="l">⚡ Rata-rata / soal</div></div>
+    </div>
+    <h3 class="sub-h">⏱️ Catatan waktu pengerjaan per soal</h3>
+    <div class="tablewrap">
+      <table class="rtable">
+        <thead><tr><th>No</th><th>Tipe</th><th>Level</th><th>Status</th><th>Waktu</th></tr></thead>
+        <tbody id="resBody"></tbody>
+      </table>
+    </div>
+    <div class="centerrow"><button class="btn btn-primary" data-act="nextslide">💭 Lanjut ke Refleksi ➜</button></div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 9: REFLEKSI ================= -->
+<section class="slide">
+  <div class="slide-head">
+    <h2>💭 Refleksi</h2>
+    <p>Analisis otomatis dari jawaban dan waktumu tadi.</p>
+  </div>
+  <div class="card reflect-card"><div id="reflectBody"></div></div>
+  <div class="card" style="margin-top:16px">
+    <h3 class="sub-h" style="margin-top:0">🤔 Pertanyaan refleksi diri</h3>
+    <ul class="prompt-list">
+      <li>Soal nomor berapa yang paling menantang menurutmu? Apa penyebabnya?</li>
+      <li>Sebelum menghitung, apakah kamu langsung yakin soal itu KPK atau FPB?</li>
+      <li>Kata kunci mana yang paling sering kamu temukan hari ini?</li>
+      <li>Trick tanggal (mengurangi sisa hari bulan berjalan) — sudahkah kamu mencobanya sendiri?</li>
+    </ul>
+    <div class="centerrow"><button class="btn btn-primary" data-act="nextslide">📚 Lanjut ke Kesimpulan ➜</button></div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 10: KESIMPULAN ================= -->
+<section class="slide">
+  <div class="slide-head">
+    <h2>🧠 Kesimpulan Hari Ini</h2>
+    <p>Beberapa hal penting yang harus kamu bawa pulang!</p>
+  </div>
+  <div class="twocol">
+    <div class="sum-card kpk">
+      <h3>🔁 KPK</h3>
+      <p><b>Kelipatan Persekutuan Terkecil</b> — dipakai jika kejadian <b>berulang</b> dan bertemu <b>bersamaan</b> kembali
+        (lampu, bus, ronda, bel sekolah).</p>
+      <p class="mini">💡 KPK selalu <b>≥</b> bilangan terbesarnya. Trick tanggal: kurangi sisa hari bulan berjalan;
+        nama hari: KPK mod 7.</p>
+    </div>
+    <div class="sum-card fpb">
+      <h3>✂️ FPB</h3>
+      <p><b>Faktor Persekutuan Terbesar</b> — dipakai jika benda <b>dibagi rata</b>: paket, kantong, potongan terpanjang, ubin terbesar.</p>
+      <p class="mini">💡 FPB selalu <b>≤</b> bilangan terkecilnya. Kalau soalnya "ada sisa" (seperti kue Pak Guru),
+        <b>kurangi dulu</b>, baru cari FPB!</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3 class="sub-h" style="margin-top:0">🧭 4 langkah menaklukkan soal cerita</h3>
+    <ol class="steps wide">
+      <li><b>Baca</b> soal sampai habis, garisbawahi <b>kata kuncinya</b>.</li>
+      <li>Putuskan: <b>berulang/bersamaan → KPK</b> atau <b>dibagi rata → FPB</b>.</li>
+      <li>Hitung dengan faktorisasi prima atau mendaftar kelipatan/faktor.</li>
+      <li><b>Cek ulang</b>: apakah jawabanmu menjawab pertanyaan soal? Masuk akal?</li>
+    </ol>
+    <div class="motto">🔁 BERULANG → <span class="tk">KPK</span> &nbsp;·&nbsp; ✂️ DIBAGI → <span class="tf">FPB</span></div>
+  </div>
+  <div class="centerrow"><button class="btn btn-primary" data-act="nextslide">🎉 Penutup — Thank You ➜</button></div>
+</section>
+
+<!-- ================= SLIDE 11: THANK YOU ================= -->
+<section class="slide">
+  <div class="card thanks-card">
+    <div class="thanks-emoji">🎉</div>
+    <h2 class="thanks-title">Thank You for Today!</h2>
+    <p class="thanks-text">Kerja bagus, <b id="thanksName">Sahabat Matematika</b>! Hari ini kamu sudah belajar membedakan
+      <b class="kpk-t">KPK</b> (kejadian berulang) dan <b class="fpb-t">FPB</b> (membagi rata), membaca kata kunci soal cerita,
+      dan mengelola waktumu.</p>
+    <div class="thanks-stats">
+      <span class="tchip">🏆 Skor: <b><span id="thanksScore">0</span>/100</b></span>
+      <span class="tchip">⚡ Rata-rata waktu: <b id="thanksAvg">–</b>/soal</span>
+    </div>
+    <p class="thanks-text2">Terus berlatih ya — matematika itu seperti berenang, makin sering makin jago! 🏊‍♂️✨
+      Sampai jumpa di materi berikutnya!</p>
+    <button class="btn btn-ghost btn-lg" id="btnRestart">🔄 Ulangi Latihan dari Awal</button>
+  </div>
+</section>
+
+</main>
+
+<footer class="footnav">
+  <button class="btn btn-ghost" id="btnPrev">← Kembali</button>
+  <div class="foot-label" id="footLabel">Cover</div>
+  <button class="btn btn-primary" id="btnNext">Lanjut ➜</button>
+</footer>
+
+<!-- modal konfirmasi -->
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal-card">
+    <div class="modal-icon">🏁</div>
+    <div class="modal-msg" id="modalMsg"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" id="modalNo">Batal</button>
+      <button class="btn btn-primary" id="modalYes">Ya</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const warmups = [
+  {concept:'KPK', q:'KPK dari 4 dan 6 adalah …', options:['10','12','18','24'], answer:1,
+   expl:'Kelipatan 4: 4, 8, <b>12</b>, … dan kelipatan 6: 6, <b>12</b>, … → KPK = <b>12</b>.<br>Cara cepat: 4 = 2<sup>2</sup>, 6 = 2 × 3 → KPK = 2<sup>2</sup> × 3 = 12.'},
+  {concept:'FPB', q:'FPB dari 12 dan 18 adalah …', options:['2','3','6','9'], answer:2,
+   expl:'12 = 2<sup>2</sup> × 3 dan 18 = 2 × 3<sup>2</sup>.<br>Ambil faktor yang sama dengan pangkat terkecil: 2 × 3 = <b>6</b>.'},
+  {concept:'KPK', q:'KPK dari 5 dan 7 adalah …', options:['12','25','35','70'], answer:2,
+   expl:'5 dan 7 adalah bilangan prima, jadi tidak punya faktor persekutuan selain 1.<br>Maka KPK = 5 × 7 = <b>35</b>.'},
+  {concept:'FPB', q:'FPB dari 24 dan 36 adalah …', options:['4','6','12','18'], answer:2,
+   expl:'24 = 2<sup>3</sup> × 3 dan 36 = 2<sup>2</sup> × 3<sup>2</sup>.<br>FPB = 2<sup>2</sup> × 3 = <b>12</b>.'},
+  {concept:'KPK', q:'KPK dari 3, 4, dan 6 adalah …', options:['12','18','24','36'], answer:0,
+   expl:'3 = 3, 4 = 2<sup>2</sup>, 6 = 2 × 3.<br>Ambil setiap faktor dengan pangkat terbesar: 2<sup>2</sup> × 3 = <b>12</b>.'}
+];
+
+const exam = [
+ {concept:'FPB', level:'Mudah',
+  q:'Ibu Budi mempunyai 12 buah apel dan 18 buah jeruk. Ibu ingin membagikan buah-buahan tersebut ke dalam beberapa kantong plastik dengan jumlah yang sama untuk setiap jenis buah. Berapa kantong plastik paling banyak yang dibutuhkan Ibu Budi?',
+  options:['3 kantong','4 kantong','6 kantong','12 kantong'], answer:2,
+  expl:'Membagi barang dengan jumlah yang sama → gunakan <b>FPB</b> dari 12 dan 18.<br>12 = 2<sup>2</sup> × 3 &nbsp;dan&nbsp; 18 = 2 × 3<sup>2</sup>.<br>FPB = 2 × 3 = <b>6</b> → Ibu Budi membutuhkan <b>6 kantong</b>.'},
+ {concept:'KPK', level:'Mudah',
+  q:'Lampu merah menyala setiap 4 detik sekali, sedangkan lampu biru menyala setiap 6 detik sekali. Jika kedua lampu menyala bersamaan pada detik pertama, pada detik ke berapa kedua lampu akan menyala bersamaan lagi?',
+  options:['Detik ke-10','Detik ke-12','Detik ke-16','Detik ke-24'], answer:1,
+  expl:'Lampu menyala berulang dan bertemu bersamaan → gunakan <b>KPK</b> dari 4 dan 6.<br>Kelipatan 4: 4, 8, <b>12</b>, … dan kelipatan 6: 6, <b>12</b>, …<br>KPK = <b>12</b> → bersamaan lagi di <b>detik ke-12</b>.'},
+ {concept:'FPB', level:'Mudah',
+  q:'Ayah membeli 20 buku tulis dan 30 pensil untuk disumbangkan. Ayah ingin membuat paket alat tulis yang berisi buku dan pensil dengan jumlah yang sama banyak untuk setiap anak. Berapa jumlah paket paling banyak yang bisa dibuat Ayah?',
+  options:['5 paket','10 paket','15 paket','20 paket'], answer:1,
+  expl:'Membuat paket dengan isi sama banyak → gunakan <b>FPB</b> dari 20 dan 30.<br>FPB(20, 30) = <b>10</b> → Ayah dapat membuat <b>10 paket</b> (tiap paket berisi 2 buku dan 3 pensil).'},
+ {concept:'KPK', level:'Mudah',
+  q:'Andi mendapat jadwal ronda malam setiap 6 hari sekali, sedangkan Budi mendapat jadwal ronda setiap 8 hari sekali. Jika hari ini mereka ronda bersama-sama, setelah berapa hari mereka akan ronda bersama lagi?',
+  options:['12 hari','14 hari','24 hari','48 hari'], answer:2,
+  expl:'Jadwal yang berulang dan bertemu bersama → gunakan <b>KPK</b> dari 6 dan 8.<br>6 = 2 × 3, 8 = 2<sup>3</sup> → KPK = 2<sup>3</sup> × 3 = <b>24</b>.<br>Mereka akan ronda bersama lagi <b>24 hari</b> kemudian.'},
+ {concept:'FPB', level:'Mudah',
+  q:'Kakak memiliki 15 permen rasa stroberi dan 25 permen rasa cokelat. Kakak ingin membagikan permen tersebut kepada teman-temannya dalam bungkus-bungkus kecil dengan komposisi yang sama rata. Berapa banyak teman maksimal yang dapat menerima permen tersebut?',
+  options:['3 orang','5 orang','10 orang','15 orang'], answer:1,
+  expl:'Dibagikan rata dalam bungkus kecil → gunakan <b>FPB</b> dari 15 dan 25.<br>15 = 3 × 5, 25 = 5<sup>2</sup> → FPB = <b>5</b>.<br>Banyak teman maksimal = <b>5 orang</b>.'},
+ {concept:'KPK', level:'Sedang',
+  q:'Bus jurusan A berangkat dari terminal setiap 15 menit sekali, dan bus jurusan B berangkat setiap 20 menit sekali. Jika kedua bus berangkat bersama-sama pada pukul 07.00, pada pukul berapa kedua bus tersebut akan berangkat bersamaan lagi?',
+  options:['Pukul 07.30','Pukul 07.45','Pukul 08.00','Pukul 08.15'], answer:2,
+  expl:'Berangkat bersamaan lagi → gunakan <b>KPK</b> dari 15 dan 20.<br>KPK(15, 20) = <b>60 menit = 1 jam</b>.<br>Pukul 07.00 + 1 jam = <b>pukul 08.00</b>.'},
+ {concept:'FPB', level:'Sedang',
+  q:'Panitia bakti sosial membagikan paket sembako yang terdiri dari 48 kg beras, 36 kg gula pasir, dan 60 liter minyak goreng. Semua bahan tersebut akan dimasukkan ke dalam kantong-kantong dengan jumlah dan jenis yang sama. Berapa jumlah warga terbanyak yang bisa menerima paket sembako tersebut?',
+  options:['6 warga','8 warga','12 warga','24 warga'], answer:2,
+  expl:'Dibagikan sama banyak ke warga → gunakan <b>FPB</b> dari 48, 36, dan 60.<br>48 = 2<sup>4</sup> × 3, 36 = 2<sup>2</sup> × 3<sup>2</sup>, 60 = 2<sup>2</sup> × 3 × 5.<br>Faktor persekutuan pangkat terkecil: 2<sup>2</sup> × 3 = <b>12</b> → <b>12 warga</b>.'},
+ {concept:'KPK', level:'Sedang',
+  q:'Terdapat tiga buah bel di sebuah sekolah. Bel pertama berbunyi setiap 12 menit, bel kedua setiap 15 menit, dan bel ketiga setiap 20 menit. Apabila ketiga bel baru saja berbunyi bersamaan, berapa menit lagi ketiga bel tersebut akan berbunyi bersamaan kembali?',
+  options:['30 menit','45 menit','60 menit','120 menit'], answer:2,
+  expl:'Berbunyi bersamaan kembali → gunakan <b>KPK</b> dari 12, 15, dan 20.<br>12 = 2<sup>2</sup> × 3, 15 = 3 × 5, 20 = 2<sup>2</sup> × 5.<br>KPK = 2<sup>2</sup> × 3 × 5 = <b>60 menit</b>.'},
+ {concept:'FPB', level:'Sedang',
+  q:'Seorang penjahit memiliki tiga gulung pita dengan panjang 24 meter, 32 meter, dan 40 meter. Ia ingin memotong pita-pita tersebut menjadi bagian-bagian yang sama panjang tanpa ada sisa. Berapa ukuran potongan pita terpanjang yang bisa dibuat?',
+  options:['4 meter','6 meter','8 meter','12 meter'], answer:2,
+  expl:'Potongan sama panjang, terpanjang, tanpa sisa → gunakan <b>FPB</b> dari 24, 32, dan 40.<br>24 = 2<sup>3</sup> × 3, 32 = 2<sup>5</sup>, 40 = 2<sup>3</sup> × 5.<br>FPB = 2<sup>3</sup> = <b>8 meter</b>.'},
+ {concept:'KPK', level:'Sedang',
+  q:'Ali pergi ke tempat les renang setiap 4 hari sekali, Banu setiap 5 hari sekali, dan Caca setiap 6 hari sekali. Mereka bertiga pergi les renang bersama-sama pada tanggal 1 Maret. Pada tanggal berapakah mereka akan les renang bersama-sama lagi?',
+  options:['29 April','30 April','1 Mei','2 Mei'], answer:1,
+  expl:'Jadwal berulang → KPK dari 4, 5, dan 6 = <b>60 hari</b>.<br>Dari 1 Maret: Maret punya 31 hari → tersisa <b>30 hari</b> (tanggal 2–31 Maret).<br>60 − 30 = 30 hari lagi di bulan April → jatuh pada <b>30 April</b>. (Ingat trick tanggal! 📅)'},
+ {concept:'FPB', level:'Sulit / HOTS',
+  q:'Pak Guru membagikan 64 potong kue cokelat dan 75 potong kue keju kepada murid-muridnya dengan jumlah yang sama untuk setiap anak. Setelah dibagikan ke jumlah anak yang maksimal, ternyata tersisa 4 potong kue cokelat dan 3 potong kue keju. Berapa banyak murid yang menerima kue tersebut?',
+  options:['8 murid','12 murid','15 murid','24 murid'], answer:1,
+  expl:'Ada sisa → <b>kurangi dulu</b> sebelum mencari FPB.<br>Kue cokelat: 64 − 4 = <b>60</b>, kue keju: 75 − 3 = <b>72</b>.<br>FPB(60, 72): 60 = 2<sup>2</sup> × 3 × 5, 72 = 2<sup>3</sup> × 3<sup>2</sup> → FPB = 2<sup>2</sup> × 3 = <b>12 murid</b>.'},
+ {concept:'KPK', level:'Sulit / HOTS',
+  q:'Dua buah roda gigi saling bersinggungan. Roda gigi A memiliki 24 gigi, sedangkan roda gigi B memiliki 36 gigi. Roda gigi saling berputar dan pada awalnya gigi tertentu dari kedua roda saling bertemu. Berapa kalikah roda gigi A harus berputar penuh agar kedua gigi yang bertemu di awal tadi saling bertemu kembali untuk pertama kalinya?',
+  options:['2 putaran','3 putaran','4 putaran','6 putaran'], answer:1,
+  expl:'Gigi bertemu kembali saat jumlah gigi yang dilewati sama → <b>KPK</b>(24, 36) = 2<sup>3</sup> × 3<sup>2</sup> = <b>72</b>.<br>Roda A: 72 ÷ 24 = <b>3 putaran</b> (Roda B: 72 ÷ 36 = 2 putaran).'},
+ {concept:'FPB', level:'Sulit / HOTS',
+  q:'Lantai sebuah ruangan berbentuk persegi panjang dengan ukuran panjang 420 cm dan lebar 360 cm. Lantai tersebut akan dipasangi keramik berbentuk persegi dengan ukuran paling besar tanpa harus memotong keramik. Berapa banyak ubin keramik yang dibutuhkan untuk menutupi seluruh lantai tersebut?',
+  options:['42 keramik','60 keramik','84 keramik','120 keramik'], answer:0,
+  expl:'Keramik persegi terbesar → sisi = <b>FPB</b>(420, 360) = 60 cm.<br>Banyak keramik = (420 ÷ 60) × (360 ÷ 60) = 7 × 6 = <b>42 keramik</b>.'},
+ {concept:'KPK', level:'Sulit / HOTS',
+  q:'Di sebuah binatu otomatis, Mesin Cuci A memiliki siklus cuci lengkap selama 45 menit, dan Mesin Cuci B memiliki siklus 60 menit. Seorang operator mulai menyalakan kedua mesin secara bersamaan pada pukul 08.00 pagi dan akan terus dioperasikan tanpa jeda. Pada pukul berapakah kedua mesin tersebut akan selesai pada waktu yang bersamaan untuk KEDUA KALINYA sejak awal dihidupkan?',
+  options:['Pukul 11.00','Pukul 12.00','Pukul 14.00','Pukul 15.00'], answer:2,
+  expl:'Selesai bersama setiap <b>KPK</b>(45, 60) = 180 menit = <b>3 jam</b>.<br>Selesai bersama pertama: 08.00 + 3 jam = 11.00.<br>Selesai bersama <b>kedua kalinya</b>: 11.00 + 3 jam = <b>pukul 14.00</b>. ⚠️ Jangan lewatkan kata "KEDUA KALINYA"!'},
+ {concept:'FPB', level:'Sulit / HOTS',
+  q:'Seorang pedagang bunga memiliki persediaan 90 tangkai mawar, 120 tangkai melati, dan 150 tangkai anggrek. Ia ingin merangkai bunga-bunga tersebut menjadi sebanyak mungkin buket dengan komposisi mawar, melati, dan anggrek yang sama di tiap buketnya. Jika harga modal setangkai mawar adalah Rp2.000, melati Rp1.500, dan anggrek Rp3.000, berapakah harga modal untuk 1 buket bunga tersebut?',
+  options:['Rp22.500','Rp25.000','Rp27.000','Rp30.000'], answer:2,
+  expl:'Buket maksimal = <b>FPB</b>(90, 120, 150) = 30 buket.<br>Isi 1 buket: mawar 90 ÷ 30 = 3, melati 120 ÷ 30 = 4, anggrek 150 ÷ 30 = 5.<br>Modal = (3 × 2.000) + (4 × 1.500) + (5 × 3.000) = 6.000 + 6.000 + 15.000 = <b>Rp27.000</b>.'}
+];
+
+/* ================= STATE & SLIDE ================= */
+const slideIds=['cover','warmup','keywords','example','trick','instructions','exam','results','reflect','conclusion','thanks'];
+const slideLabels={cover:'Cover',warmup:'Pemanasan',keywords:'Kata Kunci',example:'Contoh Soal',trick:'Trick Hari & Tanggal',
+  instructions:'Petunjuk',exam:'Latihan Soal',results:'Hasil',reflect:'Refleksi',conclusion:'Kesimpulan',thanks:'Penutup'};
+let cur=0, studentName='', examStarted=false;
+
+const W={cur:0, sel:Array(5).fill(null), checked:Array(5).fill(false), correct:Array(5).fill(false)};
+const X={cur:0, sel:Array(15).fill(null), checked:Array(15).fill(false), correct:Array(15).fill(false),
+  times:Array(15).fill(0), finished:false, timerQ:null, tStart:0, tick:null};
+
+const $=id=>document.getElementById(id);
+const fmt=s=>{s=Math.round(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+
+function showSlide(i){
+  if(slideIds[cur]==='exam' && slideIds[i]!=='exam') pauseTimer();
+  cur=i;
+  document.querySelectorAll('.slide').forEach((s,k)=>s.classList.toggle('active',k===i));
+  $('progressFill').style.width=((i+1)/slideIds.length*100)+'%';
+  $('slideCount').textContent=(i+1)+' / '+slideIds.length;
+  $('footLabel').textContent=slideLabels[slideIds[i]];
+  const btnPrev=$('btnPrev'), btnNext=$('btnNext');
+  btnPrev.style.visibility=i===0?'hidden':'visible';
+  if(slideIds[i]==='exam'){ btnNext.textContent='🏁 Finish Exam'; btnNext.classList.remove('btn-primary'); btnNext.classList.add('btn-amber'); }
+  else{ btnNext.textContent='Lanjut ➜'; btnNext.classList.add('btn-primary'); btnNext.classList.remove('btn-amber'); }
+  btnNext.style.visibility=i===slideIds.length-1?'hidden':'visible';
+  if(slideIds[i]==='warmup') renderWarm();
+  if(slideIds[i]==='exam'){
+    if(!examStarted){examStarted=true; toast('⏱️ Stopwatch soal 1 mulai berjalan — selamat mengerjakan!');}
+    if(!X.checked[X.cur]&&!X.finished) startTimer(X.cur);
+    renderExam();
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ================= STOPWATCH ================= */
+function startTimer(q){
+  pauseTimer();
+  if(X.checked[q]||X.finished) return;
+  X.timerQ=q; X.tStart=Date.now();
+  $('timerPill').classList.add('running');
+  X.tick=setInterval(updateTimerUI,250);
+  updateTimerUI();
+}
+function pauseTimer(){
+  if(X.timerQ===null) return;
+  X.times[X.timerQ]+=(Date.now()-X.tStart)/1000;
+  X.timerQ=null; clearInterval(X.tick); X.tick=null;
+  $('timerPill').classList.remove('running');
+}
+function updateTimerUI(){ if(X.timerQ!==null) $('timerVal').textContent=fmt(X.times[X.timerQ]+(Date.now()-X.tStart)/1000); }
+
+/* ================= RENDER ================= */
+function optionsHTML(act,q,sel,checked){
+  return q.options.map((t,j)=>{
+    let cls='opt';
+    if(checked){ if(j===q.answer)cls+=' good'; else if(j===sel)cls+=' bad'; }
+    else if(sel===j)cls+=' sel';
+    return '<button type="button" class="'+cls+'" data-act="'+act+'" data-i="'+j+'"'+(checked?' disabled':'')+
+      '><span class="letter">'+'ABCD'[j]+'</span><span class="opttext">'+t+'</span></button>';
+  }).join('');
+}
+function feedbackHTML(ok,q,sel){
+  const L='ABCD';
+  const head = ok
+    ? '<div class="feedback good">🎉 <b>Benar!</b> Jawabanmu '+L[sel]+'. '+q.options[sel]+' — memang tepat!</div>'
+    : '<div class="feedback bad">😅 <b>Belum tepat.</b> Jawabanmu: '+L[sel]+'. '+q.options[sel]+
+      ' &nbsp;·&nbsp; Jawaban benar: <b>'+L[q.answer]+'. '+q.options[q.answer]+'</b></div>';
+  return head+'<div class="expl"><div class="expl-title">💡 Pembahasan</div>'+q.expl+'</div>';
+}
+
+function renderWarm(){
+  const i=W.cur,q=warmups[i],checked=W.checked[i];
+  $('warmChips').innerHTML=warmups.map((_,j)=>{
+    let c='chip'; if(W.checked[j])c+=W.correct[j]?' ok':' bad'; if(j===W.cur)c+=' active';
+    return '<button type="button" class="'+c+'" data-wi="'+j+'">'+(j+1)+'</button>';
+  }).join('');
+  const score=W.correct.filter(Boolean).length;
+  const nav = checked
+    ? (i<warmups.length-1
+        ? '<button class="btn btn-ghost" data-act="wnext">Soal Berikutnya ➜</button>'
+        : '<button class="btn btn-primary" data-act="nextslide">✅ Selesai Pemanasan — Lanjut Materi ➜</button>')
+    : '<button class="btn btn-primary" data-act="wcheck">✅ Cek Jawaban</button>';
+  $('warmArea').innerHTML=
+    '<div class="qcard"><div class="qmeta">'+
+    '<span class="badge '+(q.concept==='KPK'?'kpk':'fpb')+'">'+q.concept+'</span>'+
+    '<span class="qof">Soal '+(i+1)+' dari '+warmups.length+'</span>'+
+    '<span class="qof ws">Skor pemanasan: '+score+'/'+warmups.length+'</span></div>'+
+    '<div class="qtext">'+q.q+'</div>'+
+    '<div class="opts">'+optionsHTML('wpick',q,W.sel[i],checked)+'</div>'+
+    '<div class="qactions">'+nav+'</div>'+
+    (checked?feedbackHTML(W.correct[i],q,W.sel[i]):'')+'</div>';
+}
+
+function renderExam(){
+  const i=X.cur,q=exam[i],checked=X.checked[i];
+  $('examChips').innerHTML=exam.map((_,j)=>{
+    let c='chip';
+    if(X.checked[j])c+=X.correct[j]?' ok':' bad';
+    if(j===X.cur)c+=' active';
+    if(j===X.cur&&X.timerQ===j)c+=' timing';
+    return '<button type="button" class="'+c+'" data-xi="'+j+'"'+(X.finished?' disabled':'')+'>'+(j+1)+'</button>';
+  }).join('');
+  $('examPos').textContent='Soal '+(i+1)+'/15';
+  $('examLvl').textContent=q.level;
+  $('examProg').textContent='Terjawab '+X.checked.filter(Boolean).length+'/15';
+  if(X.timerQ!==i) $('timerVal').textContent=fmt(X.times[i]);
+  const actions = checked
+    ? '<span class="timechip">⏱️ Waktu pengerjaan soal ini: <b>'+fmt(X.times[i])+'</b></span>'
+    : '<button class="btn btn-primary" data-act="xcheck">✅ Cek Jawaban</button><span class="hint">stopwatch berhenti saat tombol ini ditekan</span>';
+  const after = checked
+    ? (i<exam.length-1
+        ? '<div class="qactions"><button class="btn btn-ghost" data-act="xnext">Soal Berikutnya ➜</button></div>'
+        : '<div class="qactions"><button class="btn btn-amber" data-act="finishbtn">🏁 Finish Exam — Lihat Hasilku</button></div>')
+    : '';
+  $('examArea').innerHTML=
+    '<div class="qcard"><div class="qmeta">'+
+    '<span class="badge '+(q.concept==='KPK'?'kpk':'fpb')+'">'+q.concept+'</span>'+
+    '<span class="badge lvl">'+q.level+'</span>'+
+    '<span class="qof">Soal '+(i+1)+' dari 15</span></div>'+
+    '<div class="qtext">'+q.q+'</div>'+
+    '<div class="opts">'+optionsHTML('pick',q,X.sel[i],checked)+'</div>'+
+    '<div class="qactions">'+actions+'</div>'+
+    (checked?feedbackHTML(X.correct[i],q,X.sel[i]):'')+after+'</div>';
+}
+
+function gotoExam(i){ X.cur=i; if(!X.checked[i]&&!X.finished) startTimer(i); renderExam(); }
+
+/* ================= CEK JAWABAN ================= */
+function checkWarm(){
+  const i=W.cur;
+  if(W.checked[i]) return;
+  if(W.sel[i]===null){ toast('⚠️ Pilih salah satu jawaban dulu ya!'); return; }
+  W.checked[i]=true; W.correct[i]=(W.sel[i]===warmups[i].answer); renderWarm();
+}
+function checkExam(){
+  const i=X.cur;
+  if(X.checked[i]) return;
+  if(X.sel[i]===null){ toast('⚠️ Pilih salah satu jawaban dulu ya!'); return; }
+  pauseTimer();
+  X.checked[i]=true; X.correct[i]=(X.sel[i]===exam[i].answer); renderExam();
+}
+
+/* ================= FINISH & HASIL ================= */
+function requestFinish(){
+  const belum=X.checked.filter(c=>!c).length;
+  if(belum>0){
+    showModal('Masih ada <b>'+belum+' soal</b> yang belum kamu cek jawabannya.<br>Tetap selesaikan latihan sekarang?',
+      'Ya, Selesaikan 🏁', doFinish, 'Lanjut Mengerjakan ✍️');
+  } else doFinish();
+}
+function doFinish(){
+  pauseTimer(); X.finished=true;
+  buildResults();
+  showSlide(slideIds.indexOf('results'));
+}
+function buildResults(){
+  const name=studentName||'Sahabat Matematika';
+  const answered=X.checked.filter(Boolean).length;
+  const correct=X.correct.filter(Boolean).length;
+  const wrong=answered-correct, skip=15-answered;
+  const totalT=X.times.reduce((a,b)=>a+b,0);
+  const avg=answered?totalT/answered:0;
+  const score=Math.round(correct/15*100);
+  let pred,col;
+  if(score>=90){pred='Luar Biasa! 🌟 (A)';col='#16a34a';}
+  else if(score>=80){pred='Hebat! 👏 (B)';col='#16a34a';}
+  else if(score>=70){pred='Baik 👍 (C)';col='#0d9488';}
+  else if(score>=60){pred='Cukup — Ayo Ditingkatkan 💪 (D)';col='#f59e0b';}
+  else{pred='Semangat, Belajar Lagi! 📚 (E)';col='#e11d48';}
+  $('resName').textContent=name;
+  const pEl=$('resPred'); pEl.textContent=pred; pEl.style.color=col;
+  const ring=$('ringFg'), C=2*Math.PI*54;
+  ring.setAttribute('stroke',col);
+  ring.style.strokeDasharray=C; ring.style.strokeDashoffset=C;
+  setTimeout(()=>{ring.style.strokeDashoffset=C*(1-score/100);},150);
+  let n=0; const step=Math.max(1,Math.ceil(score/30));
+  const iv=setInterval(()=>{n=Math.min(score,n+step);$('scoreVal').textContent=n;if(n>=score)clearInterval(iv);},30);
+  $('statBenar').textContent=correct; $('statSalah').textContent=wrong; $('statSkip').textContent=skip;
+  $('statTotal').textContent=fmt(totalT); $('statAvg').textContent=answered?fmt(avg):'–';
+  $('resBody').innerHTML=exam.map((q,i)=>{
+    const st=X.checked[i]?(X.correct[i]?'<span class="st-ok">✅ Benar</span>':'<span class="st-bad">❌ Salah</span>'):'<span class="st-skip">— belum</span>';
+    return '<tr><td>'+(i+1)+'</td><td><span class="badge sm '+(q.concept==='KPK'?'kpk':'fpb')+'">'+q.concept+'</span></td>'+
+      '<td class="lv">'+q.level+'</td><td>'+st+'</td><td class="tm">'+(X.checked[i]?fmt(X.times[i]):'–')+'</td></tr>';
+  }).join('')+'<tr class="trow"><td colspan="4">⏱️ Total waktu pengerjaan</td><td class="tm">'+fmt(totalT)+'</td></tr>';
+  $('reflectBody').innerHTML=buildReflection();
+  $('thanksName').textContent=name;
+  $('thanksScore').textContent=score;
+  $('thanksAvg').textContent=answered?fmt(avg):'–';
+  confetti();
+}
+
+function buildReflection(){
+  const name=studentName||'Sahabat Matematika';
+  const answered=X.checked.filter(Boolean).length;
+  const correct=X.correct.filter(Boolean).length;
+  const score=Math.round(correct/15*100);
+  const totalT=X.times.reduce((a,b)=>a+b,0);
+  let opener;
+  if(score>=90) opener='Luar biasa, <b>'+name+'</b>! 🌟 Kemampuanmu membedakan KPK dan FPB serta menghitungnya sudah sangat matang. Pertahankan kebiasaan membaca soal dengan teliti!';
+  else if(score>=80) opener='Hebat, <b>'+name+'</b>! 👏 Hasilmu sudah sangat baik. Sedikit lagi menuju sempurna — periksa kembali soal yang keliru, biasanya hanya masalah ketelitian.';
+  else if(score>=70) opener='Kerja bagus, <b>'+name+'</b>! 👍 Fondasimu sudah terbentuk. Latih lagi bagian yang masih goyah, terutama menentukan KPK atau FPB dari soal cerita.';
+  else if(score>=60) opener='Cukup baik, <b>'+name+'</b>! 💪 Kamu sudah paham sebagian konsep. Fokuskan latihan pada kata kunci soal dan baca ulang pembahasan nomor yang keliru.';
+  else opener='Jangan berkecil hati, <b>'+name+'</b>! 📚 Setiap ahli pernah menjadi pemula. Ulangi materi kata kunci dan contoh soal, lalu coba lagi — kamu pasti membaik.';
+  const F={ans:0,ok:0}, K={ans:0,ok:0};
+  exam.forEach((q,i)=>{ if(!X.checked[i])return; const s=q.concept==='KPK'?K:F; s.ans++; if(X.correct[i])s.ok++; });
+  const rows=[];
+  if(F.ans)rows.push('tipe <b>FPB</b>: benar '+F.ok+'/'+F.ans);
+  if(K.ans)rows.push('tipe <b>KPK</b>: benar '+K.ok+'/'+K.ans);
+  let conceptNote=rows.length?'<p>📊 Akurasi menurut jenis soal — '+rows.join(' · ')+'.</p>':'';
+  let tipNote='';
+  if(F.ans&&K.ans){
+    const f=F.ok/F.ans,k=K.ok/K.ans;
+    if(f<k&&f<0.8) tipNote='<p>💡 Saran: baca ulang kata kunci <b>FPB</b> — "membagi sama banyak", "paling banyak", "tanpa sisa", "potongan terpanjang".</p>';
+    else if(k<f&&k<0.8) tipNote='<p>💡 Saran: baca ulang kata kunci <b>KPK</b> — "setiap … sekali", "bersamaan lagi", "kejadian berulang".</p>';
+    else if(f>=0.8&&k>=0.8) tipNote='<p>💡 Kamu sudah andal membedakan soal KPK dan FPB. Pertahankan! 👏</p>';
+    else tipNote='<p>💡 Pemahaman konsepmu sudah merata — pertajam ketelitian berhitung saat faktorisasi ya!</p>';
+  }
+  let timeNote='';
+  if(answered){
+    let fi=-1,ft=1e9,si=-1,st=-1;
+    for(let i=0;i<15;i++) if(X.checked[i]){ if(X.times[i]<ft){ft=X.times[i];fi=i;} if(X.times[i]>st){st=X.times[i];si=i;} }
+    timeNote='<p>⏱️ Waktu: rata-rata <b>'+fmt(totalT/answered)+' per soal</b>. Tercepat di nomor '+(fi+1)+' ('+fmt(ft)+'), paling lama di nomor '+(si+1)+' ('+fmt(st)+').';
+    timeNote+=(totalT/answered<=60)?' Kecepatanmu luar biasa — jaga juga ketelitinya! ⚡</p>'
+      :(totalT/answered<=120)?' Kecepatanmu wajar — percepat soal mudah agar ada sisa waktu untuk soal HOTS. ⏳</p>'
+      :' Coba putuskan KPK/FPB lebih cepat dari kata kuncinya agar waktumu makin efisien. ⏳</p>';
+  }
+  const skipNote=(15-answered)>0
+    ?'<p>📌 Kamu menjawab '+answered+' dari 15 soal. Coba kerjakan sisanya agar pemahamanmu makin lengkap!</p>'
+    :'<p>📌 Kamu menyelesaikan semua soal. Disiplin luar biasa! 🔥</p>';
+  return '<p>'+opener+'</p>'+conceptNote+tipNote+timeNote+skipNote;
+}
+
+function confetti(){
+  const colors=['#4f46e5','#7c3aed','#f59e0b','#0d9488','#ec4899','#22c55e'];
+  for(let i=0;i<36;i++){
+    const c=document.createElement('span');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.width=(6+Math.random()*7)+'px';
+    c.style.height=(10+Math.random()*8)+'px';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(2.6+Math.random()*2)+'s';
+    c.style.animationDelay=(Math.random()*0.8)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),6200);
+  }
+}
+
+/* ================= MODAL & TOAST ================= */
+let modalYesCb=null;
+function showModal(msg,yesTxt,cb,noTxt){
+  $('modalMsg').innerHTML=msg;
+  $('modalYes').textContent=yesTxt||'Ya';
+  $('modalNo').textContent=noTxt||'Batal';
+  modalYesCb=cb;
+  $('modalOverlay').hidden=false;
+}
+function hideModal(){ $('modalOverlay').hidden=true; }
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.innerHTML=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.classList.add('show'),10);
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),320);},2300);
+}
+
+/* ================= EVENT ================= */
+ $('btnStart').onclick=()=>{
+  const v=$('nameInput').value.trim();
+  studentName=v?v.replace(/[<>&"]/g,''):'';
+  showSlide(1);
+};
+ $('nameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') $('btnStart').click(); });
+ $('btnRestart').onclick=()=>location.reload();
+ $('btnPrev').onclick=()=>{ if(cur>0) showSlide(cur-1); };
+ $('btnNext').onclick=()=>{
+  if(slideIds[cur]==='exam'){ requestFinish(); return; }
+  if(cur<slideIds.length-1) showSlide(cur+1);
+};
+ $('warmChips').addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(!b)return; W.cur=+b.dataset.wi; renderWarm(); });
+ $('examChips').addEventListener('click',e=>{ const b=e.target.closest('.chip'); if(!b)return; gotoExam(+b.dataset.xi); });
+ $('modalYes').onclick=()=>{ hideModal(); if(modalYesCb)modalYesCb(); };
+ $('modalNo').onclick=hideModal;
+ $('modalOverlay').addEventListener('click',e=>{ if(e.target===$('modalOverlay')) hideModal(); });
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b) return;
+  const act=b.dataset.act, i=+b.dataset.i;
+  if(act==='wpick'){ if(!W.checked[W.cur]){W.sel[W.cur]=i; renderWarm();} }
+  else if(act==='wcheck') checkWarm();
+  else if(act==='wnext'){ W.cur=Math.min(warmups.length-1,W.cur+1); renderWarm(); }
+  else if(act==='pick'){ if(!X.checked[X.cur]&&!X.finished){X.sel[X.cur]=i; renderExam();} }
+  else if(act==='xcheck') checkExam();
+  else if(act==='xnext') gotoExam(Math.min(14,X.cur+1));
+  else if(act==='finishbtn') requestFinish();
+  else if(act==='startexam') showSlide(slideIds.indexOf('exam'));
+  else if(act==='nextslide'){ if(cur<slideIds.length-1) showSlide(cur+1); }
+});
+
+document.addEventListener('keydown',e=>{
+  if(!$('modalOverlay').hidden){ if(e.key==='Escape') hideModal(); return; }
+  if(e.target.tagName==='INPUT') return;
+  if(e.key==='ArrowRight') $('btnNext').click();
+  if(e.key==='ArrowLeft') $('btnPrev').click();
+});
+
+/* init */
+showSlide(0);
+</script>
+</body>
+</html>
