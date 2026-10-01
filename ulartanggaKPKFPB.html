@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ular Tangga Prima — Petualangan KPK & FPB</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f7eeda; --ink:#3d2c1e; --wood:#7a4a22; --wood2:#5b3a1a;
+  --cream:#fffaf0; --cream2:#f4e8cd;
+  --green:#2f9e44; --greenD:#256b33;
+  --red:#d9480f; --redD:#8f2d1f;
+  --p1:#e8590c; --p2:#0ca678; --gold:#e8b30f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',sans-serif;color:var(--ink);min-height:100vh;
+  background-color:var(--paper);
+  background-image:radial-gradient(rgba(122,74,34,.10) 1.2px, transparent 1.3px);
+  background-size:26px 26px;
+}
+header{text-align:center;padding:18px 12px 4px}
+h1{font-family:'Baloo 2',cursive;font-size:clamp(26px,5vw,44px);color:var(--wood2);letter-spacing:.5px;line-height:1.05}
+h1 .a{color:#c92a2a}h1 .b{color:var(--greenD)}h1 .c{color:var(--p1)}
+.tagline{font-weight:700;color:#8a6a3f;margin-top:2px;font-size:clamp(12px,2vw,16px)}
+
+.stage{display:flex;gap:22px;justify-content:center;align-items:flex-start;flex-wrap:wrap;padding:14px 16px 40px;max-width:1120px;margin:0 auto}
+
+/* ====== PAPAN ====== */
+.boardWrap{width:min(94vw,620px)}
+.board{position:relative;aspect-ratio:1;border:10px solid var(--wood);border-radius:16px;overflow:hidden;background:var(--cream);
+  box-shadow:0 12px 26px rgba(91,58,26,.28), inset 0 0 0 3px rgba(255,255,255,.35)}
+.grid{position:absolute;inset:0;z-index:1;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(10,1fr)}
+.cell{position:relative;background:var(--cream);border:.5px solid rgba(122,74,34,.16);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1px;overflow:hidden;text-align:center}
+.cell.alt{background:var(--cream2)}
+.cell .num{position:absolute;top:1px;left:3px;font-family:'Baloo 2';font-weight:800;font-size:clamp(7px,1.6vw,12px);color:#9a6a33}
+.cell .q{font-size:clamp(6px,1.3vw,10.5px);line-height:1.08;font-weight:800;color:#5a4527;margin-top:9px;word-break:break-word}
+.cell.lad{background:linear-gradient(180deg,#e6f6dd,#d0efc0)}
+.cell.lad .q{color:var(--greenD)}
+.cell.snk{background:linear-gradient(180deg,#ffe8e0,#ffd4c8)}
+.cell.snk .q{color:var(--redD)}
+.cell.start{background:#ffedb0}
+.cell.finish{background:radial-gradient(circle at 50% 42%,#ffe9a0,#ffd43b)}
+.cell .mini{width:36%;max-width:24px;aspect-ratio:1;margin-top:7px}
+.cell.occ0{box-shadow:inset 0 0 0 3px rgba(232,89,12,.65)}
+.cell.occ1{box-shadow:inset 0 0 0 3px rgba(12,166,120,.65)}
+#overlay{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+.rail{stroke:#8a5a2b;stroke-width:7;stroke-linecap:round}
+.rung{stroke:#c98d4f;stroke-width:5;stroke-linecap:round}
+.pawn{position:absolute;z-index:10;width:6.2%;aspect-ratio:1;border-radius:50%;border:2.5px solid #fff;
+  box-shadow:0 3px 7px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:'Baloo 2';font-weight:800;font-size:clamp(10px,2.4vw,17px);
+  transition:left .3s ease, top .3s ease}
+.pawn.x0{background:radial-gradient(circle at 32% 28%,#ffa94d,var(--p1) 55%,#a83c04)}
+.pawn.x1{background:radial-gradient(circle at 32% 28%,#4fd8b0,var(--p2) 55%,#057a5b)}
+.pawn.noTrans{transition:none}
+.legend{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:10px;font-size:12.5px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fffdf6;border:1.5px solid #e5d5b0;border-radius:999px;padding:3px 10px;font-weight:700}
+.chip i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+/* ====== PANEL ====== */
+.panel{width:min(94vw,340px);display:flex;flex-direction:column;gap:12px}
+.card{background:#fffdf6;border:2px solid #e5d5b0;border-radius:14px;padding:14px;box-shadow:0 4px 10px rgba(91,58,26,.08)}
+.cardTitle{font-family:'Baloo 2';font-weight:800;font-size:15px;color:#8a6a3f;margin-bottom:6px}
+.who{font-family:'Baloo 2';font-weight:800;font-size:20px}
+.diceRow{display:flex;align-items:center;gap:16px;margin-top:10px}
+.dice{width:64px;height:64px;flex:none;background:#fff;border:2px solid #d9c79b;border-radius:12px;
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:9px;gap:2px;box-shadow:0 4px 0 #d9c79b}
+.dice.rolling{animation:droll .12s linear infinite}
+@keyframes droll{50%{transform:rotate(7deg) scale(1.05)}}
+.pip{width:9px;height:9px;border-radius:50%;background:#3d2c1e;place-self:center;visibility:hidden}
+.pip.on{visibility:visible}
+.diceSide{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.hintKbd{font-size:11.5px;color:#a08755;font-weight:700}
+.diceVal{font-size:13px;font-weight:800;color:#8a6a3f}
+#msg{min-height:46px;font-weight:700;color:#5b4632;background:#fbf3df;border:1.5px dashed #dcc794;border-radius:10px;padding:8px 10px;margin-top:12px;font-size:14px}
+.playerCard{display:flex;align-items:center;gap:11px;transition:transform .15s}
+.playerCard.active{outline:3px solid #f1d38a;transform:translateY(-1px)}
+.pdot{width:18px;height:18px;border-radius:50%;flex:none;box-shadow:inset -2px -3px 4px rgba(0,0,0,.25)}
+.pname{font-family:'Baloo 2';font-weight:800;font-size:17px}
+.pstat{font-size:13px;color:#6b5335;font-weight:700}
+.st{width:13px;height:13px;vertical-align:-2px}
+.logBox{max-height:150px;overflow:auto;font-size:12.5px;display:flex;flex-direction:column;gap:4px}
+.logBox div{background:#faf4e4;border-radius:8px;padding:4px 8px;border-left:4px solid #e3d2a8}
+.logBox div.lp0{border-left-color:var(--p1)}
+.logBox div.lp1{border-left-color:var(--p2)}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ====== TOMBOL ====== */
+.btn{font-family:'Baloo 2';font-weight:700;border:none;border-radius:12px;padding:11px 20px;font-size:16px;cursor:pointer;
+  background:var(--red);color:#fff;box-shadow:0 4px 0 #a63c05;transition:transform .08s, box-shadow .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #a63c05}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn.green{background:var(--green);box-shadow:0 4px 0 #1b6e2c}
+.btn.green:active{box-shadow:0 1px 0 #1b6e2c}
+.btn.ghost{background:#fff;color:#6b4f23;border:2px solid #d9c79b;box-shadow:0 3px 0 #d9c79b}
+.btn.small{padding:7px 12px;font-size:13px}
+
+/* ====== OVERLAY / MODAL ====== */
+.ovl{position:fixed;inset:0;background:rgba(59,42,22,.55);backdrop-filter:blur(2px);
+  display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.ovl.top{z-index:60}
+.hidden{display:none!important}
+.sheet{background:#fffdf6;border-radius:18px;padding:22px;max-width:530px;width:100%;max-height:92vh;overflow:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);border:3px solid var(--wood)}
+.sheet h2{font-family:'Baloo 2';color:var(--wood2);font-size:24px;margin-bottom:6px}
+.nameRow{display:flex;align-items:center;gap:10px;margin:10px 0}
+.nameRow label{font-weight:800;width:118px;font-size:14px;display:flex;align-items:center;gap:7px}
+.nameRow .pdot{width:14px;height:14px}
+input[type=text]{flex:1;min-width:0;padding:10px 12px;border:2px solid #d9c79b;border-radius:10px;font:inherit;font-weight:700;background:#fff}
+input[type=text]:focus{outline:none;border-color:var(--green)}
+.rules{background:#f6efdb;border-radius:12px;padding:12px 14px;font-size:13.5px;margin:12px 0}
+.rules ol{margin-left:18px}
+.rules li{margin:5px 0}
+.tips{margin-top:8px;background:#fdf6d8;border:1.5px dashed #dcb95c;border-radius:8px;padding:8px 10px;font-size:12.5px}
+.center{text-align:center}
+
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:'Baloo 2';font-weight:800;font-size:12.5px;padding:4px 12px;border-radius:999px}
+.badge svg{width:14px;height:14px}
+.badge.lad{background:#d3f1c6;color:var(--greenD)}
+.badge.snk{background:#ffd9cf;color:var(--redD)}
+.badge.norm{background:#f1e4c3;color:#6b4f23}
+#qText{font-size:16px;font-weight:700;margin:12px 0;line-height:1.55}
+.ansRow{display:flex;gap:8px}
+.qFeedback{margin-top:12px;font-weight:800;display:none;gap:8px;align-items:flex-start;font-size:15px;line-height:1.4}
+.qFeedback.show{display:flex}
+.qFeedback.good{color:#2b8a3e}
+.qFeedback.bad{color:#c92a2a}
+.fi{width:20px;height:20px;flex:none;margin-top:1px}
+.explain{margin-top:10px;background:#f6efdb;border-left:4px solid #b08d3e;padding:9px 11px;font-size:13.5px;border-radius:0 8px 8px 0;line-height:1.5;display:none}
+.explain.show{display:block}
+.qactions{display:flex;justify-content:space-between;gap:10px;margin-top:16px;flex-wrap:wrap}
+.shake{animation:shake .28s 2}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.keyGrid{column-count:2;column-gap:16px;font-size:12.5px;margin-top:6px}
+.keyGrid span{display:block;break-inside:avoid;padding:3px 0;border-bottom:1px dashed #e8dcbc}
+.ksec{font-family:'Baloo 2';color:var(--wood2);margin:14px 0 6px;font-size:16px}
+.kitem{font-size:13px;line-height:1.5;padding:8px 0;border-bottom:1px solid #efe3c4}
+.kitem i{color:#7a6134}
+
+.wrow{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;background:#faf4e4;border-radius:10px;padding:8px 12px;margin:6px 0;font-size:14px}
+.winTag{background:var(--gold);color:#5b3a1a;font-family:'Baloo 2';font-weight:800;padding:2px 10px;border-radius:999px;font-size:12px}
+.bigTrophy{width:84px;height:84px;filter:drop-shadow(0 5px 7px rgba(0,0,0,.25))}
+.confettiLayer{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.confettiLayer i{position:absolute;top:-8%;display:block;animation:cfall linear infinite}
+@keyframes cfall{0%{transform:translateY(-10vh) rotate(0)}100%{transform:translateY(112vh) rotate(760deg)}}
+
+footer{text-align:center;font-size:12.5px;color:#a08755;padding:0 12px 26px;font-weight:700}
+@media (max-width:600px){
+  .cell .q{display:none}
+  .cell.spec .q{display:block;font-size:6.5px}
+  .keyGrid{column-count:1}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1><span class="a">ULAR</span> <span class="b">TANGGA</span> <span class="c">PRIMA</span></h1>
+  <div class="tagline">Petualangan KPK, FPB &amp; Faktor Prima &bull; Kelas 5 SD</div>
+</header>
+
+<main class="stage">
+  <section class="boardWrap">
+    <div class="board" id="board">
+      <div class="grid" id="grid"></div>
+      <svg id="overlay" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="legend">
+      <span class="chip"><i style="background:#bde3ac"></i>Kotak Tangga &mdash; naik jika benar</span>
+      <span class="chip"><i style="background:#ffc4b0"></i>Kepala Ular &mdash; turun jika salah</span>
+      <span class="chip"><i style="background:#f1e4c3"></i>Kotak soal KPK / FPB / Faktor Prima</span>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <div class="card">
+      <div class="who">Giliran: <span id="turnName">&ndash;</span></div>
+      <div class="diceRow">
+        <div class="dice" id="dice"></div>
+        <div class="diceSide">
+          <button class="btn green" id="btnRoll" disabled>Lempar Dadu</button>
+          <div class="diceVal">Dadu: <b id="diceVal">&ndash;</b></div>
+          <div class="hintKbd">atau tekan tombol Spasi</div>
+        </div>
+      </div>
+      <div id="msg">Isi nama pemain untuk memulai petualangan!</div>
+    </div>
+    <div class="card playerCard" id="pc0"></div>
+    <div class="card playerCard" id="pc1"></div>
+    <div class="card">
+      <div class="cardTitle">Catatan Permainan</div>
+      <div class="logBox" id="log"></div>
+    </div>
+    <div class="tools">
+      <button class="btn ghost small" id="btnKey">Kunci Jawaban (Tutor)</button>
+      <button class="btn ghost small" id="btnSound">Suara: ON</button>
+      <button class="btn ghost small" id="btnHow">Cara Bermain</button>
+    </div>
+  </aside>
+</main>
+
+<footer>Dibuat untuk belajar KPK, FPB &amp; faktor prima sambil bermain bersama tutor.</footer>
+
+<!-- ============ SETUP ============ -->
+<div class="ovl" id="setupOvl">
+  <div class="sheet">
+    <h2 class="center">Selamat Datang, Petualang Matematika!</h2>
+    <p class="center" style="font-weight:700;color:#8a6a3f">Masukkan nama 2 pemain untuk memulai.</p>
+    <div class="nameRow">
+      <label><span class="pdot" style="background:var(--p1)"></span>Pemain 1:</label>
+      <input type="text" id="inName1" maxlength="14" placeholder="Nama pemain pertama" autocomplete="off">
+    </div>
+    <div class="nameRow">
+      <label><span class="pdot" style="background:var(--p2)"></span>Pemain 2:</label>
+      <input type="text" id="inName2" maxlength="14" placeholder="Nama pemain kedua" autocomplete="off">
+    </div>
+    <div class="rules" id="setupRules"></div>
+    <div class="center"><button class="btn green" id="btnStart" style="font-size:19px;padding:13px 34px">Mulai Bermain!</button></div>
+  </div>
+</div>
+
+<!-- ============ MODAL SOAL ============ -->
+<div class="ovl top hidden" id="qOvl">
+  <div class="sheet">
+    <span class="badge norm" id="qBadge">SOAL</span>
+    <h2 id="qTitle" style="margin-top:8px">Kotak</h2>
+    <p id="qText"></p>
+    <div class="ansRow">
+      <input type="text" id="ansInput" placeholder="Ketik jawabanmu..." autocomplete="off">
+      <button class="btn" id="btnCheck">Periksa</button>
+    </div>
+    <div class="qFeedback" id="qFeedback"></div>
+    <div class="explain" id="qExplain"></div>
+    <div class="qactions">
+      <button class="btn ghost small" id="btnSkip">Lewati (putusan tutor)</button>
+      <button class="btn green hidden" id="btnNext">Lanjutkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ KUNCI JAWABAN ============ -->
+<div class="ovl top hidden" id="keyOvl">
+  <div class="sheet">
+    <h2>Kunci Jawaban &amp; Pembahasan <span style="font-size:13px;color:#a08755">(khusus tutor)</span></h2>
+    <div id="keyBody"></div>
+    <div class="center" style="margin-top:14px"><button class="btn" id="btnKeyClose">Tutup</button></div>
+  </div>
+</div>
+
+<!-- ============ CARA BERMAIN ============ -->
+<div class="ovl top hidden" id="howOvl">
+  <div class="sheet">
+    <h2>Cara Bermain</h2>
+    <div id="howBody"></div>
+    <div class="center" style="margin-top:14px"><button class="btn" id="btnHowClose">Tutup</button></div>
+  </div>
+</div>
+
+<!-- ============ PEMENANG ============ -->
+<div class="ovl hidden" id="winOvl">
+  <div class="confettiLayer" id="confetti"></div>
+  <div class="sheet center">
+    <svg class="bigTrophy" viewBox="0 0 24 24" fill="#e8b30f"><path d="M7 2h10v2h4v3a5 5 0 0 1-5 5h-.4a5.5 5.5 0 0 1-2.6 2.5V17h3v3H8v-3h3v-2.5A5.5 5.5 0 0 1 8.4 12H8a5 5 0 0 1-5-5V4h4V2zm-2 4v1a3 3 0 0 0 3 3V6H5zm14 0h-3v4a3 3 0 0 0 3-3V6z"/></svg>
+    <h2 style="font-size:30px">SELAMAT, <span id="winName"></span>!</h2>
+    <p style="font-weight:700;color:#8a6a3f;margin-bottom:10px">Kamu mencapai kotak 100 dan menjadi pemenangnya!</p>
+    <div id="winStats"></div>
+    <div class="center" style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn green" id="btnAgain">Main Lagi</button>
+      <button class="btn ghost" id="btnNew">Ganti Pemain</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ================= DATA PAPAN ================= */
+const LADDERS = {3:24, 9:31, 21:42, 36:55, 43:77, 62:81, 71:92, 80:99};
+const SNAKES  = {98:79, 97:64, 93:46, 89:53, 87:57, 74:39, 66:44, 33:13, 17:5};
+const PCOL = ['#e8590c','#0ca678'];
+const SNAKE_COLORS = [
+  {b:'#2f9e44',d:'#1b6e2c'},{b:'#e8590c',d:'#a83e07'},{b:'#1098ad',d:'#0b6f80'},
+  {b:'#d6336c',d:'#96204a'},{b:'#74b816',d:'#4f7d0e'}
+];
+
+/* Soal cerita: 10 soal dari lembar latihan (dengan kunci pembahasan) + 7 soal serumpun */
+const STORIES = [
+ {q:"Lampu merah menyala setiap 12 detik sekali, sedangkan lampu biru menyala setiap 15 detik sekali. Jika saat ini kedua lampu menyala bersamaan, berapa detik lagi kedua lampu akan menyala bersamaan lagi?", a:60, u:"detik", e:"Kata kunci \u201Cmenyala bersamaan\u201D \u2192 KPK dari 12 dan 15. 12 = 2\u00B2\u00D73, 15 = 3\u00D75 \u2192 KPK = 2\u00B2\u00D73\u00D75 = 60."},
+ {q:"Ibu memiliki 24 apel dan 36 jeruk. Ibu ingin membagikannya ke dalam kantong-kantong dengan jumlah yang sama rata untuk setiap jenis buah. Berapa kantong paling banyak yang dibutuhkan Ibu?", a:12, u:"kantong", e:"Kata kunci \u201Ckantong paling banyak, sama rata\u201D \u2192 FPB dari 24 dan 36. 24 = 2\u00B3\u00D73, 36 = 2\u00B2\u00D73\u00B2 \u2192 FPB = 2\u00B2\u00D73 = 12."},
+ {q:"Ali berlatih renang setiap 4 hari sekali, sedangkan Budi berlatih setiap 6 hari sekali. Jika hari ini mereka berlatih di kolam yang sama, berapa hari lagi mereka akan berlatih bersama-sama lagi?", a:12, u:"hari", e:"Kata kunci \u201Cbersama-sama lagi\u201D \u2192 KPK dari 4 dan 6 = 2\u00B2\u00D73 = 12."},
+ {q:"Pak Guru mempunyai 30 pensil dan 45 buku tulis. Alat tulis akan dibagikan kepada beberapa siswa dengan jumlah masing-masing sama banyak. Berapa jumlah siswa paling banyak yang bisa menerima?", a:15, u:"siswa", e:"Kata kunci \u201Csiswa paling banyak, sama banyak\u201D \u2192 FPB dari 30 dan 45. 30 = 2\u00D73\u00D75, 45 = 3\u00B2\u00D75 \u2192 FPB = 3\u00D75 = 15."},
+ {q:"Bus Mawar berangkat dari terminal setiap 30 menit sekali, sedangkan Bus Melati setiap 45 menit sekali. Jika keduanya berangkat bersama pukul 07.00, berapa menit lagi keduanya berangkat bersama-sama lagi?", a:90, u:"menit", e:"Kata kunci \u201Cberangkat bersama lagi\u201D \u2192 KPK dari 30 dan 45 = 2\u00D73\u00B2\u00D75 = 90."},
+ {q:"Dina memiliki 40 permen cokelat dan 50 permen stroberi. Ia memasukkannya ke beberapa toples; setiap toples berisi permen cokelat dan stroberi dengan jumlah sama banyak. Berapa toples terbanyak yang bisa disiapkan?", a:10, u:"toples", e:"Kata kunci \u201Ctoples terbanyak\u201D \u2192 FPB dari 40 dan 50. 40 = 2\u00B3\u00D75, 50 = 2\u00D75\u00B2 \u2192 FPB = 2\u00D75 = 10."},
+ {q:"Jam weker A berdering setiap 8 jam sekali, jam weker B berdering setiap 12 jam sekali. Jika sekarang keduanya berdering bersamaan, berapa jam lagi keduanya berdering bersamaan lagi?", a:24, u:"jam", e:"Kata kunci \u201Cberdering bersamaan\u201D \u2192 KPK dari 8 dan 12 = 2\u00B3\u00D73 = 24."},
+ {q:"Paman memanen 60 mangga dan 75 manggis. Buah dimasukkan ke beberapa keranjang dengan jumlah dan jenis yang sama rata. Berapa banyak mangga di dalam satu keranjang?", a:4, u:"mangga", e:"Langkah 1: jumlah keranjang = FPB(60,75) = 3\u00D75 = 15. Langkah 2: mangga per keranjang = 60 \u00F7 15 = 4."},
+ {q:"Rina menyiram tanaman setiap 3 hari sekali dan memberi pupuk setiap 14 hari sekali. Setiap berapa hari sekali Rina menyiram dan memberi pupuk pada hari yang sama?", a:42, u:"hari", e:"Kata kunci \u201Chari yang sama\u201D \u2192 KPK dari 3 dan 14 = 2\u00D73\u00D77 = 42."},
+ {q:"Sebuah yayasan memiliki 48 buku tulis, 72 pensil, dan 96 penghapus. Barang dibagikan kepada anak panti dengan jumlah sama rata. Berapa anak paling banyak yang bisa menerima?", a:24, u:"anak", e:"FPB dari 48, 72, 96: 48 = 2\u2074\u00D73, 72 = 2\u00B3\u00D73\u00B2, 96 = 2\u2075\u00D73 \u2192 FPB = 2\u00B3\u00D73 = 24."},
+ {q:"Dokter Andi berpraktik setiap 5 hari sekali, dokter Sinta setiap 7 hari sekali di klinik yang sama. Jika hari ini keduanya praktik bersama, berapa hari lagi mereka praktik bersama-sama lagi?", a:35, u:"hari", e:"Kata kunci \u201Cbersama-sama lagi\u201D \u2192 KPK dari 5 dan 7 = 35 (5 dan 7 bilangan prima)."},
+ {q:"Pak Rudi memiliki 21 pensil dan 35 penghapus. Semua akan dimasukkan ke kotak-kotak dengan isi sama banyak untuk setiap jenis. Berapa kotak terbanyak yang dibutuhkan?", a:7, u:"kotak", e:"Kata kunci \u201Ckotak terbanyak\u201D \u2192 FPB dari 21 dan 35 = 7."},
+ {q:"Andi bersepeda mengelilingi kompleks setiap 9 menit sekali, sedangkan Cici setiap 12 menit sekali. Jika sekarang mereka berangkat bersamaan, berapa menit lagi mereka berangkat bersamaan lagi?", a:36, u:"menit", e:"KPK dari 9 dan 12: 9 = 3\u00B2, 12 = 2\u00B2\u00D73 \u2192 KPK = 2\u00B2\u00D73\u00B2 = 36."},
+ {q:"Bu Guru memiliki 42 kue dan 56 permen yang akan dibagikan sama banyak kepada beberapa anak. Berapa anak terbanyak yang bisa menerima kue dan permen?", a:14, u:"anak", e:"Kata kunci \u201Canak terbanyak\u201D \u2192 FPB dari 42 dan 56. 42 = 2\u00D73\u00D77, 56 = 2\u00B3\u00D77 \u2192 FPB = 2\u00D77 = 14."},
+ {q:"Kereta A berangkat setiap 20 menit sekali dan Kereta B setiap 25 menit sekali. Jika keduanya berangkat bersama pukul 08.00, berapa menit lagi keduanya berangkat bersama lagi?", a:100, u:"menit", e:"KPK dari 20 dan 25: 20 = 2\u00B2\u00D75, 25 = 5\u00B2 \u2192 KPK = 2\u00B2\u00D75\u00B2 = 100."},
+ {q:"Petani memanen 45 manggis dan 60 jambu. Buah dimasukkan ke beberapa keranjang dengan jumlah dan jenis yang sama rata. Berapa banyak jambu di dalam satu keranjang?", a:4, u:"jambu", e:"Langkah 1: jumlah keranjang = FPB(45,60) = 3\u00D75 = 15. Langkah 2: jambu per keranjang = 60 \u00F7 15 = 4."},
+ {q:"Pak Rusdi memiliki 36 mangga, 54 jeruk, dan 90 pepaya. Semua buah dibagikan sama banyak ke beberapa kantong. Berapa kantong terbanyak yang bisa disiapkan?", a:18, u:"kantong", e:"FPB dari 36, 54, 90: 36 = 2\u00B2\u00D73\u00B2, 54 = 2\u00D73\u00B3, 90 = 2\u00D73\u00B2\u00D75 \u2192 FPB = 2\u00D73\u00B2 = 18."}
+];
+
+/* Bahan soal kotak biasa (dibuat acak setiap permainan) */
+const KPK_PAIRS=[[3,4],[4,6],[6,8],[4,10],[6,9],[8,12],[9,12],[10,12],[6,15],[4,14],[8,10],[12,15],[5,6],[10,15],[6,14],[9,6],[4,8],[10,4]];
+const FLIST=[8,9,12,16,18,20,24,25,27,28,30,32,36,40,42,45,48,50,54,56,60,63,64,66,70,72,75,80,81,84,88,90,96,98,100];
+const PRIMES=[11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97];
+const COMPS=[12,15,18,21,22,25,26,27,28,30,33,35,38,39,42,45,49,51,55,57,63,65,69,77,81,85,91,95,99];
+
+/* Ikon SVG */
+const LAD_MINI=`<svg class="mini" viewBox="0 0 24 24" fill="none" stroke="#2f7d3b" stroke-width="2.6" stroke-linecap="round"><path d="M8 3v18M16 3v18M8 8h8M8 13h8M8 18h8"/></svg>`;
+const SNK_MINI=`<svg class="mini" viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="3" stroke-linecap="round"><path d="M19 4c-9 0-9 6 0 6c9 0 9 7 0 7H5"/><circle cx="19.5" cy="4" r="2.4" fill="#c0392b" stroke="none"/></svg>`;
+const TROPHY_MINI=`<svg class="mini" viewBox="0 0 24 24" fill="#d4a017"><path d="M7 2h10v2h4v3a5 5 0 0 1-5 5h-.4a5.5 5.5 0 0 1-2.6 2.5V17h3v3H8v-3h3v-2.5A5.5 5.5 0 0 1 8.4 12H8a5 5 0 0 1-5-5V4h4V2zm-2 4v1a3 3 0 0 0 3 3V6H5zm14 0h-3v4a3 3 0 0 0 3-3V6z"/></svg>`;
+const STAR=`<svg class="st" viewBox="0 0 24 24" fill="#e8b30f"><path d="M12 2l2.9 6.2 6.8.9-5 4.7 1.3 6.7L12 17.2 6 20.5l1.3-6.7-5-4.7 6.8-.9z"/></svg>`;
+const OK_ICON=`<svg class="fi" viewBox="0 0 24 24" fill="none" stroke="#2b8a3e" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>`;
+const NO_ICON=`<svg class="fi" viewBox="0 0 24 24" fill="none" stroke="#c92a2a" stroke-width="3.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+
+const RULES_HTML=`<ol>
+<li>Masukkan nama 2 pemain, lalu tekan <b>Mulai Bermain</b>. Keduanya bergiliran melempar dadu; pion berjalan <b>satu kotak demi satu kotak</b>.</li>
+<li><b>Setiap kotak berisi soal</b> KPK, FPB, atau faktor prima. Jawab dengan benar untuk mendapat bintang.</li>
+<li><b>Kotak Tangga (hijau):</b> berisi soal cerita. Jawab benar \u2192 <b>naik tangga</b>. Salah \u2192 tetap di tempat.</li>
+<li><b>Kepala Ular (merah):</b> berisi soal cerita. Jawab salah \u2192 <b>turun ke ekor ular</b>. Benar \u2192 aman, tidak turun.</li>
+<li>Harus berhenti <b>tepat di kotak 100</b>. Jika angka dadu lebih, pion memantul mundur.</li>
+<li>Pemain yang pertama mencapai kotak 100 menjadi <b>pemenang</b>!</li>
+</ol>
+<div class="tips">Tips tutor: buka <b>Kunci Jawaban</b> untuk melihat semua soal beserta pembahasannya, dan gunakan tombol <b>Lewati</b> pada kotak soal jika diperlukan.</div>`;
+
+/* ================= UTIL ================= */
+const $=s=>document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function gcd(a,b){while(b){[a,b]=[b,a%b];}return a;}
+const lcm=(a,b)=>a/gcd(a,b)*b;
+function primeFactors(n){const f=[];let d=2;while(d*d<=n){while(n%d===0){f.push(d);n/=d;}d++;}if(n>1)f.push(n);return f;}
+const SUP={'2':'\u00B2','3':'\u00B3','4':'\u2074','5':'\u2075','6':'\u2076'};
+function fs(n){const g={};primeFactors(n).forEach(p=>g[p]=(g[p]||0)+1);
+  return Object.keys(g).map(p=>{const e=g[p];return e>1?p+(SUP[e]||('^'+e)):p;}).join(' \u00D7 ');}
+function svgEl(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+const show=el=>el.classList.remove('hidden');
+const hide=el=>el.classList.add('hidden');
+
+/* ================= SUARA (Web Audio) ================= */
+const sfx=(()=>{let ctx=null,muted=false;
+  function ac(){if(!ctx){try{ctx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+    if(ctx&&ctx.state==='suspended')ctx.resume();return ctx;}
+  function t(f,dur,type='sine',vol=.12,when=0,glide){const c=ac();if(!c||muted)return;
+    const o=c.createOscillator(),g=c.createGain(),t0=c.currentTime+when;
+    o.type=type;o.frequency.setValueAtTime(f,t0);
+    if(glide)o.frequency.exponentialRampToValueAtTime(glide,t0+dur);
+    g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(vol,t0+.015);
+    g.gain.exponentialRampToValueAtTime(.001,t0+dur);
+    o.connect(g).connect(c.destination);o.start(t0);o.stop(t0+dur+.05);}
+  return{
+    toggle(){muted=!muted;return muted;},
+    dice(){for(let i=0;i<6;i++)t(300+Math.random()*500,.05,'square',.05,i*.07);},
+    step(){t(620,.06,'triangle',.09);},
+    good(){t(523,.12,'triangle',.14);t(659,.12,'triangle',.14,.1);t(784,.22,'triangle',.14,.2);},
+    bad(){t(220,.32,'sawtooth',.1,0,130);},
+    climb(){t(300,.55,'sine',.12,0,900);t(400,.5,'sine',.07,.06,1200);},
+    slide(){t(720,.75,'sine',.12,0,130);},
+    win(){[523,659,784,1047,784,1319].forEach((f,i)=>t(f,.2,'triangle',.14,i*.13));}
+  };})();
+
+/* ================= REFERENSI DOM ================= */
+const board=$('#board'),grid=$('#grid'),overlay=$('#overlay');
+const turnName=$('#turnName'),btnRoll=$('#btnRoll'),msgEl=$('#msg'),logEl=$('#log');
+const diceEl=$('#dice'),diceVal=$('#diceVal');
+const pcs=[$('#pc0'),$('#pc1')];
+const setupOvl=$('#setupOvl'),qOvl=$('#qOvl'),winOvl=$('#winOvl'),keyOvl=$('#keyOvl'),howOvl=$('#howOvl');
+const qBadge=$('#qBadge'),qTitle=$('#qTitle'),qText=$('#qText'),ansInput=$('#ansInput');
+const btnCheck=$('#btnCheck'),btnSkip=$('#btnSkip'),btnNext=$('#btnNext');
+const qFeedback=$('#qFeedback'),qExplain=$('#qExplain');
+
+/* ================= STATE ================= */
+let players=[],pawnEls=[],current=0,busy=false,started=false,lastWinner=-1;
+let qMap={},storyMap={},snakePaths={},cellEls={},qCtx=null;
+
+/* ================= GEOMETRI PAPAN ================= */
+function cellCenter(n){const r=Math.floor((n-1)/10),c=(n-1)%10,col=r%2?9-c:c;
+  return{x:col*100+50,y:(9-r)*100+50};}
+
+function buildCells(){
+  grid.innerHTML='';cellEls={};
+  const ladS=new Set(Object.keys(LADDERS).map(Number));
+  const snkH=new Set(Object.keys(SNAKES).map(Number));
+  for(let vr=0;vr<10;vr++){const r=9-vr;
+    for(let c=0;c<10;c++){
+      const n=r%2===0?r*10+c+1:r*10+(10-c);
+      const d=document.createElement('div');
+      d.className='cell'+(((r+c)%2)?' alt':'');
+      let inner=`<span class="num">${n}</span>`;
+      if(n===100){d.classList.add('finish','spec');inner+=TROPHY_MINI+`<span class="q">FINIS</span>`;}
+      else if(n===1){d.classList.add('start','spec');inner+=`<span class="q">MULAI</span>`;}
+      else if(ladS.has(n)){d.classList.add('lad','spec');inner+=LAD_MINI+`<span class="q">Tangga<br>ke ${LADDERS[n]}</span>`;}
+      else if(snkH.has(n)){d.classList.add('snk','spec');inner+=SNK_MINI+`<span class="q">Ular<br>ke ${SNAKES[n]}</span>`;}
+      else{inner+=`<span class="q">${esc(qMap[n].label)}</span>`;}
+      d.innerHTML=inner;grid.appendChild(d);cellEls[n]=d;
+    }}
+}
+
+/* Menggambar tangga (membentang dari kotak awal ke kotak akhir) */
+function drawLadder(g,a,b){
+  const A=cellCenter(a),B=cellCenter(b);
+  const dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy),px=-dy/L,py=dx/L,R=11;
+  svgEl('line',{x1:A.x+px*R,y1:A.y+py*R,x2:B.x+px*R,y2:B.y+py*R,class:'rail'},g);
+  svgEl('line',{x1:A.x-px*R,y1:A.y-py*R,x2:B.x-px*R,y2:B.y-py*R,class:'rail'},g);
+  const n=Math.max(3,Math.floor(L/34));
+  for(let i=1;i<=n;i++){const t=i/(n+1),cx=A.x+dx*t,cy=A.y+dy*t;
+    svgEl('line',{x1:cx+px*R,y1:cy+py*R,x2:cx-px*R,y2:cy-py*R,class:'rung'},g);}
+}
+/* Menggambar ular berkeluar (kepala di kotak atas, ekor di kotak bawah) */
+function smoothPath(p){let d=`M ${p[0].x} ${p[0].y}`;
+  for(let i=1;i<p.length-1;i++){const mx=(p[i].x+p[i+1].x)/2,my=(p[i].y+p[i+1].y)/2;
+    d+=` Q ${p[i].x} ${p[i].y} ${mx} ${my}`;}
+  d+=` L ${p[p.length-1].x} ${p[p.length-1].y}`;return d;}
+
+function drawSnake(g,head,tail,ci){
+  const H=cellCenter(head),T=cellCenter(tail);
+  const dx=T.x-H.x,dy=T.y-H.y,L=Math.hypot(dx,dy);
+  const ux=dx/L,uy=dy/L,px=-uy,py=ux;
+  const waves=Math.max(1,Math.round(L/220)),amp=Math.min(34,L*.12);
+  const segs=Math.max(8,Math.round(L/60)),pts=[];
+  for(let i=0;i<=segs;i++){const t=i/segs,env=Math.sin(t*Math.PI);
+    const off=amp*Math.sin(t*Math.PI*2*waves)*env;
+    pts.push({x:H.x+dx*t+px*off,y:H.y+dy*t+py*off});}
+  const d=smoothPath(pts),col=SNAKE_COLORS[ci%SNAKE_COLORS.length];
+  svgEl('path',{d,fill:'none',stroke:col.d,'stroke-width':16.5,'stroke-linecap':'round','stroke-linejoin':'round'},g);
+  const body=svgEl('path',{d,fill:'none',stroke:col.b,'stroke-width':13,'stroke-linecap':'round','stroke-linejoin':'round'},g);
+  svgEl('path',{d,fill:'none',stroke:'rgba(255,255,255,.5)','stroke-width':4.5,'stroke-dasharray':'1 21','stroke-linecap':'round'},g);
+  // kepala menghadap menjauhi badan
+  const fx=-ux,fy=-uy,ang=Math.atan2(fy,fx)*180/Math.PI;
+  const cx0=H.x+fx*8,cy0=H.y+fy*8;
+  svgEl('ellipse',{cx:cx0,cy:cy0,rx:16.5,ry:12.5,fill:col.b,stroke:col.d,'stroke-width':2.5,transform:`rotate(${ang} ${cx0} ${cy0})`},g);
+  [1,-1].forEach(s=>{const ex=cx0+px*6.5*s+fx*4,ey=cy0+py*6.5*s+fy*4;
+    svgEl('circle',{cx:ex,cy:ey,r:4,fill:'#fff'},g);
+    svgEl('circle',{cx:ex+fx*1.6,cy:ey+fy*1.6,r:1.9,fill:'#26201a'},g);});
+  const mx=cx0+fx*16,my=cy0+fy*16,tx=cx0+fx*27,ty=cy0+fy*27;
+  svgEl('path',{d:`M ${mx} ${my} L ${tx} ${ty} M ${tx} ${ty} L ${tx+px*5} ${ty+py*5} M ${tx} ${ty} L ${tx-px*5} ${ty-py*5}`,
+    stroke:'#d6336c','stroke-width':2.4,fill:'none','stroke-linecap':'round'},g);
+  svgEl('circle',{cx:T.x,cy:T.y,r:5.5,fill:col.b,stroke:col.d,'stroke-width':2},g);
+  snakePaths[head]=body;
+}
+function drawOverlay(){
+  overlay.innerHTML='';snakePaths={};
+  const gl=svgEl('g',{},overlay),gs=svgEl('g',{},overlay);
+  for(const a in LADDERS)drawLadder(gl,+a,LADDERS[a]);
+  let ci=0;for(const h in SNAKES)drawSnake(gs,+h,SNAKES[h],ci++);
+}
+
+/* ================= PEMBUATAN SOAL ================= */
+function makeQuestion(t){
+  if(t==='kpk'){const[a,b]=pick(KPK_PAIRS),ans=lcm(a,b);
+    return{type:t,label:`KPK ${a} & ${b}`,text:`Berapakah KPK dari ${a} dan ${b}?`,answer:ans,
+      explain:`${a} = ${fs(a)} dan ${b} = ${fs(b)}. Ambil setiap faktor prima dengan pangkat tertinggi \u2192 KPK = ${ans}.`};}
+  if(t==='fpb'){let a,b,g;do{a=ri(4,48);b=ri(4,48);}while(a===b||(g=gcd(a,b))===1);
+    return{type:t,label:`FPB ${a} & ${b}`,text:`Berapakah FPB dari ${a} dan ${b}?`,answer:g,
+      explain:`${a} = ${fs(a)} dan ${b} = ${fs(b)}. Ambil setiap faktor prima dengan pangkat terendah \u2192 FPB = ${g}.`};}
+  if(t==='faktor'){const n=pick(FLIST),f=primeFactors(n);
+    return{type:t,label:`Faktorisasi ${n}`,text:`Tuliskan faktorisasi prima dari ${n}! (tulis dengan tanda kali, contoh: 2x2x3)`,
+      factors:f,answerStr:f.join(' \u00D7 '),answer:f.join(' '),
+      explain:`${n} = ${fs(n)}.`};}
+  if(t==='fpbesar'){const n=pick(FLIST),m=Math.max(...primeFactors(n));
+    return{type:t,label:`Faktor terbesar ${n}`,text:`Berapakah faktor prima TERBESAR dari ${n}?`,answer:m,
+      explain:`${n} = ${fs(n)} \u2192 faktor prima terbesarnya adalah ${m}.`};}
+  const n=Math.random()<.5?pick(PRIMES):pick(COMPS),isp=isPrime(n),sd=smallestDiv(n);
+  return{type:'prima',label:`Prima? ${n}`,text:`Apakah ${n} merupakan bilangan prima? (jawab: ya / bukan)`,answer:isp?'ya':'bukan',
+    explain:isp?`${n} hanya habis dibagi 1 dan ${n} (memiliki tepat 2 faktor), jadi ${n} adalah bilangan prima.`
+      :`${n} habis dibagi ${sd}, karena ${n} = ${sd} \u00D7 ${n/sd}. Jadi ${n} bukan bilangan prima.`};
+}
+function isPrime(n){if(n<2)return false;for(let d=2;d*d<=n;d++)if(n%d===0)return false;return true;}
+function smallestDiv(n){for(let d=2;d<=n;d++)if(n%d===0)return d;return n;}
+
+function genAllQuestions(){
+  qMap={};storyMap={};
+  const special=[...Object.keys(LADDERS).map(Number),...Object.keys(SNAKES).map(Number)];
+  const sh=shuffle([...STORIES]);
+  special.forEach((sq,i)=>{const s=sh[i];storyMap[sq]={type:'story',text:s.q,answer:s.a,unit:s.u,explain:s.e};});
+  const bag=[];const add=(t,n)=>{for(let i=0;i<n;i++)bag.push(t);};
+  add('kpk',24);add('fpb',24);add('faktor',14);add('fpbesar',10);add('prima',10);
+  shuffle(bag);let ti=0;
+  for(let n=1;n<=99;n++){if(storyMap[n])continue;qMap[n]=makeQuestion(bag[ti++%bag.length]);}
+}
+function answerText(q){
+  if(q.type==='faktor')return q.factors.join(' \u00D7 ');
+  return q.answer+(q.unit?' '+q.unit:'');
+}
+function checkAnswer(q,raw){
+  const s=(raw||'').toLowerCase()
+    .replace(/\u00B2/g,'2').replace(/\u00B3/g,'3').replace(/\u2074/g,'4').replace(/\u2075/g,'5');
+  if(q.type==='prima'){
+    if(/\bbukan\b|\bbkn\b|\btidak\b|^b$|^t$/.test(s))return q.answer==='bukan';
+    if(/\bya\b|^y$|benar|betul|prima/.test(s))return q.answer==='ya';
+    return false;}
+  if(q.type==='faktor'){
+    const nums=(s.match(/\d+/g)||[]).map(Number).sort((a,b)=>b-a);
+    const exp=[...q.factors].sort((a,b)=>b-a);
+    return nums.length===exp.length&&nums.every((v,i)=>v===exp[i]);}
+  const nums=(s.match(/\d+/g)||[]).map(Number);
+  return nums.includes(q.answer);
+}
+
+/* ================= UI ================= */
+function setMsg(t){msgEl.textContent=t;}
+function log(t,pi){const d=document.createElement('div');d.textContent=t;if(pi===0)d.className='lp0';if(pi===1)d.className='lp1';
+  logEl.prepend(d);while(logEl.children.length>40)logEl.lastChild.remove();}
+function clearLog(){logEl.innerHTML='';}
+function setFace(f){const F={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+  pipEls.forEach((p,i)=>p.classList.toggle('on',F[f].includes(i)));}
+const pipEls=[];for(let i=0;i<9;i++){const p=document.createElement('span');p.className='pip';diceEl.appendChild(p);pipEls.push(p);}
+
+function updateHUD(){
+  if(!players.length)return;
+  turnName.textContent=players[current].name;
+  turnName.style.color=PCOL[current];
+  players.forEach((p,i)=>{
+    pcs[i].classList.toggle('active',i===current);
+    pcs[i].innerHTML=`<span class="pdot" style="background:${PCOL[i]}"></span>
+      <div><div class="pname">${esc(p.name)}</div>
+      <div class="pstat">Kotak: <b>${p.pos}</b> &nbsp;\u2022&nbsp; Bintang: <b>${p.stars}</b> ${STAR} &nbsp;\u2022&nbsp; Benar: <b>${p.correct}</b> soal</div></div>`;
+  });
+  btnRoll.disabled=busy||!started;
+}
+function setPawnXY(i,x,y){const e=pawnEls[i];e.style.left=(x/10)+'%';e.style.top=(y/10)+'%';e.style.transform='translate(-50%,-52%)';}
+function refreshPawns(){
+  document.querySelectorAll('.cell.occ0,.cell.occ1').forEach(c=>c.classList.remove('occ0','occ1'));
+  players.forEach((p,i)=>{
+    const c=cellCenter(p.pos);let ox=0,oy=0;
+    if(players[1-i].pos===p.pos){ox=i?15:-15;oy=i?-11:11;}
+    const e=pawnEls[i];
+    e.style.left=(c.x/10)+'%';e.style.top=(c.y/10)+'%';
+    e.style.transform=`translate(calc(-50% + ${ox}px), calc(-50% + ${oy}px))`;
+    if(cellEls[p.pos])cellEls[p.pos].classList.add('occ'+i);
+  });
+}
+
+/* ================= ALUR PERMAINAN ================= */
+async function doRoll(){
+  if(busy||!started)return;
+  busy=true;updateHUD();
+  sfx.dice();
+  const v=ri(1,6);
+  diceEl.classList.add('rolling');
+  for(let i=0;i<9;i++){setFace(ri(1,6));await wait(75);}
+  diceEl.classList.remove('rolling');setFace(v);diceVal.textContent=v;
+  const p=players[current];
+  setMsg(`${p.name} melempar angka ${v}. Bergerak satu kotak demi satu kotak...`);
+  log(`${p.name} melempar dadu: ${v}`,current);
+  await wait(300);
+  // jalur langkah dengan pantulan di kotak 100
+  let cur=p.pos,dir=1;const steps=[];
+  for(let i=0;i<v;i++){if(cur===100)dir=-1;cur+=dir;steps.push(cur);}
+  for(const s of steps){p.pos=s;refreshPawns();sfx.step();await wait(330);}
+  if(p.pos===100){await wait(350);return doWin();}
+  setMsg(`${p.name} berhenti di kotak ${p.pos}. Jawab soalnya!`);
+  await wait(250);
+  openQuestion(p.pos);
+}
+
+function openQuestion(sq){
+  const isL=LADDERS[sq]!==undefined,isS=SNAKES[sq]!==undefined;
+  const q=storyMap[sq]||qMap[sq];
+  qCtx={sq,kind:isL?'ladder':isS?'snake':'normal',q,attempts:0,correct:false,done:false};
+  if(isL){qBadge.className='badge lad';qBadge.innerHTML=LAD_MINI+' SOAL CERITA \u2022 KOTAK TANGGA';}
+  else if(isS){qBadge.className='badge snk';qBadge.innerHTML=SNK_MINI+' SOAL CERITA \u2022 KEPALA ULAR';}
+  else{qBadge.className='badge norm';qBadge.textContent='SOAL KOTAK';}
+  qTitle.textContent='Kotak '+sq+(isL?` \u2014 Tangga menuju ${LADDERS[sq]}`:isS?` \u2014 Ular menuju ${SNAKES[sq]}`:'');
+  qText.textContent=q.text;
+  ansInput.placeholder=q.type==='prima'?'ya / bukan':q.type==='faktor'?'contoh: 2x2x3':'Ketik jawabanmu (angka)...';
+  ansInput.value='';ansInput.disabled=false;btnCheck.disabled=false;
+  qFeedback.className='qFeedback';qFeedback.innerHTML='';
+  qExplain.className='explain';qExplain.innerHTML='';
+  btnNext.classList.add('hidden');btnSkip.classList.remove('hidden');
+  show(qOvl);setTimeout(()=>ansInput.focus(),60);
+}
+function finishQuestion(ok,feedText){
+  qCtx.done=true;qCtx.correct=ok;
+  qFeedback.className='qFeedback show '+(ok?'good':'bad');
+  qFeedback.innerHTML=(ok?OK_ICON:NO_ICON)+`<span>${feedText}</span>`;
+  qExplain.innerHTML=`<b>Pembahasan:</b> ${esc(qCtx.q.explain)}`;qExplain.classList.add('show');
+  ansInput.disabled=true;btnCheck.disabled=true;btnSkip.classList.add('hidden');
+  btnNext.classList.remove('hidden');
+}
+btnCheck.addEventListener('click',()=>{
+  if(!qCtx||qCtx.done)return;
+  if(checkAnswer(qCtx.q,ansInput.value)){sfx.good();finishQuestion(true,'Benar! Kerja bagus!');}
+  else{
+    qCtx.attempts++;sfx.bad();
+    if(qCtx.kind!=='normal'||qCtx.attempts>=2){
+      finishQuestion(false,`Belum tepat. Jawaban yang benar: <b>${answerText(qCtx.q)}</b>`);}
+    else{qFeedback.className='qFeedback show bad';
+      qFeedback.innerHTML=NO_ICON+'<span>Belum tepat \u2014 coba sekali lagi!</span>';
+      ansInput.classList.add('shake');setTimeout(()=>ansInput.classList.remove('shake'),600);
+      ansInput.select();}
+  }
+});
+btnSkip.addEventListener('click',()=>{
+  if(!qCtx||qCtx.done)return;
+  finishQuestion(false,`Soal dilewati tutor. Jawaban: <b>${answerText(qCtx.q)}</b>`);
+});
+btnNext.addEventListener('click',()=>{
+  if(!qCtx)return;hide(qOvl);
+  const ctx=qCtx;qCtx=null;resolveTurn(ctx);
+});
+ansInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){if(!btnCheck.disabled)btnCheck.click();else if(!btnNext.classList.contains('hidden'))btnNext.click();}
+});
+
+async function resolveTurn(ctx){
+  const p=players[current],sq=ctx.sq;
+  if(ctx.kind==='ladder'){
+    if(ctx.correct){
+      p.correct++;p.stars+=2;updateHUD();
+      log(`${p.name} menjawab benar! Naik tangga...`,current);
+      await climbAnim(sq,LADDERS[sq]);
+      p.pos=LADDERS[sq];refreshPawns();sfx.step();
+      log(`${p.name} NAIK TANGGA dari ${sq} ke kotak ${p.pos}!`,current);
+    }else log(`${p.name} belum berhasil menjawab, peluang naik tangga lepas. Tetap di kotak ${sq}.`,current);
+  }else if(ctx.kind==='snake'){
+    if(ctx.correct){p.correct++;p.stars+=2;log(`${p.name} menjawab benar! Aman dari ular, tidak turun.`,current);}
+    else{
+      log(`${p.name} gagal menjawab... Aduh, ada ular!`,current);
+      await slideAnim(sq);
+      p.pos=SNAKES[sq];refreshPawns();
+      log(`${p.name} TURUN dari kotak ${sq} ke kotak ${p.pos}.`,current);
+    }
+  }else{
+    if(ctx.correct){p.correct++;p.stars++;log(`${p.name} menjawab benar! +1 bintang.`,current);}
+    else log(`${p.name} belum berhasil di kotak ${sq}. Yuk simak pembahasannya!`,current);
+  }
+  updateHUD();
+  if(p.pos===100)return doWin();
+  current=1-current;busy=false;updateHUD();
+  setMsg(`Giliran ${players[current].name} \u2014 lempar dadunya!`);
+}
+
+/* Animasi memanjat tangga (membentang dari awal ke akhir tangga) */
+function climbAnim(a,b){
+  const A=cellCenter(a),B=cellCenter(b),el=pawnEls[current];
+  el.classList.add('noTrans');sfx.climb();
+  const dx=B.x-A.x,dy=B.y-A.y,L=Math.hypot(dx,dy),px=-dy/L,py=dx/L;
+  const dur=980,t0=performance.now();
+  return new Promise(res=>{(function f(now){
+    const t=Math.min(1,(now-t0)/dur);
+    const bob=Math.sin(t*Math.PI*7)*7;
+    setPawnXY(current,A.x+dx*t+px*bob,A.y+dy*t+py*bob);
+    if(t<1)requestAnimationFrame(f);else{el.classList.remove('noTrans');res();}
+  })(t0);});
+}
+/* Animasi meluncur menyusuri badan ular dari kepala ke ekor */
+function slideAnim(head){
+  const path=snakePaths[head],el=pawnEls[current];
+  el.classList.add('noTrans');sfx.slide();
+  const len=path.getTotalLength(),dur=Math.min(1600,600+len*1.1),t0=performance.now();
+  return new Promise(res=>{(function f(now){
+    const t=Math.min(1,(now-t0)/dur),e=t*t;
+    const pt=path.getPointAtLength(e*len);
+    setPawnXY(current,pt.x,pt.y);
+    if(t<1)requestAnimationFrame(f);else{el.classList.remove('noTrans');res();}
+  })(t0);});
+}
+
+function doWin(){
+  busy=true;lastWinner=current;updateHUD();
+  const p=players[current];
+  sfx.win();
+  log(`${p.name} mencapai kotak 100 \u2014 PEMENANGNYA!`,current);
+  setMsg(`Permainan selesai. ${p.name} menang!`);
+  $('#winName').textContent=p.name;
+  $('#winStats').innerHTML=players.map((pl,i)=>
+    `<div class="wrow"><span class="pdot" style="background:${PCOL[i]}"></span><b>${esc(pl.name)}</b>
+     <span>\u2022 Kotak akhir: <b>${pl.pos}</b></span><span>\u2022 Bintang: <b>${pl.stars}</b></span>
+     <span>\u2022 Benar: <b>${pl.correct}</b> soal</span>${i===current?'<span class="winTag">JUARA</span>':''}</div>`).join('');
+  spawnConfetti();show(winOvl);
+}
+function spawnConfetti(){
+  const box=$('#confetti');box.innerHTML='';
+  const cols=['#e8590c','#0ca678','#ffd43b','#d6336c','#1098ad','#2f9e44'];
+  for(let i=0;i<90;i++){const s=document.createElement('i');
+    s.style.left=Math.random()*100+'%';
+    s.style.background=pick(cols);
+    s.style.width=(7+Math.random()*7)+'px';s.style.height=(10+Math.random()*8)+'px';
+    s.style.borderRadius=Math.random()<.4?'50%':'2px';
+    s.style.animationDuration=(2.6+Math.random()*2.6)+'s';
+    s.style.animationDelay=(Math.random()*1.6)+'s';
+    box.appendChild(s);}
+}
+
+/* ================= MULAI / ULANG ================= */
+function buildKey(){
+  let h='<h4 class="ksec">Soal Cerita \u2014 Kotak Tangga & Kepala Ular</h4>';
+  const sp=[...Object.keys(LADDERS).map(Number),...Object.keys(SNAKES).map(Number)].sort((a,b)=>a-b);
+  sp.forEach(sq=>{const s=storyMap[sq];
+    const dest=LADDERS[sq]!==undefined?`Tangga \u2192 ${LADDERS[sq]}`:`Ular \u2192 ${SNAKES[sq]}`;
+    h+=`<div class="kitem"><b>Kotak ${sq}</b> (${dest}): ${esc(s.text)}<br><b>Jawaban:</b> ${s.answer} ${s.unit}. <i>${esc(s.explain)}</i></div>`;});
+  h+='<h4 class="ksec">Soal Kotak Lainnya</h4><div class="keyGrid">';
+  for(let n=1;n<=99;n++){const q=qMap[n];if(!q)continue;
+    h+=`<span><b>${n}.</b> ${esc(q.label)} \u2192 <b>${esc(answerText(q))}</b></span>`;}
+  h+='</div>';
+  $('#keyBody').innerHTML=h;
+}
+function startGame(){
+  const n1=($('#inName1').value||'').trim()||'Pemain 1';
+  const n2=($('#inName2').value||'').trim()||'Pemain 2';
+  players=[{name:n1.slice(0,14),pos:1,stars:0,correct:0},{name:n2.slice(0,14),pos:1,stars:0,correct:0}];
+  current=0;busy=false;started=true;lastWinner=-1;
+  pawnEls.forEach(e=>e.remove());pawnEls=[];
+  players.forEach((p,i)=>{const e=document.createElement('div');
+    e.className='pawn x'+i;e.textContent=p.name[0].toUpperCase();
+    board.appendChild(e);pawnEls.push(e);});
+  genAllQuestions();buildCells();drawOverlay();buildKey();
+  pawnEls.forEach(e=>e.classList.add('noTrans'));
+  refreshPawns();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>pawnEls.forEach(e=>e.classList.remove('noTrans'))));
+  updateHUD();hide(setupOvl);clearLog();
+  log(`Permainan dimulai! Semua pion berdiri di kotak 1. Semangat!`);
+  setMsg(`Giliran ${players[0].name} \u2014 lempar dadunya!`);
+}
+function resetGame(){
+  players.forEach(p=>{p.pos=1;p.stars=0;p.correct=0;});
+  current=lastWinner===1?0:1; // yang kalah jalan lebih dulu di ronde baru
+  genAllQuestions();buildCells();drawOverlay();buildKey();
+  pawnEls.forEach(e=>e.classList.add('noTrans'));
+  refreshPawns();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>pawnEls.forEach(e=>e.classList.remove('noTrans'))));
+  busy=false;started=true;clearLog();updateHUD();
+  setMsg(`Ronde baru! Giliran ${players[current].name} \u2014 lempar dadunya!`);
+  log(`Ronde baru dimulai. ${players[current].name} jalan pertama.`);
+}
+
+/* ================= EVENT ================= */
+ $('#btnStart').addEventListener('click',startGame);
+[ $('#inName1'), $('#inName2') ].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter')startGame();}));
+btnRoll.addEventListener('click',doRoll);
+ $('#btnAgain').addEventListener('click',()=>{hide(winOvl);resetGame();});
+ $('#btnNew').addEventListener('click',()=>{hide(winOvl);started=false;busy=false;show(setupOvl);});
+ $('#btnKey').addEventListener('click',()=>show(keyOvl));
+ $('#btnKeyClose').addEventListener('click',()=>hide(keyOvl));
+ $('#btnHow').addEventListener('click',()=>show(howOvl));
+ $('#btnHowClose').addEventListener('click',()=>hide(howOvl));
+ $('#btnSound').addEventListener('click',e=>{e.target.textContent='Suara: '+(sfx.toggle()?'OFF':'ON');});
+window.addEventListener('keydown',e=>{
+  if(e.code==='Space'&&started&&!busy&&!anyOvl()){e.preventDefault();doRoll();}
+});
+function anyOvl(){return[setupOvl,qOvl,winOvl,keyOvl,howOvl].some(o=>!o.classList.contains('hidden'));}
+
+/* ================= INISIALISASI ================= */
+ $('#setupRules').innerHTML=RULES_HTML;
+ $('#howBody').innerHTML='<div class="rules">'+RULES_HTML+'</div>';
+genAllQuestions();buildCells();drawOverlay();setFace(5);diceVal.textContent='\u2013';
+</script>
+</body>
+</html>
