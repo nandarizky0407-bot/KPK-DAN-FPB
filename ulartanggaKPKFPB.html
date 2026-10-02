@@ -172,7 +172,7 @@ footer{text-align:center;font-size:12.5px;color:#a08755;padding:0 12px 26px;font
     <div class="legend">
       <span class="chip"><i style="background:#bde3ac"></i>Kotak Tangga &mdash; naik jika benar</span>
       <span class="chip"><i style="background:#ffc4b0"></i>Kepala Ular &mdash; turun jika salah</span>
-      <span class="chip"><i style="background:#f1e4c3"></i>Kotak soal KPK / FPB / Faktor Prima</span>
+      <span class="chip"><i style="background:#f1e4c3"></i>Kotak soal &mdash; jawab benar agar pion maju</span>
     </div>
   </section>
 
@@ -323,7 +323,7 @@ const NO_ICON=`<svg class="fi" viewBox="0 0 24 24" fill="none" stroke="#c92a2a" 
 
 const RULES_HTML=`<ol>
 <li>Masukkan nama 2 pemain, lalu tekan <b>Mulai Bermain</b>. Keduanya bergiliran melempar dadu; pion berjalan <b>satu kotak demi satu kotak</b>.</li>
-<li><b>Setiap kotak berisi soal</b> KPK, FPB, atau faktor prima. Jawab dengan benar untuk mendapat bintang.</li>
+<li><b>Kotak biasa:</b> berisi soal KPK, FPB, atau faktor prima. Soal muncul di kotak tujuan &mdash; pion hanya boleh maju jika dijawab <b>benar</b>. Jika gagal, pion <b>tidak jadi maju</b> dan tetap di tempat.</li>
 <li><b>Kotak Tangga (hijau):</b> berisi soal cerita. Jawab benar \u2192 <b>naik tangga</b>. Salah \u2192 tetap di tempat.</li>
 <li><b>Kepala Ular (merah):</b> berisi soal cerita. Jawab salah \u2192 <b>turun ke ekor ular</b>. Benar \u2192 aman, tidak turun.</li>
 <li>Harus berhenti <b>tepat di kotak 100</b>. Jika angka dadu lebih, pion memantul mundur.</li>
@@ -437,7 +437,6 @@ function drawSnake(g,head,tail,ci){
   svgEl('path',{d,fill:'none',stroke:col.d,'stroke-width':16.5,'stroke-linecap':'round','stroke-linejoin':'round'},g);
   const body=svgEl('path',{d,fill:'none',stroke:col.b,'stroke-width':13,'stroke-linecap':'round','stroke-linejoin':'round'},g);
   svgEl('path',{d,fill:'none',stroke:'rgba(255,255,255,.5)','stroke-width':4.5,'stroke-dasharray':'1 21','stroke-linecap':'round'},g);
-  // kepala menghadap menjauhi badan
   const fx=-ux,fy=-uy,ang=Math.atan2(fy,fx)*180/Math.PI;
   const cx0=H.x+fx*8,cy0=H.y+fy*8;
   svgEl('ellipse',{cx:cx0,cy:cy0,rx:16.5,ry:12.5,fill:col.b,stroke:col.d,'stroke-width':2.5,transform:`rotate(${ang} ${cx0} ${cy0})`},g);
@@ -544,6 +543,11 @@ function refreshPawns(){
 }
 
 /* ================= ALUR PERMAINAN ================= */
+async function walkSteps(steps){
+  const p=players[current];
+  for(const s of steps){p.pos=s;refreshPawns();sfx.step();await wait(330);}
+}
+
 async function doRoll(){
   if(busy||!started)return;
   busy=true;updateHUD();
@@ -553,27 +557,50 @@ async function doRoll(){
   for(let i=0;i<9;i++){setFace(ri(1,6));await wait(75);}
   diceEl.classList.remove('rolling');setFace(v);diceVal.textContent=v;
   const p=players[current];
-  setMsg(`${p.name} melempar angka ${v}. Bergerak satu kotak demi satu kotak...`);
-  log(`${p.name} melempar dadu: ${v}`,current);
-  await wait(300);
-  // jalur langkah dengan pantulan di kotak 100
+  // hitung jalur langkah dengan pantulan di kotak 100
   let cur=p.pos,dir=1;const steps=[];
   for(let i=0;i<v;i++){if(cur===100)dir=-1;cur+=dir;steps.push(cur);}
-  for(const s of steps){p.pos=s;refreshPawns();sfx.step();await wait(330);}
-  if(p.pos===100){await wait(350);return doWin();}
-  setMsg(`${p.name} berhenti di kotak ${p.pos}. Jawab soalnya!`);
-  await wait(250);
-  openQuestion(p.pos);
+  const dest=steps[steps.length-1];
+  const isL=LADDERS[dest]!==undefined,isS=SNAKES[dest]!==undefined;
+
+  if(isL||isS){
+    /* Kotak tangga / kepala ular: pion tiba dulu, lalu soal cerita */
+    setMsg(`${p.name} melempar angka ${v}. Bergerak satu kotak demi satu kotak...`);
+    log(`${p.name} melempar dadu: ${v}`,current);
+    await wait(300);
+    await walkSteps(steps);
+    setMsg(`${p.name} berhenti di kotak ${p.pos}. Jawab soal ceritanya!`);
+    await wait(250);
+    openQuestion(dest,null);
+  }else if(dest===100){
+    /* Sampai tepat di kotak 100 = menang */
+    setMsg(`${p.name} melempar angka ${v} dan melangkah menuju kotak 100...`);
+    log(`${p.name} melempar dadu: ${v}`,current);
+    await wait(300);
+    await walkSteps(steps);
+    await wait(350);
+    return doWin();
+  }else{
+    /* Kotak biasa: soal dulu di kotak tujuan. Maju hanya jika benar! */
+    setMsg(`${p.name} melempar angka ${v}. Jawab soal kotak ${dest} dengan benar agar pion boleh maju!`);
+    log(`${p.name} melempar dadu: ${v} (tujuan: kotak ${dest})`,current);
+    await wait(600);
+    openQuestion(dest,{steps,dest});
+  }
 }
 
-function openQuestion(sq){
+function openQuestion(sq,moveCtx){
   const isL=LADDERS[sq]!==undefined,isS=SNAKES[sq]!==undefined;
   const q=storyMap[sq]||qMap[sq];
-  qCtx={sq,kind:isL?'ladder':isS?'snake':'normal',q,attempts:0,correct:false,done:false};
+  qCtx={sq,kind:isL?'ladder':isS?'snake':'normal',q,attempts:0,correct:false,done:false,moveCtx:moveCtx||null};
   if(isL){qBadge.className='badge lad';qBadge.innerHTML=LAD_MINI+' SOAL CERITA \u2022 KOTAK TANGGA';}
   else if(isS){qBadge.className='badge snk';qBadge.innerHTML=SNK_MINI+' SOAL CERITA \u2022 KEPALA ULAR';}
-  else{qBadge.className='badge norm';qBadge.textContent='SOAL KOTAK';}
-  qTitle.textContent='Kotak '+sq+(isL?` \u2014 Tangga menuju ${LADDERS[sq]}`:isS?` \u2014 Ular menuju ${SNAKES[sq]}`:'');
+  else{qBadge.className='badge norm';
+    qBadge.textContent=qCtx.moveCtx?'SOAL KOTAK \u2022 BENAR = MAJU':'SOAL KOTAK';}
+  qTitle.textContent='Kotak '+sq+
+    (isL?` \u2014 Tangga menuju ${LADDERS[sq]}`
+    :isS?` \u2014 Ular menuju ${SNAKES[sq]}`
+    :qCtx.moveCtx?` \u2014 jawab benar agar pion boleh maju ke sini!`:'');
   qText.textContent=q.text;
   ansInput.placeholder=q.type==='prima'?'ya / bukan':q.type==='faktor'?'contoh: 2x2x3':'Ketik jawabanmu (angka)...';
   ansInput.value='';ansInput.disabled=false;btnCheck.disabled=false;
@@ -592,12 +619,18 @@ function finishQuestion(ok,feedText){
 }
 btnCheck.addEventListener('click',()=>{
   if(!qCtx||qCtx.done)return;
-  if(checkAnswer(qCtx.q,ansInput.value)){sfx.good();finishQuestion(true,'Benar! Kerja bagus!');}
-  else{
+  if(checkAnswer(qCtx.q,ansInput.value)){
+    sfx.good();
+    let feed='Benar! Kerja bagus!';
+    if(qCtx.kind==='normal'&&qCtx.moveCtx)feed='Benar! Pionmu boleh maju!';
+    finishQuestion(true,feed);
+  }else{
     qCtx.attempts++;sfx.bad();
     if(qCtx.kind!=='normal'||qCtx.attempts>=2){
-      finishQuestion(false,`Belum tepat. Jawaban yang benar: <b>${answerText(qCtx.q)}</b>`);}
-    else{qFeedback.className='qFeedback show bad';
+      let feed=`Belum tepat. Jawaban yang benar: <b>${answerText(qCtx.q)}</b>`;
+      if(qCtx.kind==='normal'&&qCtx.moveCtx)feed='Pion gagal maju. '+feed;
+      finishQuestion(false,feed);
+    }else{qFeedback.className='qFeedback show bad';
       qFeedback.innerHTML=NO_ICON+'<span>Belum tepat \u2014 coba sekali lagi!</span>';
       ansInput.classList.add('shake');setTimeout(()=>ansInput.classList.remove('shake'),600);
       ansInput.select();}
@@ -605,7 +638,9 @@ btnCheck.addEventListener('click',()=>{
 });
 btnSkip.addEventListener('click',()=>{
   if(!qCtx||qCtx.done)return;
-  finishQuestion(false,`Soal dilewati tutor. Jawaban: <b>${answerText(qCtx.q)}</b>`);
+  let feed=`Soal dilewati tutor. Jawaban: <b>${answerText(qCtx.q)}</b>`;
+  if(qCtx.kind==='normal'&&qCtx.moveCtx)feed='Pion gagal maju. '+feed;
+  finishQuestion(false,feed);
 });
 btnNext.addEventListener('click',()=>{
   if(!qCtx)return;hide(qOvl);
@@ -634,8 +669,16 @@ async function resolveTurn(ctx){
       log(`${p.name} TURUN dari kotak ${sq} ke kotak ${p.pos}.`,current);
     }
   }else{
-    if(ctx.correct){p.correct++;p.stars++;log(`${p.name} menjawab benar! +1 bintang.`,current);}
-    else log(`${p.name} belum berhasil di kotak ${sq}. Yuk simak pembahasannya!`,current);
+    /* Kotak biasa: pion hanya maju jika benar */
+    if(ctx.correct&&ctx.moveCtx){
+      p.correct++;p.stars++;updateHUD();
+      log(`${p.name} menjawab benar! Pion berjalan maju...`,current);
+      await wait(250);
+      await walkSteps(ctx.moveCtx.steps);
+      log(`${p.name} berhasil maju ke kotak ${p.pos}. +1 bintang.`,current);
+    }else{
+      log(`${p.name} gagal menjawab \u2014 pion gagal maju, tetap di kotak ${p.pos}.`,current);
+    }
   }
   updateHUD();
   if(p.pos===100)return doWin();
